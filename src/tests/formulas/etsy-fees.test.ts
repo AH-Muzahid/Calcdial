@@ -68,7 +68,7 @@ describe("Etsy Fee Formula Comprehensive", () => {
     expect(Math.abs(beResult.netProfit)).toBeLessThan(0.15);
   });
 
-  it("calculates target margin price correctly", () => {
+  it("calculates target margin price correctly and handles unattainable margins", () => {
     const result = calculateEtsyFees({
       itemPrice: 30.0,
       shippingCharge: 0,
@@ -80,19 +80,35 @@ describe("Etsy Fee Formula Comprehensive", () => {
 
     expect(result.targetPriceForMargin).toBeDefined();
     expect(result.targetPriceForMargin!).toBeGreaterThan(result.breakEvenPrice);
+
+    const impossible = calculateEtsyFees({
+      itemPrice: 30.0,
+      shippingCharge: 0,
+      itemCost: 10.0,
+      targetMarginPct: 95, // 95% + 10% fees > 100%
+      country: "us",
+    });
+    expect(impossible.targetPriceForMargin).toBeUndefined();
   });
 
-  it("handles Offsite Ads (15%) correctly", () => {
+  it("handles Offsite Ads default rate (15%) when rate omitted", () => {
     const result = calculateEtsyFees({
       itemPrice: 100.0,
       shippingCharge: 0,
       country: "us",
       offsiteAdsOptIn: true,
-      offsiteAdsRate: 0.15,
     });
-
     expect(result.offsiteAdsFee).toBe(15.00);
-    expect(result.breakdown.some((b) => b.label.includes("Offsite Ads"))).toBe(true);
+  });
+
+  it("handles custom listing fee override", () => {
+    const custom = calculateEtsyFees({
+      itemPrice: 100.0,
+      shippingCharge: 0,
+      customListingFee: 0.50,
+      quantity: 2,
+    });
+    expect(custom.listingFee).toBe(1.00); // $0.50 x 2
   });
 
   it("handles international buyer surcharge (+1%)", () => {

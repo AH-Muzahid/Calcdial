@@ -11,23 +11,23 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
   const guides = relatedGuideSlugs.map((slug) => getGuideBySlug(slug)).filter(Boolean);
 
   return (
-    <section className="my-10 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)] print:hidden">
+    <section className="my-10 rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)] print:hidden">
       <div className="flex items-center gap-2 mb-2">
-        <span className="size-2 rounded-full bg-slate-900" />
-        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
+        <span className="size-1.5 rounded-full bg-black" />
+        <span className="text-xs font-mono font-medium uppercase tracking-wider text-zinc-500">
           Related Ecosystem
         </span>
       </div>
-      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-black">
         Related Calculators & Guides
       </h2>
-      <p className="mt-1 text-xs sm:text-sm text-slate-500">
+      <p className="mt-1 text-xs sm:text-sm text-zinc-500">
         Compare platforms, calculate advertising break-evens, and read in-depth fee strategies.
       </p>
 
       {tools.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
             Recommended Calculators
           </h3>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -35,13 +35,13 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
               <Link
                 key={t!.slug}
                 href={`/tools/${t!.slug}`}
-                className="group rounded-2xl border border-slate-200 p-4 transition-all hover:border-emerald-500/80 hover:shadow-sm"
+                className="group rounded-2xl border border-black/[0.08] p-4 transition-all hover:border-black/40 hover:shadow-2xs bg-white"
               >
-                <h4 className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 flex items-center justify-between">
+                <h4 className="text-sm font-semibold text-black group-hover:underline flex items-center justify-between">
                   <span>{t!.title}</span>
-                  <span className="font-mono text-xs">→</span>
+                  <span className="font-mono text-xs text-zinc-400 group-hover:text-black">→</span>
                 </h4>
-                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
                   {t!.shortDescription}
                 </p>
               </Link>
@@ -51,8 +51,8 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
       )}
 
       {guides.length > 0 && (
-        <div className="mt-6 border-t border-slate-100 pt-5">
-          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+        <div className="mt-6 border-t border-black/[0.06] pt-5">
+          <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
             In-Depth Seller Guides
           </h3>
           <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -60,17 +60,17 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
               <Link
                 key={g!.slug}
                 href={`/guides/${g!.slug}`}
-                className="group rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4 transition hover:bg-emerald-50 hover:border-emerald-200"
+                className="group rounded-2xl border border-black/[0.08] bg-black/[0.02] p-4 transition hover:border-black/30"
               >
-                <div className="flex items-center gap-2 text-[10px] text-emerald-800 font-mono font-semibold uppercase">
+                <div className="flex items-center gap-2 text-[10px] text-black font-mono font-semibold uppercase">
                   <span>Pillar Guide</span>
                   <span>•</span>
                   <span>{g!.estimatedReadMinutes} min read</span>
                 </div>
-                <h4 className="mt-1 text-sm font-semibold text-gray-900 group-hover:text-emerald-700">
+                <h4 className="mt-1 text-sm font-semibold text-black group-hover:underline">
                   {g!.title}
                 </h4>
-                <p className="mt-1 line-clamp-2 text-xs text-gray-600">
+                <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
                   {g!.description}
                 </p>
               </Link>

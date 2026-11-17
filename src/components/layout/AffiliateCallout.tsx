@@ -20,16 +20,16 @@ export function AffiliateCallout({
   url,
 }: AffiliateCalloutProps) {
   return (
-    <aside className="my-6 rounded-xl border border-emerald-100 bg-emerald-50/60 p-5 shadow-xs transition hover:border-emerald-200 print:hidden">
+    <aside className="my-6 rounded-3xl border border-black/[0.08] bg-black/[0.02] p-6 shadow-xs print:hidden">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold tracking-wide uppercase text-emerald-800">
+        <span className="text-[11px] font-mono font-medium tracking-wide uppercase text-black">
           Partner Recommendation
         </span>
-        <span className="text-[10px] text-gray-400">Sponsored</span>
+        <span className="text-[10px] font-mono text-zinc-400">Sponsored</span>
       </div>
-      <h4 className="mt-1.5 text-base font-semibold text-gray-900">{headline}</h4>
-      <p className="mt-1 text-sm text-gray-600 leading-relaxed">{description}</p>
-      <div className="mt-3">
+      <h4 className="mt-1.5 text-base font-bold text-black">{headline}</h4>
+      <p className="mt-1 text-sm text-zinc-500 leading-relaxed">{description}</p>
+      <div className="mt-4">
         <a
           href={url}
           target="_blank"
@@ -40,7 +40,7 @@ export function AffiliateCallout({
               params: { tool_slug: toolSlug, partner, url },
             })
           }
-          className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-emerald-700"
+          className="inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-xs font-mono font-semibold text-white shadow-xs transition hover:bg-zinc-800 cursor-pointer"
         >
           {ctaText}
           <span aria-hidden="true">&rarr;</span>

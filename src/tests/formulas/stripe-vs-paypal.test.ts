@@ -48,6 +48,12 @@ describe("Stripe vs PayPal Multi-Mode Formula", () => {
     const gbp = comparePaymentProcessors({ amount: 500, currency: "gbp" });
     expect(gbp.currency).toBe("GBP");
     expect(gbp.currencySymbol).toBe("£");
+    expect(gbp.paypal.fixedFee).toBe(0.30);
+
+    const eur = comparePaymentProcessors({ amount: 500, currency: "eur" });
+    expect(eur.currency).toBe("EUR");
+    expect(eur.currencySymbol).toBe("€");
+    expect(eur.paypal.fixedFee).toBe(0.39);
 
     const intl = comparePaymentProcessors({
       amount: 500,
@@ -68,6 +74,15 @@ describe("Stripe vs PayPal Multi-Mode Formula", () => {
     expect(result.stripe.monthlyFees).toBeGreaterThan(0);
     expect(result.paypal.monthlyFees).toBeGreaterThan(result.stripe.monthlyFees);
     expect(result.annualSavings).toBeGreaterThan(0);
+  });
+
+  it("handles fallback defaults when unknown currency provided", () => {
+    const unknown = comparePaymentProcessors({
+      amount: 100,
+      currency: "unknown_cur",
+    });
+    expect(unknown.currency).toBe("USD");
+    expect(unknown.currencySymbol).toBe("$");
   });
 
   it("handles zero amount safely", () => {

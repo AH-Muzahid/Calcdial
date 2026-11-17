@@ -89,22 +89,22 @@ export function Footer() {
             </h4>
             <ul className="mt-3 space-y-2 text-xs sm:text-sm">
               <li>
-                <Link href="/about" className="hover:text-black transition-colors">
+                <Link href="/about" prefetch={false} className="hover:text-black transition-colors">
                   About CalcDial & Math
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-black transition-colors">
+                <Link href="/contact" prefetch={false} className="hover:text-black transition-colors">
                   Contact Support
                 </Link>
               </li>
               <li>
-                <Link href="/privacy-policy" className="hover:text-black transition-colors">
+                <Link href="/privacy-policy" prefetch={false} className="hover:text-black transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-black transition-colors">
+                <Link href="/terms" prefetch={false} className="hover:text-black transition-colors">
                   Terms of Service & Disclaimer
                 </Link>
               </li>

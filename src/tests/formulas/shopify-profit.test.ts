@@ -27,8 +27,8 @@ describe("Shopify Profit & ROAS Formula", () => {
     expect(result.breakdown.length).toBe(4);
   });
 
-  it("calculates Advanced plan lower card rates correctly", () => {
-    const result = calculateShopifyProfit({
+  it("calculates Advanced and Plus plans correctly", () => {
+    const adv = calculateShopifyProfit({
       itemPrice: 100.00,
       shippingCharged: 10.00, // Total $110
       cogs: 30.00,
@@ -38,10 +38,32 @@ describe("Shopify Profit & ROAS Formula", () => {
     });
 
     // Advanced rate: 2.5% + $0.30 on $110 = 2.75 + 0.30 = $3.05
-    expect(result.revenue).toBe(110.00);
-    expect(result.paymentFee).toBe(3.05);
-    expect(result.thirdPartyTransactionFee).toBe(0);
-    expect(result.netPayout).toBe(106.95);
+    expect(adv.revenue).toBe(110.00);
+    expect(adv.paymentFee).toBe(3.05);
+    expect(adv.thirdPartyTransactionFee).toBe(0);
+    expect(adv.netPayout).toBe(106.95);
+
+    const plus = calculateShopifyProfit({
+      itemPrice: 100.00,
+      shopifyPlan: "plus",
+      gateway: "shopify-payments",
+    });
+    // Plus rate: 2.15% + $0.30 on $100 = $2.45
+    expect(plus.paymentFee).toBe(2.45);
+  });
+
+  it("supports custom fee overrides and custom third-party transaction rates", () => {
+    const custom = calculateShopifyProfit({
+      itemPrice: 100.00,
+      customRatePct: 2.2,
+      customFixedFee: 0.15,
+      shopifyPlanTransactionPct: 1.5,
+      gateway: "custom",
+    });
+
+    expect(custom.paymentFee).toBe(2.35); // 2.2% of 100 + 0.15
+    expect(custom.thirdPartyTransactionFee).toBe(1.50); // 1.5% of 100
+    expect(custom.totalPlatformFees).toBe(3.85);
   });
 
   it("adds third-party transaction fee for external gateways", () => {
@@ -85,6 +107,14 @@ describe("Shopify Profit & ROAS Formula", () => {
       gateway: "shopify-payments",
     });
     expect(Math.abs(beResult.netProfit)).toBeLessThanOrEqual(0.05);
+
+    // Edge case: unreachable target margin (e.g. 100% margin when fees exist)
+    const impossible = calculateShopifyProfit({
+      itemPrice: 50.00,
+      cogs: 10.00,
+      targetMarginPct: 99,
+    });
+    expect(impossible.targetPriceForMargin).toBeUndefined();
   });
 
   it("handles zero values and edge cases gracefully", () => {

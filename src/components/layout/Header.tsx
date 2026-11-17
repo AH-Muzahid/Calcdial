@@ -23,6 +23,7 @@ export function Header() {
           </Link>
           <Link
             href="/about"
+            prefetch={false}
             className="hidden sm:inline-block rounded-full px-3.5 py-1.5 text-xs sm:text-sm font-medium text-zinc-600 transition-colors hover:bg-black/[0.04] hover:text-black"
           >
             About
