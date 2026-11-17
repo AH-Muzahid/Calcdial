@@ -2,9 +2,7 @@
 
 /**
  * FlipWords, from https://motion-brew.com/components/flip-words
- *
- * One self contained file: the component and the cn()
- * helper. Needs React 18 or 19 and Tailwind CSS v4.
+ * Zero-CLS edition: utilizes CSS Grid stacking to reserve exact bounding box dimensions.
  */
 
 import * as React from "react";
@@ -17,7 +15,7 @@ function cn(...inputs: ClassValue[]): string {
 }
 
 export interface FlipWordsProps {
-  /** Text before the changing word. Default `"Build"`. */
+  /** Text before the changing word. */
   before?: string;
   /** Words to cycle through. */
   words?: string[];
@@ -36,10 +34,10 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export const FlipWords = React.forwardRef<HTMLElement, FlipWordsProps>(function FlipWords(
   {
     before = "",
-    words = ["Etsy", "Shopify", "TikTok Shop", "Print-on-Demand"],
+    words = ["Etsy Sellers", "Shopify Stores", "TikTok Shops", "Print-on-Demand"],
     after = "",
     interval = 2400,
-    wordClassName = "text-zinc-950 font-black underline decoration-zinc-300 decoration-2 underline-offset-8",
+    wordClassName = "text-zinc-950 font-bold",
     className,
     as = "span",
   },
@@ -58,41 +56,37 @@ export const FlipWords = React.forwardRef<HTMLElement, FlipWordsProps>(function 
   const Tag = as === "div" ? "div" : as === "p" ? "p" : "span";
 
   return (
-    <Tag ref={ref as React.Ref<never>} className={cn("inline", className)}>
+    <Tag ref={ref as React.Ref<never>} className={cn("inline-flex items-center", className)}>
       <span className="sr-only">
         {before ? `${before} ` : ""}{words.join(", ")}{after ? ` ${after}` : ""}
       </span>
-      <span aria-hidden className="inline">
-        {before && <span className="inline">{before} </span>}
-        <motion.span
-          layout={!still}
-          transition={{ duration: 0.4, ease: EASE }}
-          className="relative inline-flex"
-          style={{ perspective: 600 }}
-        >
-          <AnimatePresence mode="popLayout" initial={false}>
+      <span aria-hidden className="inline-flex items-center">
+        {before && <span className="inline mr-1.5">{before}</span>}
+        <span className="relative inline-grid [grid-template-areas:'stack'] items-center text-center overflow-hidden">
+          {/* Invisible sizing words: locks container width and height to the longest/tallest word for 0 CLS */}
+          {words.map((w) => (
+            <span
+              key={w}
+              className={cn("[grid-area:stack] invisible pointer-events-none select-none whitespace-nowrap", wordClassName)}
+              aria-hidden="true"
+            >
+              {w}
+            </span>
+          ))}
+          <AnimatePresence mode="wait" initial={false}>
             <motion.span
               key={word}
-              className={cn("inline-flex whitespace-nowrap", wordClassName)}
-              exit={still ? { opacity: 0 } : { opacity: 0, y: "-0.4em", rotateX: 70, filter: "blur(6px)" }}
-              transition={{ duration: 0.3, ease: EASE }}
+              className={cn("[grid-area:stack] inline-flex items-center justify-center whitespace-nowrap", wordClassName)}
+              initial={still ? false : { opacity: 0, y: "0.35em", filter: "blur(3px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              exit={still ? { opacity: 0 } : { opacity: 0, y: "-0.35em", filter: "blur(3px)" }}
+              transition={{ duration: 0.35, ease: EASE }}
             >
-              {Array.from(word).map((ch, i) => (
-                <motion.span
-                  key={i}
-                  className="inline-block"
-                  style={{ transformOrigin: "50% 100%" }}
-                  initial={still ? false : { opacity: 0, y: "0.4em", rotateX: -80, filter: "blur(6px)" }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 0.45, ease: EASE, delay: i * 0.02 }}
-                >
-                  {ch}
-                </motion.span>
-              ))}
+              {word}
             </motion.span>
           </AnimatePresence>
-        </motion.span>
-        {after && <span className="inline"> {after}</span>}
+        </span>
+        {after && <span className="inline ml-1.5">{after}</span>}
       </span>
     </Tag>
   );

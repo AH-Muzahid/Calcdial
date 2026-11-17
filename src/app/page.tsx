@@ -44,17 +44,22 @@ export default function HomePage() {
           <ShimmerText text="2026 E-COMMERCE FEE SCHEDULES ACTIVE" className="font-semibold text-[11px] tracking-wider text-zinc-900" />
         </div>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 max-w-3xl mx-auto leading-[1.18]">
-          Know Your Real Profit on{" "}
-          <FlipWords
-            words={["Etsy", "Shopify", "TikTok Shop", "Print-on-Demand"]}
-            after="Before You Sell."
-            wordClassName="text-zinc-950 font-black underline decoration-zinc-300 decoration-2 underline-offset-8"
-            as="span"
-          />
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-950 max-w-4xl mx-auto leading-[1.12]">
+          Know Your Real Profit Before You Sell.
         </h1>
 
-        <div className="mx-auto mt-5 max-w-2xl">
+        <div className="mt-4 flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-zinc-500">
+          <span>Accurate fee schedules for</span>
+          <span className="inline-flex items-center rounded-full bg-zinc-100 border border-zinc-200/80 px-3 py-1 text-zinc-950 font-semibold font-mono text-xs sm:text-sm shadow-2xs">
+            <FlipWords
+              words={["Etsy Sellers", "Shopify Stores", "TikTok Shops", "Print-on-Demand"]}
+              className="inline-flex items-center"
+              wordClassName="text-zinc-950 font-bold"
+            />
+          </span>
+        </div>
+
+        <div className="mx-auto mt-4 max-w-2xl">
           <BlurText
             text="Zero tracking lag, 100% private client-side calculators. Test your listing price, calculate transaction commissions, and uncover hidden margins in seconds."
             as="p"
