@@ -55,7 +55,7 @@ COGS & Shipping:     $${(cogs + shipping).toFixed(2)}
 Platform Payout:     $${result.netPayout.toFixed(2)}
 Final Net Profit:    $${result.netProfit.toFixed(2)} (${result.netMarginPct}% margin)
 ----------------------------------------
-Calculated on FeeSnap: https://feesnap.com/tools/tiktok-shop-fee-calculator`;
+Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
   };
 
   return (

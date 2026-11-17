@@ -9,11 +9,11 @@ export default function HomePage() {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "FeeSnap",
-    url: "https://feesnap.com",
+    name: "CalcDial",
+    url: "https://calcdial.com",
     potentialAction: {
       "@type": "SearchAction",
-      target: "https://feesnap.com/#tools",
+      target: "https://calcdial.com/#tools",
       "query-input": "required name=search_term_string",
     },
   };
@@ -21,9 +21,9 @@ export default function HomePage() {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "FeeSnap",
-    url: "https://feesnap.com",
-    logo: "https://feesnap.com/favicon.ico",
+    name: "CalcDial",
+    url: "https://calcdial.com",
+    logo: "https://calcdial.com/favicon.ico",
     description: "High-accuracy, client-side seller profit and platform fee calculators.",
   };
 

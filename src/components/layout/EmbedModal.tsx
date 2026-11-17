@@ -12,7 +12,7 @@ export function EmbedModal({ toolSlug, title }: EmbedModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const embedCode = `<iframe src="https://feesnap.com/embed/${toolSlug}" width="100%" height="520" style="border:none;border-radius:12px;overflow:hidden;" title="${title}" loading="lazy"></iframe><p style="font-size:12px;color:#6b7280;text-align:right;">Powered by <a href="https://feesnap.com/tools/${toolSlug}" target="_blank" rel="noopener">FeeSnap</a></p>`;
+  const embedCode = `<iframe src="https://calcdial.com/embed/${toolSlug}" width="100%" height="520" style="border:none;border-radius:12px;overflow:hidden;" title="${title}" loading="lazy"></iframe><p style="font-size:12px;color:#6b7280;text-align:right;">Powered by <a href="https://calcdial.com/tools/${toolSlug}" target="_blank" rel="noopener">CalcDial</a></p>`;
 
   const copyCode = async () => {
     try {

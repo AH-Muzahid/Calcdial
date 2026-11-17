@@ -50,7 +50,7 @@ Stripe Invoice Amount: ${result.currencySymbol}${result.stripe.invoiceToReceiveT
 PayPal Invoice Amount: ${result.currencySymbol}${result.paypal.invoiceToReceiveTarget.toFixed(2)} (Fee: ${result.currencySymbol}${result.paypal.feeOnGrossUp.toFixed(2)})
 ----------------------------------------
 Recommended: ${result.recommended} (Saves ${result.currencySymbol}${result.savingsOnGrossUp.toFixed(2)})
-Calculated on FeeSnap: https://feesnap.com/tools/stripe-vs-paypal-fee-calculator`;
+Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculator`;
   };
 
   return (

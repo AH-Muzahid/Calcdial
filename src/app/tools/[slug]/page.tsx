@@ -45,10 +45,10 @@ export async function generateMetadata({
     pageTitle = `${tool.title} (${matchedPreset.toUpperCase()} Preset)`;
   }
 
-  const canonicalUrl = `https://feesnap.com/tools/${slug}`;
+  const canonicalUrl = `https://calcdial.com/tools/${slug}`;
 
   return {
-    title: `${pageTitle} | FeeSnap`,
+    title: `${pageTitle} | CalcDial`,
     description: tool.shortDescription,
     alternates: { canonical: canonicalUrl },
     openGraph: {
@@ -56,7 +56,7 @@ export async function generateMetadata({
       title: `${pageTitle} — Free Instant Calculator`,
       description: tool.shortDescription,
       url: canonicalUrl,
-      siteName: "FeeSnap",
+      siteName: "CalcDial",
     },
     twitter: {
       card: "summary_large_image",

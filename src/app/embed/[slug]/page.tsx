@@ -67,12 +67,12 @@ export default async function EmbedPage({
       <footer className="mt-4 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
         <span>Updated for 2026</span>
         <Link
-          href={`https://feesnap.com/tools/${tool.slug}`}
+          href={`https://calcdial.com/tools/${tool.slug}`}
           target="_blank"
           rel="noopener"
           className="font-medium text-emerald-600 hover:underline"
         >
-          Powered by FeeSnap &rarr;
+          Powered by CalcDial &rarr;
         </Link>
       </footer>
     </div>

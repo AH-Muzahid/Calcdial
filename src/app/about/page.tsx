@@ -3,9 +3,9 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "About FeeSnap — Our Mission & Calculation Methodology",
+  title: "About CalcDial — Our Mission & Calculation Methodology",
   description:
-    "Learn about FeeSnap, our commitment to transparent e-commerce fee calculations, and how we audit marketplace fee updates for online sellers.",
+    "Learn about CalcDial, our commitment to transparent e-commerce fee calculations, and how we audit marketplace fee updates for online sellers.",
 };
 
 export default function AboutPage() {
@@ -14,7 +14,7 @@ export default function AboutPage() {
       <Breadcrumbs items={[{ label: "About Us" }]} />
 
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-        About FeeSnap & Our Calculation Methodology
+        About CalcDial & Our Calculation Methodology
       </h1>
       <p className="mt-3 text-base text-gray-600 leading-relaxed">
         Building high-precision, client-side financial tools to protect online seller profit margins across the world’s major marketplace platforms.
@@ -27,14 +27,14 @@ export default function AboutPage() {
             In modern e-commerce, platform fees are increasingly complicated. A seller listing a handmade mug or print-on-demand t-shirt does not simply pay a flat fee; they navigate base listing charges, category referral percentages, country-specific payment settlement surcharges, buyer currency exchange spreads, regulatory operating fees, and mandatory offsite advertising cuts.
           </p>
           <p className="mt-3">
-            FeeSnap was founded to deliver 100% free, transparent, and instant calculations. Our tools help makers, drop-shippers, digital creators, and direct-to-consumer founders price their products accurately so they never discover negative margins after fulfillment.
+            CalcDial was founded to deliver 100% free, transparent, and instant calculations. Our tools help makers, drop-shippers, digital creators, and direct-to-consumer founders price their products accurately so they never discover negative margins after fulfillment.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-bold text-gray-900">100% Client-Side Privacy Guarantee</h2>
           <p className="mt-2">
-            Unlike many commercial SaaS tools that require you to create an account, connect private store API keys, or upload sensitive financial records to remote databases, FeeSnap performs every single calculation 100% locally in your web browser using pure TypeScript algorithms.
+            Unlike many commercial SaaS tools that require you to create an account, connect private store API keys, or upload sensitive financial records to remote databases, CalcDial performs every single calculation 100% locally in your web browser using pure TypeScript algorithms.
           </p>
           <p className="mt-3">
             Your item pricing, product manufacturing costs, customer shipping charges, and advertising spend never leave your computer. We do not store, log, or sell your product cost data.
@@ -54,7 +54,7 @@ export default function AboutPage() {
         <section>
           <h2 className="text-xl font-bold text-gray-900">Editorial Disclaimer</h2>
           <p className="mt-2">
-            FeeSnap is an independent educational publisher and tool provider. We are not officially affiliated with, endorsed by, or sponsored by Etsy, Inc., Shopify Inc., ByteDance Ltd., Stripe, Inc., or PayPal Holdings, Inc. All trademarks and brand names remain the property of their respective owners. Calculations are estimates intended for planning and educational purposes and should be verified against your official merchant settlement statements.
+            CalcDial is an independent educational publisher and tool provider. We are not officially affiliated with, endorsed by, or sponsored by Etsy, Inc., Shopify Inc., ByteDance Ltd., Stripe, Inc., or PayPal Holdings, Inc. All trademarks and brand names remain the property of their respective owners. Calculations are estimates intended for planning and educational purposes and should be verified against your official merchant settlement statements.
           </p>
         </section>
 

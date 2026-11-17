@@ -8,9 +8,9 @@ export function Footer() {
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded bg-emerald-600 text-xs font-bold text-white">
-                FS
+                CD
               </span>
-              <span className="font-bold text-gray-900">FeeSnap</span>
+              <span className="font-bold text-gray-900">CalcDial</span>
             </div>
             <p className="text-sm text-gray-500">
               100% free, client-side seller profit and platform fee calculators. Updated quarterly for 2026 platform schedules.
@@ -98,7 +98,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-gray-200 pt-6 text-center text-xs text-gray-400">
-          © {new Date().getFullYear()} FeeSnap. All calculations are estimates for educational and commercial planning purposes and do not constitute official accounting or financial advice.
+          © {new Date().getFullYear()} CalcDial. All calculations are estimates for educational and commercial planning purposes and do not constitute official accounting or financial advice.
         </div>
       </div>
     </footer>

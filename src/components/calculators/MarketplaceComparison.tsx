@@ -53,7 +53,7 @@ COGS & Fulfillment:   $${(cogs + shippingCost).toFixed(2)}
 ${comparison.results.map((r) => `${r.platform.padEnd(12)}: Net Profit $${r.netProfit.toFixed(2)} (${r.netMarginPct}% margin)`).join("\n")}
 ----------------------------------------
 Winner: ${comparison.winner.platform} (Net Profit $${comparison.winner.netProfit.toFixed(2)})
-Calculated on FeeSnap: https://feesnap.com/tools/etsy-vs-shopify-vs-tiktok-shop-calculator`;
+Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-shop-calculator`;
   };
 
   return (

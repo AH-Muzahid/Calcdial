@@ -28,10 +28,10 @@ export async function generateMetadata({
   const guide = DETAILED_GUIDES[slug];
   if (!guide) return { title: "Guide Not Found" };
 
-  const canonicalUrl = `https://feesnap.com/guides/${slug}`;
+  const canonicalUrl = `https://calcdial.com/guides/${slug}`;
 
   return {
-    title: `${guide.title} | FeeSnap`,
+    title: `${guide.title} | CalcDial`,
     description: guide.metaDescription,
     alternates: { canonical: canonicalUrl },
     openGraph: {
@@ -72,17 +72,17 @@ export default async function GuidePage({
     },
     publisher: {
       "@type": "Organization",
-      name: "FeeSnap",
+      name: "CalcDial",
       logo: {
         "@type": "ImageObject",
-        url: "https://feesnap.com/favicon.ico",
+        url: "https://calcdial.com/favicon.ico",
       },
     },
     datePublished: guide.publishedAt,
     dateModified: guide.updatedAt,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://feesnap.com/guides/${slug}`,
+      "@id": `https://calcdial.com/guides/${slug}`,
     },
   };
 

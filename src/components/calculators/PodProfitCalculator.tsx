@@ -70,7 +70,7 @@ Ad Spend:           $${adSpend.toFixed(2)}
 Net Profit:         $${result.netProfit.toFixed(2)}
 Net Margin:         ${result.netMarginPct}%
 ----------------------------------------
-Calculated on FeeSnap: https://feesnap.com/tools/pod-profit-calculator`;
+Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
   };
 
   return (

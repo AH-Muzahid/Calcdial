@@ -6,10 +6,10 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 font-bold text-white shadow-sm">
-            FS
+            CD
           </span>
           <span className="text-xl font-bold tracking-tight text-gray-900">
-            Fee<span className="text-emerald-600">Snap</span>
+            Calc<span className="text-emerald-600">Dial</span>
           </span>
         </Link>
         <nav className="flex items-center gap-6 text-sm font-medium text-gray-600">

@@ -109,7 +109,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: false,
     dataSnippet: "Selling a $29.99 item with $5 shipping on Etsy incurs $5.42 in total seller fees (15.5%), leaving a clean net profit of $29.57.",
     affiliatePartner: "Printify",
-    affiliateUrl: "https://printify.com/?ref=feesnap",
+    affiliateUrl: "https://printify.com/?ref=calcdial",
     affiliateCta: "Source low-cost POD inventory on Printify",
     howToSteps: [
       { name: "Enter Item Price", text: "Type the retail listing price of your Etsy product in your store's native currency." },
@@ -158,7 +158,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: false,
     dataSnippet: "Selling a print-on-demand t-shirt for $28 with a $9.50 base production cost leaves $12.18 net margin (43.5%) before ad spend.",
     affiliatePartner: "Printify",
-    affiliateUrl: "https://printify.com/?ref=feesnap",
+    affiliateUrl: "https://printify.com/?ref=calcdial",
     affiliateCta: "Find high-margin apparel suppliers on Printify",
     howToSteps: [
       { name: "Choose Product Preset", text: "Select your POD catalog item to prefill realistic base blank and print costs." },
@@ -200,7 +200,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: false,
     dataSnippet: "A $35 TikTok Shop apparel item with a 15% creator commission nets $22.40 profit after a 6% referral fee and product costs.",
     affiliatePartner: "Shopify",
-    affiliateUrl: "https://shopify.pxf.io/c/feesnap",
+    affiliateUrl: "https://shopify.pxf.io/c/calcdial",
     affiliateCta: "Sync your Shopify products with TikTok Shop seamlessly",
     howToSteps: [
       { name: "Enter Sale Price", text: "Enter your customer checkout item price." },
@@ -237,7 +237,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: false,
     dataSnippet: "A Shopify product with 65% gross margin requires a minimum break-even ROAS of 1.54x on Meta & Google Ads to remain profitable.",
     affiliatePartner: "Shopify",
-    affiliateUrl: "https://shopify.pxf.io/c/feesnap",
+    affiliateUrl: "https://shopify.pxf.io/c/calcdial",
     affiliateCta: "Sign up for Shopify free trial ($1/mo for first 3 months)",
     howToSteps: [
       { name: "Enter Product Price", text: "Input your customer retail price." },
@@ -274,7 +274,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: true,
     dataSnippet: "On a $50 sale, Shopify leaves you with $48.25 net payout vs $43.90 on Etsy and $44.00 on TikTok Shop — keeping up to $4.35 more per sale on Shopify.",
     affiliatePartner: "Shopify",
-    affiliateUrl: "https://shopify.pxf.io/c/feesnap",
+    affiliateUrl: "https://shopify.pxf.io/c/calcdial",
     affiliateCta: "Launch your independent Shopify store with $1/month promo",
     howToSteps: [
       { name: "Enter Target Retail Price", text: "Enter the common selling price for your product across all three channels." },
@@ -308,7 +308,7 @@ export const TOOLS: ToolConfig[] = [
     isComparison: true,
     dataSnippet: "To receive exactly $1,000 net payout in the US, invoice $1,030.18 via Stripe (2.9% + $0.30) versus $1,036.78 via PayPal (3.49% + $0.49).",
     affiliatePartner: "Wise",
-    affiliateUrl: "https://wise.com/?ref=feesnap",
+    affiliateUrl: "https://wise.com/?ref=calcdial",
     affiliateCta: "Save on international payments with Wise Business",
     howToSteps: [
       { name: "Enter Target Net Payout", text: "Type the exact amount of money you want deposited into your bank account." },

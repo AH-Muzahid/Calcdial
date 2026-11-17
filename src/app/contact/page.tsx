@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Contact FeeSnap — Support, Feedback & Fee Inquiries",
+  title: "Contact CalcDial — Support, Feedback & Fee Inquiries",
   description:
-    "Get in touch with the FeeSnap team for calculator feedback, fee schedule corrections, partnerships, or tool suggestions.",
+    "Get in touch with the CalcDial team for calculator feedback, fee schedule corrections, partnerships, or tool suggestions.",
 };
 
 export default function ContactPage() {
@@ -13,7 +13,7 @@ export default function ContactPage() {
       <Breadcrumbs items={[{ label: "Contact Us" }]} />
 
       <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-        Contact the FeeSnap Team
+        Contact the CalcDial Team
       </h1>
       <p className="mt-3 text-base text-gray-600 leading-relaxed">
         We value feedback from e-commerce sellers, developers, and platform partners. Have a question, noticed a fee change, or want to suggest a new tool? Reach out below.
@@ -74,7 +74,7 @@ export default function ContactPage() {
               For editorial corrections, developer inquiries, or partnership discussions, you can reach our editorial desk directly:
             </p>
             <div className="mt-3 font-mono text-xs font-semibold text-emerald-700">
-              support@feesnap.com
+              support@calcdial.com
             </div>
           </div>
 

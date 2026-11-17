@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — FeeSnap",
+  title: "Privacy Policy — CalcDial",
   description:
-    "FeeSnap Privacy Policy: Details on cookie usage, Google Analytics 4, advertising partners, and our 100% client-side data privacy architecture.",
+    "CalcDial Privacy Policy: Details on cookie usage, Google Analytics 4, advertising partners, and our 100% client-side data privacy architecture.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-lg font-bold text-gray-900">1. Overview & Core Philosophy</h2>
           <p className="mt-2">
-            FeeSnap (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) operates the website at https://feesnap.com. We believe seller financial data should remain strictly confidential. Our interactive calculator engines operate entirely in client-side JavaScript within your web browser. When you input item prices, production costs, shipping rates, or ad spends, that financial information is never uploaded, recorded, or stored on our servers.
+            CalcDial (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) operates the website at https://calcdial.com. We believe seller financial data should remain strictly confidential. Our interactive calculator engines operate entirely in client-side JavaScript within your web browser. When you input item prices, production costs, shipping rates, or ad spends, that financial information is never uploaded, recorded, or stored on our servers.
           </p>
         </section>
 
@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-lg font-bold text-gray-900">4. Advertising & Third-Party Cookies</h2>
           <p className="mt-2">
-            FeeSnap is monetized in part through third-party advertising networks, such as Google AdSense and Journey by Mediavine. These advertising partners may use cookies, web beacons, and device identifiers to serve relevant advertisements based on your prior visits to this website or other sites on the Internet.
+            CalcDial is monetized in part through third-party advertising networks, such as Google AdSense and Journey by Mediavine. These advertising partners may use cookies, web beacons, and device identifiers to serve relevant advertisements based on your prior visits to this website or other sites on the Internet.
           </p>
           <p className="mt-2">
             Users may opt out of personalized advertising by visiting Google Ads Settings (https://adssettings.google.com) or the Network Advertising Initiative opt-out page (https://optout.networkadvertising.org).
@@ -58,7 +58,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-lg font-bold text-gray-900">5. Affiliate Disclosure & Links</h2>
           <p className="mt-2">
-            Certain pages contain contextual affiliate links to vetted seller services (such as Printify, Shopify, or Wise). When you click an affiliate link marked &quot;Sponsored&quot; and subsequently purchase or register an account, FeeSnap may earn a small referral commission at no additional cost to you. Affiliate relationships never influence our mathematical formulas or platform fee audit conclusions.
+            Certain pages contain contextual affiliate links to vetted seller services (such as Printify, Shopify, or Wise). When you click an affiliate link marked &quot;Sponsored&quot; and subsequently purchase or register an account, CalcDial may earn a small referral commission at no additional cost to you. Affiliate relationships never influence our mathematical formulas or platform fee audit conclusions.
           </p>
         </section>
 
@@ -72,7 +72,7 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-lg font-bold text-gray-900">7. GDPR and CCPA Rights</h2>
           <p className="mt-2">
-            Depending on your location, you have rights regarding your personal information, including the right to request access, correction, or deletion of any email data you have provided to us. To exercise your rights, please reach out via our contact page or at support@feesnap.com.
+            Depending on your location, you have rights regarding your personal information, including the right to request access, correction, or deletion of any email data you have provided to us. To exercise your rights, please reach out via our contact page or at support@calcdial.com.
           </p>
         </section>
       </div>

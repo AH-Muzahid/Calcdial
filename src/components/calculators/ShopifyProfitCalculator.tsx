@@ -56,7 +56,7 @@ Gross Margin:        ${result.grossMarginPct}%
 Break-Even ROAS:     ${result.breakEvenRoas}x
 Net Profit:          $${result.netProfit.toFixed(2)} (${result.netMarginPct}% margin)
 ----------------------------------------
-Calculated on FeeSnap: https://feesnap.com/tools/shopify-profit-calculator`;
+Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
   };
 
   return (

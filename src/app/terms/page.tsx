@@ -2,9 +2,9 @@ import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Terms of Service & Calculator Disclaimer — FeeSnap",
+  title: "Terms of Service & Calculator Disclaimer — CalcDial",
   description:
-    "Terms of service, calculator accuracy disclaimer, intellectual property notices, and limitations of liability for FeeSnap users.",
+    "Terms of service, calculator accuracy disclaimer, intellectual property notices, and limitations of liability for CalcDial users.",
 };
 
 export default function TermsPage() {
@@ -23,28 +23,28 @@ export default function TermsPage() {
             IMPORTANT FINANCIAL & TAX DISCLAIMER
           </h2>
           <p className="mt-1.5 text-xs text-amber-800 leading-relaxed">
-            All calculators, fee models, gross-up formulas, worked examples, and editorial guides published on FeeSnap are provided strictly for educational and general planning purposes. They do NOT constitute legal, financial, accounting, or tax advice. E-commerce platforms regularly revise their fee structures, seller tiers, and currency spreads. Always verify final figures directly with your platform seller dashboard and consult a certified CPA or tax advisor.
+            All calculators, fee models, gross-up formulas, worked examples, and editorial guides published on CalcDial are provided strictly for educational and general planning purposes. They do NOT constitute legal, financial, accounting, or tax advice. E-commerce platforms regularly revise their fee structures, seller tiers, and currency spreads. Always verify final figures directly with your platform seller dashboard and consult a certified CPA or tax advisor.
           </p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-gray-900">1. Acceptance of Terms</h2>
           <p className="mt-2">
-            By accessing or using the FeeSnap website (https://feesnap.com) or embedding any of our calculator widgets via iframe, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue using our tools immediately.
+            By accessing or using the CalcDial website (https://calcdial.com) or embedding any of our calculator widgets via iframe, you agree to be bound by these Terms of Service. If you do not agree to these terms, you must discontinue using our tools immediately.
           </p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-gray-900">2. Permitted Use & Free Embed License</h2>
           <p className="mt-2">
-            You are granted a free, non-exclusive, revocable license to use our calculators for your personal or commercial seller calculations. You are also permitted to embed our calculators on your personal or corporate website using our official embed codes (`/embed/[slug]`), provided you retain visible attribution (&quot;Powered by FeeSnap&quot;) and do not alter or circumvent our embed scripts.
+            You are granted a free, non-exclusive, revocable license to use our calculators for your personal or commercial seller calculations. You are also permitted to embed our calculators on your personal or corporate website using our official embed codes (`/embed/[slug]`), provided you retain visible attribution (&quot;Powered by CalcDial&quot;) and do not alter or circumvent our embed scripts.
           </p>
         </section>
 
         <section>
           <h2 className="text-lg font-bold text-gray-900">3. Intellectual Property Rights</h2>
           <p className="mt-2">
-            All proprietary code, site design, text content, illustrations, and database configurations on FeeSnap are the intellectual property of FeeSnap. You may not scrape, reproduce, reverse engineer, or republish our codebase or entire guides for distribution without prior written authorization.
+            All proprietary code, site design, text content, illustrations, and database configurations on CalcDial are the intellectual property of CalcDial. You may not scrape, reproduce, reverse engineer, or republish our codebase or entire guides for distribution without prior written authorization.
           </p>
         </section>
 
@@ -58,7 +58,7 @@ export default function TermsPage() {
         <section>
           <h2 className="text-lg font-bold text-gray-900">5. Limitation of Liability</h2>
           <p className="mt-2">
-            In no event shall FeeSnap or its creators be liable for any direct, indirect, incidental, punitive, or consequential damages resulting from the use or inability to use our calculation tools, including but not limited to loss of profits, inventory mispricing, advertising overspend, or unexpected platform settlement deductions.
+            In no event shall CalcDial or its creators be liable for any direct, indirect, incidental, punitive, or consequential damages resulting from the use or inability to use our calculation tools, including but not limited to loss of profits, inventory mispricing, advertising overspend, or unexpected platform settlement deductions.
           </p>
         </section>
 

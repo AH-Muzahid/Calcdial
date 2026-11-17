@@ -99,7 +99,7 @@ Total Gross:      $${result.grossRevenue.toFixed(2)}
 Total Etsy Fees:  $${result.totalFees.toFixed(2)} (${result.effectiveFeePct}%)
 Net Seller Payout:$${result.netProfit.toFixed(2)}
 ----------------------------------------
-Calculated on FeeSnap: ${typeof window !== "undefined" ? window.location.href : "https://feesnap.com"}`;
+Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.com"}`;
   };
 
   return (

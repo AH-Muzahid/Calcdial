@@ -9,10 +9,10 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://feesnap.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://calcdial.com"),
   title: {
-    default: "FeeSnap — High-Accuracy Seller Fee & Profit Calculators",
-    template: "%s | FeeSnap",
+    default: "CalcDial — High-Accuracy Seller Fee & Profit Calculators",
+    template: "%s | CalcDial",
   },
   description:
     "Free, instant e-commerce fee and profit calculators for Etsy, Shopify, TikTok Shop, and Print-on-Demand sellers. 100% client-side with zero tracking lag.",
@@ -23,19 +23,19 @@ export const metadata: Metadata = {
     "print on demand margin calculator",
     "stripe vs paypal fees",
   ],
-  authors: [{ name: "FeeSnap Editorial Team" }],
+  authors: [{ name: "CalcDial Editorial Team" }],
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://feesnap.com",
-    siteName: "FeeSnap",
-    title: "FeeSnap — High-Accuracy Seller Fee & Profit Calculators",
+    url: "https://calcdial.com",
+    siteName: "CalcDial",
+    title: "CalcDial — High-Accuracy Seller Fee & Profit Calculators",
     description:
       "Instant, client-side seller profit and platform fee calculators updated for 2026 platform fee schedules.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "FeeSnap — Seller Fee & Profit Calculators",
+    title: "CalcDial — Seller Fee & Profit Calculators",
     description: "Calculate Etsy, Shopify, and TikTok Shop fees with 100% precision.",
   },
 };

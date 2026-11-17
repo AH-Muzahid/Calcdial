@@ -10,7 +10,9 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "verify": "npm run lint && npx tsc --noEmit && npm run test:coverage && npm run build"
+    "verify": "npm run lint && npx tsc --noEmit && npm run test:coverage && npm run build",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "@next/third-parties": "^16.4.6",
@@ -35,6 +37,7 @@
     "prettier": "^3.10.1",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "wrangler": "^4.164.0"
   }
 }
