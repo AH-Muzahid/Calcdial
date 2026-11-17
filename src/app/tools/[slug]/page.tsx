@@ -145,17 +145,17 @@ export default async function ToolPage({
       />
 
       {/* SECTION 1: H1 Title + "Last updated" Trust Badge + 2-Sentence Value Summary */}
-      <header className="mb-6">
-        <div className="flex flex-wrap items-center gap-2 mb-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-black/[0.03] px-3 py-1 text-xs font-mono text-black">
-            <span className="size-1.5 rounded-full bg-black"></span>
-            <ShimmerText text="VERIFIED FOR 2026" className="text-[11px] font-semibold tracking-wider" />
+      <header className="mb-8 pt-2">
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-mono text-zinc-900">
+            <span className="size-1.5 rounded-full bg-zinc-950"></span>
+            <ShimmerText text="VERIFIED FOR 2026" className="text-[11px] font-semibold tracking-wider text-zinc-900" />
           </span>
           <span className="text-xs font-mono text-zinc-400">
             Last updated: <time dateTime={tool.lastUpdated}>{formatDate(tool.lastUpdated)}</time>
           </span>
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+        <h1 className="text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl">
           {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
         </h1>
         <p className="mt-2 text-base text-zinc-500 leading-relaxed max-w-3xl">

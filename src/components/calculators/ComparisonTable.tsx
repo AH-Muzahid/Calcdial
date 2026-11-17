@@ -12,27 +12,27 @@ export function ComparisonTable({
   const highestProfit = sorted[0]?.netProfit ?? 0;
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200/90 bg-white shadow-xs">
+    <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-2xs">
       <table className="w-full text-left text-xs sm:text-sm">
-        <thead className="bg-slate-50/80 border-b border-slate-200 text-slate-500 uppercase tracking-wider text-[11px]">
+        <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase tracking-wider text-[11px] font-mono">
           <tr>
             <th className="py-3 px-4 font-semibold">Sales Platform</th>
             <th className="py-3 px-4 font-semibold text-right">
               {showAnnual ? "Annual GMV" : "Gross Order"}
             </th>
-            <th className="py-3 px-4 font-semibold text-right text-rose-600">
+            <th className="py-3 px-4 font-semibold text-right text-zinc-700">
               {showAnnual ? "Annual Fees" : "Platform Fees"}
             </th>
             <th className="py-3 px-4 font-semibold text-right">
               {showAnnual ? "Annual Payout" : "Bank Payout"}
             </th>
-            <th className="py-3 px-4 font-semibold text-right text-emerald-600">
+            <th className="py-3 px-4 font-semibold text-right text-zinc-950">
               {showAnnual ? "Annual Net Profit" : "Real Net Profit"}
             </th>
             <th className="py-3 px-4 font-semibold text-right">Net Margin</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-zinc-100">
           {results.map((res) => {
             const isWinner = res.netProfit === highestProfit && res.netProfit > 0;
             const gross = showAnnual ? res.annualProjection.grossRevenue : res.grossRevenue;
@@ -45,38 +45,38 @@ export function ComparisonTable({
             return (
               <tr
                 key={res.platform}
-                className={isWinner ? "bg-emerald-50/40 font-medium" : "hover:bg-slate-50/50"}
+                className={isWinner ? "bg-zinc-50/80 font-medium" : "hover:bg-zinc-50/50"}
               >
-                <td className="py-3.5 px-4 font-bold text-slate-900">
+                <td className="py-3.5 px-4 font-bold text-zinc-950">
                   <div className="flex items-center gap-2">
                     <span>{res.platform}</span>
                     {isWinner && (
-                      <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+                      <span className="rounded-full bg-zinc-950 px-2 py-0.5 text-[10px] font-bold font-mono text-white uppercase tracking-wider">
                         Top Margin
                       </span>
                     )}
                   </div>
                 </td>
-                <td className="py-3.5 px-4 text-slate-700 text-right font-mono">
+                <td className="py-3.5 px-4 text-zinc-700 text-right font-mono">
                   {formatCurrency(gross)}
                 </td>
-                <td className="py-3.5 px-4 text-rose-600 font-semibold text-right font-mono">
+                <td className="py-3.5 px-4 text-zinc-700 font-semibold text-right font-mono">
                   {formatCurrency(fees)}
-                  <span className="text-[11px] font-normal text-rose-500 block">
+                  <span className="text-[11px] font-normal text-zinc-400 block">
                     ({formatPercent(res.effectiveFeePct)})
                   </span>
                 </td>
-                <td className="py-3.5 px-4 text-slate-800 text-right font-mono">
+                <td className="py-3.5 px-4 text-zinc-800 text-right font-mono">
                   {formatCurrency(payout)}
                 </td>
                 <td
                   className={`py-3.5 px-4 font-bold text-right font-mono text-base ${
-                    profit >= 0 ? "text-emerald-700" : "text-rose-600"
+                    profit >= 0 ? "text-zinc-950" : "text-rose-600"
                   }`}
                 >
                   {formatCurrency(profit)}
                 </td>
-                <td className="py-3.5 px-4 text-slate-700 text-right font-mono">
+                <td className="py-3.5 px-4 text-zinc-700 text-right font-mono">
                   {formatPercent(res.netMarginPct)}
                 </td>
               </tr>

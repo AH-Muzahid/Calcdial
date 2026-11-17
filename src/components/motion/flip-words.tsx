@@ -19,51 +19,61 @@ function cn(...inputs: ClassValue[]): string {
 export interface FlipWordsProps {
   /** Text before the changing word. Default `"Build"`. */
   before?: string;
-  /** Words to cycle through. Default `["playful", "precise", "fearless"]`. */
+  /** Words to cycle through. */
   words?: string[];
-  /** Text after the changing word. Default `"interfaces"`. */
+  /** Text after the changing word. */
   after?: string;
   /** Milliseconds each word stays. Default `2400`. */
   interval?: number;
-  /** Classes for the changing word. Default a violet tone. */
+  /** Classes for the changing word. */
   wordClassName?: string;
   className?: string;
+  as?: "span" | "p" | "div";
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-export const FlipWords = React.forwardRef<HTMLParagraphElement, FlipWordsProps>(function FlipWords(
+export const FlipWords = React.forwardRef<HTMLElement, FlipWordsProps>(function FlipWords(
   {
-    before = "Calculate",
-    words = ["Etsy Fees", "Shopify Profit", "TikTok Shop Cuts", "Print-on-Demand"],
-    after = "with 100% precision.",
+    before = "",
+    words = ["Etsy", "Shopify", "TikTok Shop", "Print-on-Demand"],
+    after = "",
     interval = 2400,
-    wordClassName = "text-emerald-600 font-bold",
+    wordClassName = "text-zinc-950 font-black underline decoration-zinc-300 decoration-2 underline-offset-8",
     className,
+    as = "span",
   },
   ref,
 ) {
   const still = useReducedMotion();
   const [index, setIndex] = React.useState(0);
+
   React.useEffect(() => {
     if (words.length < 2) return;
     const id = window.setInterval(() => setIndex((i) => (i + 1) % words.length), interval);
     return () => window.clearInterval(id);
   }, [words.length, interval]);
+
   const word = words[index] ?? "";
+  const Tag = as === "div" ? "div" : as === "p" ? "p" : "span";
 
   return (
-    <p ref={ref} className={cn("text-balance", className)}>
+    <Tag ref={ref as React.Ref<never>} className={cn("inline", className)}>
       <span className="sr-only">
-        {before} {words.join(", ")} {after}
+        {before ? `${before} ` : ""}{words.join(", ")}{after ? ` ${after}` : ""}
       </span>
-      <span aria-hidden>
-        {before}{" "}
-        <motion.span layout={!still} transition={{ duration: 0.4, ease: EASE }} className="relative inline-flex" style={{ perspective: 600 }}>
+      <span aria-hidden className="inline">
+        {before && <span className="inline">{before} </span>}
+        <motion.span
+          layout={!still}
+          transition={{ duration: 0.4, ease: EASE }}
+          className="relative inline-flex"
+          style={{ perspective: 600 }}
+        >
           <AnimatePresence mode="popLayout" initial={false}>
             <motion.span
               key={word}
-              className={cn("inline-flex whitespace-pre", wordClassName)}
+              className={cn("inline-flex whitespace-nowrap", wordClassName)}
               exit={still ? { opacity: 0 } : { opacity: 0, y: "-0.4em", rotateX: 70, filter: "blur(6px)" }}
               transition={{ duration: 0.3, ease: EASE }}
             >
@@ -74,16 +84,16 @@ export const FlipWords = React.forwardRef<HTMLParagraphElement, FlipWordsProps>(
                   style={{ transformOrigin: "50% 100%" }}
                   initial={still ? false : { opacity: 0, y: "0.4em", rotateX: -80, filter: "blur(6px)" }}
                   animate={{ opacity: 1, y: 0, rotateX: 0, filter: "blur(0px)" }}
-                  transition={{ duration: 0.45, ease: EASE, delay: i * 0.03 }}
+                  transition={{ duration: 0.45, ease: EASE, delay: i * 0.02 }}
                 >
                   {ch}
                 </motion.span>
               ))}
             </motion.span>
           </AnimatePresence>
-        </motion.span>{" "}
-        {after}
+        </motion.span>
+        {after && <span className="inline"> {after}</span>}
       </span>
-    </p>
+    </Tag>
   );
 });

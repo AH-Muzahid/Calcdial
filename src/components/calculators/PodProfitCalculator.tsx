@@ -98,11 +98,11 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
       {/* Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-black/[0.06] gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-black">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
             Print-on-Demand Profit Architecture
           </h2>
           <p className="text-xs text-zinc-500 mt-0.5">
@@ -121,12 +121,12 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
         <div className="lg:col-span-7 space-y-6">
 
           {/* Group 1: 🏷️ Retail Pricing & Sales Channel */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 1
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Retail Price & Sales Channel
               </h3>
             </div>
@@ -181,12 +181,12 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
           </div>
 
           {/* Group 2: 🖨️ Provider Production & Fulfillment */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 2
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Print Provider Costs (Printify / Gelato)
               </h3>
             </div>
@@ -220,12 +220,12 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
           </div>
 
           {/* Group 3: 📣 Marketing & Ad Spend */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 3
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Marketing & Customer Acquisition
               </h3>
             </div>

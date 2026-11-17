@@ -61,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} scroll-smooth`}>
+    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} scroll-smooth light`} style={{ colorScheme: "light" }}>
       <body className="min-h-screen bg-white text-zinc-950 font-sans antialiased flex flex-col selection:bg-black selection:text-white">
         {/* Google Analytics 4 */}
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
@@ -83,7 +83,7 @@ export default function RootLayout({
         )}
 
         <Header />
-        <main className="flex-1 pb-16">{children}</main>
+        <main className="flex-1 pb-20">{children}</main>
         <Footer />
       </body>
     </html>

@@ -100,50 +100,50 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
       const l = tab.offsetLeft;
       const r = l + tab.offsetWidth;
       setHeight(tab.offsetHeight);
-      if (instant || reduceMotion) {
-        left.set(l);
-        right.set(r);
+
+      if (instant || reduceMotion || !placed.current) {
+        left.jump(l);
+        right.jump(r);
+        placed.current = true;
+        fromWidth.current = tab.offsetWidth;
+        toWidth.current = tab.offsetWidth;
         return;
       }
-      const goingRight = l > left.get();
-      const amount = Math.min(1, Math.max(0, stretch));
+
       fromWidth.current = right.get() - left.get();
-      toWidth.current = r - l;
-      const mass = 0.8;
-      const critical = (k: number) => 2 * Math.sqrt(k * mass);
-      const leadStiffness = 640;
-      const trailStiffness = 700 - 540 * amount;
-      const lead = { type: "spring" as const, stiffness: leadStiffness, damping: critical(leadStiffness) * 0.95, mass };
-      const trail = {
-        type: "spring" as const,
-        stiffness: trailStiffness,
-        damping: critical(trailStiffness) * 0.9,
-        mass,
-        delay: 0.13 * amount,
-      };
-      animate(left, l, goingRight ? trail : lead);
-      animate(right, r, goingRight ? lead : trail);
+      toWidth.current = tab.offsetWidth;
+      const goingRight = l > left.get();
+      const delay = Math.max(0.04, Math.min(0.14, stretch * 0.22));
+      const spring = { type: "spring" as const, stiffness: 380, damping: 32, mass: 0.9 };
+
+      if (goingRight) {
+        animate(right, r, spring);
+        animate(left, l, { ...spring, delay });
+      } else {
+        animate(left, l, spring);
+        animate(right, r, { ...spring, delay });
+      }
     },
-    [index, left, right, reduceMotion, stretch]
+    [index, reduceMotion, stretch, left, right]
   );
 
   React.useLayoutEffect(() => {
-    moveTo(!placed.current);
-    placed.current = true;
+    moveTo(false);
   }, [moveTo]);
 
   React.useEffect(() => {
-    const el = track.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => moveTo(true));
-    ro.observe(el);
-    return () => ro.disconnect();
+    const onResize = () => moveTo(true);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
   }, [moveTo]);
 
-  const focusTab = (i: number) => {
-    const t = tabs[(i + tabs.length) % tabs.length]!;
-    select(t.id);
-    tabRefs.current[(i + tabs.length) % tabs.length]?.focus();
+  const focusTab = (target: number) => {
+    const clamped = Math.max(0, Math.min(tabs.length - 1, target));
+    const next = tabs[clamped];
+    if (next) {
+      select(next.id);
+      tabRefs.current[clamped]?.focus();
+    }
   };
 
   return (
@@ -158,7 +158,7 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
         if (e.key === "End") (e.preventDefault(), focusTab(tabs.length - 1));
       }}
       className={cn(
-        "relative inline-flex items-center gap-1 rounded-full bg-black/[0.04] p-1.5 border border-black/[0.06] dark:bg-zinc-800 dark:border-zinc-700",
+        "relative inline-flex items-center gap-1 rounded-full bg-zinc-100 p-1 border border-zinc-200/80 shadow-2xs",
         className
       )}
     >
@@ -170,22 +170,22 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
 
       <motion.span
         aria-hidden
-        className="pointer-events-none absolute inset-y-1.5 left-0 w-full"
+        className="pointer-events-none absolute inset-y-1 left-0 w-full"
         style={{
-          filter: `url(#${filterId}) drop-shadow(0 1px 3px rgba(0,0,0,0.06)) drop-shadow(0 4px 8px rgba(0,0,0,0.02))`,
+          filter: `url(#${filterId}) drop-shadow(0 1px 2px rgba(0,0,0,0.06))`,
           scaleY: thin,
         }}
       >
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
+          className="absolute left-0 top-0 rounded-full bg-white shadow-xs border border-zinc-200/50"
           style={{ x: left, width: height, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 w-px origin-left bg-white dark:bg-zinc-700"
+          className="absolute left-0 top-0 w-px origin-left bg-white"
           style={{ x: midX, scaleX: midScale, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
+          className="absolute left-0 top-0 rounded-full bg-white shadow-xs border border-zinc-200/50"
           style={{ x: capX, width: height, height }}
         />
       </motion.span>
@@ -204,15 +204,15 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
             onClick={() => select(tab.id)}
             whileTap={{ scale: 0.96 }}
             className={cn(
-              "relative z-10 inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-4 text-xs font-semibold outline-none transition-colors duration-200",
+              "relative z-10 inline-flex h-8 sm:h-9 cursor-pointer items-center gap-1.5 rounded-full px-2.5 sm:px-4 text-[11px] sm:text-xs font-semibold outline-none transition-colors duration-200 whitespace-nowrap",
               active
-                ? "text-black dark:text-zinc-100"
-                : "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-zinc-200"
+                ? "text-zinc-950 font-bold"
+                : "text-zinc-500 hover:text-zinc-900"
             )}
           >
             {tab.label}
             {tab.badge !== undefined && (
-              <span className="ml-1 rounded-full bg-black text-white px-2 py-0.5 text-[10px] font-mono font-medium dark:bg-white dark:text-black">
+              <span className="ml-1 rounded-full bg-zinc-900 text-white px-2 py-0.5 text-[10px] font-mono font-medium">
                 {tab.badge}
               </span>
             )}

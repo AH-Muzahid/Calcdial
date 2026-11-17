@@ -12,35 +12,21 @@ import { type ClassValue, clsx } from "clsx";
 import { type HTMLMotionProps, motion, type SpringOptions, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
-// cn(): merges Tailwind classes, later ones win.
-/** Merge Tailwind classes, letting later classes win conflicts. */
 function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
-
-// TiltCard
-
-/**
- * TiltCard
- *
- * Trigger: hover. The card tilts in 3D toward the cursor on a spring, lifts a
- * touch, and a glare highlight slides across the surface opposite the tilt.
- * Leaving the card settles it flat. Touch and reduced-motion users get a flat card.
- *
- * Engine: motion/react (motion values + springs, no re-renders on move).
- */
 
 const DEFAULT_SPRING: SpringOptions = { stiffness: 260, damping: 22, mass: 0.7 };
 
 export interface TiltCardProps extends Omit<HTMLMotionProps<"div">, "children"> {
   children?: React.ReactNode;
-  /** Largest tilt on each axis, in degrees. Default `12`. */
+  /** Largest tilt on each axis, in degrees. Default `10`. */
   maxTilt?: number;
-  /** Scale while hovered. Default `1.03`. */
+  /** Scale while hovered. Default `1.015`. */
   hoverScale?: number;
   /** Show the moving glare highlight. Default `true`. */
   glare?: boolean;
-  /** Peak glare opacity, 0 to 1. Default `0.35`. */
+  /** Peak glare opacity, 0 to 1. Default `0.15`. */
   glareOpacity?: number;
   /** Camera distance for the 3D effect, in px. Lower is more dramatic. Default `800`. */
   perspective?: number;
@@ -52,10 +38,10 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(function
   {
     children,
     className,
-    maxTilt = 12,
-    hoverScale = 1.03,
+    maxTilt = 10,
+    hoverScale = 1.015,
     glare = true,
-    glareOpacity = 0.35,
+    glareOpacity = 0.15,
     perspective = 800,
     spring = DEFAULT_SPRING,
     style,
@@ -98,14 +84,14 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(function
   };
 
   return (
-    <div style={{ perspective }} className="inline-block">
+    <div style={{ perspective }} className="w-full h-full flex">
       <motion.div
         ref={ref}
         onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
         style={reduceMotion ? style : { rotateX, rotateY, scale, transformStyle: "preserve-3d", ...style }}
         className={cn(
-          "relative overflow-hidden rounded-3xl bg-white shadow-[0_24px_48px_-24px_rgba(0,0,0,0.35)] will-change-transform dark:bg-zinc-900",
+          "relative w-full overflow-hidden rounded-2xl bg-white border border-zinc-200/80 shadow-xs transition-colors will-change-transform",
           className,
         )}
         {...props}
@@ -122,4 +108,3 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(function
     </div>
   );
 });
-

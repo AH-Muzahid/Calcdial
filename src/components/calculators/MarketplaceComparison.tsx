@@ -75,14 +75,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-8">
+    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-8">
       {/* View Switcher Header */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-100 gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
             Marketplace Head-to-Head Fee Audit
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5">
             Compare true seller take-home between Etsy, Shopify, and TikTok Shop
           </p>
         </div>
@@ -97,12 +97,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
       {/* Input Cards Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Card 1: Retail Price & Shipping */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              1. Retail Price & Shipping
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              1
             </span>
-            <span className="text-xs font-medium text-slate-500">Customer checkout</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              Retail Price & Shipping
+            </h3>
           </div>
           <InputField
             label="Item Selling Price"
@@ -122,12 +124,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
         </div>
 
         {/* Card 2: COGS & Carrier Postage */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              2. Unit Costs & Postage
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              2
             </span>
-            <span className="text-xs font-medium text-slate-500">Raw seller outlay</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              Unit Costs & Postage
+            </h3>
           </div>
           <InputField
             label="Product Cost (COGS)"
@@ -148,12 +152,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
         </div>
 
         {/* Card 3: Volume & Region */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              3. Volume & Region
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              3
             </span>
-            <span className="text-xs font-medium text-slate-500">Scale modeling</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              Volume & Region
+            </h3>
           </div>
           <InputField
             label="Monthly Sales Volume (Orders)"
@@ -173,35 +179,35 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
       </div>
 
       {/* Winner Recommendation Banner */}
-      <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/70 p-5 shadow-xs">
+      <div className="rounded-2xl border border-zinc-200 bg-zinc-50/90 p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white font-black text-lg shadow-sm">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-950 text-white font-bold text-sm shadow-xs">
               ✓
             </span>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-800">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
                   Most Profitable Channel:
                 </span>
-                <span className="rounded-full bg-emerald-200/80 px-2.5 py-0.5 text-xs font-black text-emerald-900">
+                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-xs font-mono font-bold text-white">
                   {comparison.winner.platform}
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-emerald-950 mt-1 font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-zinc-700 mt-1 font-medium leading-relaxed">
                 {comparison.dataSnippet}
               </p>
             </div>
           </div>
 
           <div className="sm:text-right shrink-0">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
               Annual Extra Take-Home
             </span>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-900 font-mono">
+            <div className="text-2xl sm:text-3xl font-extrabold text-zinc-950 font-mono">
               +{formatCurrency(comparison.annualSavingsWinnerVsEtsy)}
             </div>
-            <span className="text-[11px] text-emerald-700 font-medium">vs Etsy over 12 months</span>
+            <span className="text-[11px] text-zinc-400 font-mono">vs Etsy over 12 months</span>
           </div>
         </div>
       </div>
@@ -221,29 +227,29 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
               key={r.platform}
               className={`rounded-2xl border p-5 space-y-3 transition-all ${
                 isWinner
-                  ? "border-emerald-500 bg-emerald-50/20 shadow-md ring-1 ring-emerald-500/20"
-                  : "border-slate-200 bg-white"
+                  ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
+                  : "border-zinc-200 bg-white"
               }`}
             >
               <div className="flex items-center justify-between">
-                <h3 className="font-bold text-slate-900 text-base">{r.platform}</h3>
+                <h3 className="font-bold text-zinc-950 text-base">{r.platform}</h3>
                 <span
                   className={`rounded-md px-2 py-0.5 text-xs font-bold font-mono ${
-                    isWinner ? "bg-emerald-600 text-white" : "bg-slate-100 text-slate-700"
+                    isWinner ? "bg-zinc-950 text-white" : "bg-zinc-100 text-zinc-700"
                   }`}
                 >
                   {r.effectiveFeePct}% fee
                 </span>
               </div>
 
-              <div className="space-y-1 text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="space-y-1 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
                 <div className="flex justify-between">
                   <span>Gross Order:</span>
-                  <span className="font-mono font-medium text-slate-800">
+                  <span className="font-mono font-medium text-zinc-900">
                     {formatCurrency(r.grossRevenue)}
                   </span>
                 </div>
-                <div className="flex justify-between text-rose-600">
+                <div className="flex justify-between text-zinc-700">
                   <span>Platform Cut:</span>
                   <span className="font-mono font-semibold">
                     -{formatCurrency(r.totalPlatformFees)}
@@ -251,15 +257,15 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
                 </div>
                 <div className="flex justify-between">
                   <span>Carrier & COGS:</span>
-                  <span className="font-mono text-slate-700">
+                  <span className="font-mono text-zinc-500">
                     -{formatCurrency(cogs + shippingCost)}
                   </span>
                 </div>
-                <div className="flex justify-between font-bold text-slate-900 pt-1 border-t border-dashed border-slate-200">
+                <div className="flex justify-between font-bold text-zinc-950 pt-1 border-t border-dashed border-zinc-200">
                   <span>Real Net Profit:</span>
                   <span
                     className={`font-mono text-sm ${
-                      r.netProfit >= 0 ? "text-emerald-700" : "text-rose-600"
+                      r.netProfit >= 0 ? "text-zinc-950 font-extrabold" : "text-rose-600"
                     }`}
                   >
                     {formatCurrency(r.netProfit)}
@@ -267,11 +273,11 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
                 </div>
               </div>
 
-              <div className="mt-2 rounded-xl bg-slate-50 p-2.5 text-center text-xs border border-slate-100">
-                <span className="text-slate-500 block text-[11px]">
+              <div className="mt-2 rounded-xl bg-zinc-50 p-2.5 text-center text-xs border border-zinc-100">
+                <span className="text-zinc-400 block text-[11px] font-mono">
                   Annual Profit ({monthlyOrders * 12} sales):
                 </span>
-                <span className="font-black text-slate-900 font-mono text-sm mt-0.5 block">
+                <span className="font-bold text-zinc-950 font-mono text-sm mt-0.5 block">
                   {formatCurrency(r.annualProjection.netProfit)}
                 </span>
               </div>

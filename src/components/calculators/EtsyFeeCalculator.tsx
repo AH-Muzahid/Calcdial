@@ -147,11 +147,11 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
   };
 
   return (
-    <div className="rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
       {/* Mode Switcher Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-black/[0.06] gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-black">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
             Etsy Profit & Fee Architecture
           </h2>
           <p className="text-xs text-zinc-500 mt-0.5">
@@ -171,12 +171,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         <div className="lg:col-span-7 space-y-6">
 
           {/* Group 1: 🏷️ Sale & Shipping Pricing */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 1
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Sale & Customer Pricing
               </h3>
             </div>
@@ -202,8 +202,8 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-black">Quantity Sold in Order</label>
-                <div className="flex items-center justify-between rounded-2xl border border-black/[0.12] bg-white px-3 py-1 min-h-[44px]">
+                <label className="text-xs font-semibold text-zinc-900">Quantity Sold in Order</label>
+                <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-white px-3 py-1 min-h-[44px]">
                   <span className="text-xs font-mono text-zinc-400">Items</span>
                   <RollingStepper
                     value={quantity}
@@ -229,12 +229,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 2: 📦 Item Costs & Postage (COGS) */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 2
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Your Costs & Fulfillment (COGS)
               </h3>
             </div>
@@ -260,12 +260,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 3: ⚙️ Store & Fee Settings */}
-          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 3
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
                 Etsy Payments & Location Rules
               </h3>
             </div>
@@ -280,17 +280,17 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               />
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-black">
+                <label className="text-xs font-semibold text-zinc-900">
                   Buyer Location
                 </label>
                 <div className="flex items-center gap-2 h-11">
                   <button
                     type="button"
                     onClick={() => setIsInternational(false)}
-                    className={`flex-1 h-full rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
+                    className={`flex-1 h-full rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                       !isInternational
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-zinc-600 border-black/[0.08] hover:bg-black/[0.04]"
+                        ? "bg-zinc-950 text-white border-zinc-950 shadow-2xs"
+                        : "bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50"
                     }`}
                   >
                     Domestic
@@ -298,10 +298,10 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <button
                     type="button"
                     onClick={() => setIsInternational(true)}
-                    className={`flex-1 h-full rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
+                    className={`flex-1 h-full rounded-xl text-xs font-semibold border transition-all cursor-pointer ${
                       isInternational
-                        ? "bg-black text-white border-black"
-                        : "bg-white text-zinc-600 border-black/[0.08] hover:bg-black/[0.04]"
+                        ? "bg-zinc-950 text-white border-zinc-950 shadow-2xs"
+                        : "bg-white text-zinc-600 border-zinc-200 hover:bg-zinc-50"
                     }`}
                   >
                     International (+1%)
@@ -312,10 +312,10 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             </div>
 
             {/* Offsite Ads Toggle */}
-            <div className="rounded-2xl border border-black/[0.08] bg-white p-4">
+            <div className="rounded-xl border border-zinc-200 bg-white p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-xs font-semibold text-black cursor-pointer">
+                  <label className="text-xs font-semibold text-zinc-900 cursor-pointer">
                     Etsy Offsite Ads
                   </label>
                   <p className="text-[11px] text-zinc-400">
@@ -326,19 +326,19 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   type="checkbox"
                   checked={offsiteAds}
                   onChange={(e) => setOffsiteAds(e.target.checked)}
-                  className="size-5 rounded border-black/20 text-black accent-black cursor-pointer"
+                  className="size-5 rounded border-zinc-300 text-zinc-950 accent-zinc-950 cursor-pointer"
                 />
               </div>
 
               {offsiteAds && (
-                <div className="mt-3 flex gap-4 pt-3 border-t border-black/[0.06] text-xs">
+                <div className="mt-3 flex gap-4 pt-3 border-t border-zinc-100 text-xs">
                   <label className="flex items-center gap-1.5 cursor-pointer text-zinc-800">
                     <input
                       type="radio"
                       name="adsTier"
                       checked={adsTier === 0.15}
                       onChange={() => setAdsTier(0.15)}
-                      className="accent-black"
+                      className="accent-zinc-950"
                     />
                     <span>15% (Under $10k/yr annual shop sales)</span>
                   </label>
@@ -348,7 +348,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       name="adsTier"
                       checked={adsTier === 0.12}
                       onChange={() => setAdsTier(0.12)}
-                      className="accent-black"
+                      className="accent-zinc-950"
                     />
                     <span>12% ($10k+ mandatory tier)</span>
                   </label>

@@ -94,14 +94,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
       {/* Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-100 gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
             Shopify E-Commerce Profit Architecture
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5">
             Model exact 2026 Shopify Payments rates, 3rd-party transaction fees, and Break-Even ROAS
           </p>
         </div>
@@ -116,12 +116,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-6">
           {/* Card 1: Retail Pricing & Shipping */}
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                1. Retail Pricing & Shipping
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+                1
               </span>
-              <span className="text-xs font-medium text-slate-500">Gross order revenue</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+                Retail Pricing & Shipping
+              </h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -144,12 +146,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
           </div>
 
           {/* Card 2: Landed COGS & Fulfillment */}
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                2. Landed COGS & Fulfillment
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+                2
               </span>
-              <span className="text-xs font-medium text-slate-500">Direct unit costs</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+                Landed COGS & Fulfillment
+              </h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -173,12 +177,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
           </div>
 
           {/* Card 3: Customer Acquisition / Ad Spend */}
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                3. Customer Acquisition Cost (CAC)
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+                3
               </span>
-              <span className="text-xs font-medium text-slate-500">Paid ads & marketing</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+                Customer Acquisition Cost (CAC)
+              </h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -200,16 +206,16 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
                   presets={[20, 30, 40, 50]}
                 />
               ) : (
-                <div className="rounded-xl border border-blue-200/60 bg-blue-50/50 p-3.5 flex flex-col justify-between">
+                <div className="rounded-xl border border-zinc-200 bg-white p-3.5 flex flex-col justify-between">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-blue-900">
+                    <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-700">
                       Break-Even ROAS
                     </span>
-                    <span className="text-lg font-black text-blue-950 font-mono">
+                    <span className="text-lg font-black text-zinc-950 font-mono">
                       {result.breakEvenRoas}x
                     </span>
                   </div>
-                  <p className="text-[11px] text-blue-700/90 mt-1 leading-snug">
+                  <p className="text-[11px] text-zinc-500 mt-1 leading-snug">
                     Minimum ad return needed to avoid losing money on ad campaigns
                   </p>
                 </div>
@@ -218,12 +224,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
           </div>
 
           {/* Card 4: Shopify Plan & Payment Gateway */}
-          <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                4. Shopify Plan & Gateway
+          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+                4
               </span>
-              <span className="text-xs font-medium text-slate-500">Transaction & card processing</span>
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+                Shopify Plan & Gateway
+              </h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -244,7 +252,7 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
             </div>
 
             {gateway !== "shopify-payments" && (
-              <div className="rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-xs text-amber-900">
+              <div className="rounded-xl border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-900">
                 ⚠️ <strong>External Gateway Notice:</strong> Using {gateway.toUpperCase()} adds a{" "}
                 <strong>{SHOPIFY_PLAN_RATES[shopifyPlan].thirdPartyPct}%</strong> third-party transaction fee charged by Shopify on the {SHOPIFY_PLAN_RATES[shopifyPlan].name.split(" ")[0]} plan.
               </div>

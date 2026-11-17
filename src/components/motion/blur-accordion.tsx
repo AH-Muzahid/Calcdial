@@ -99,8 +99,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
       className={cn(
         "rounded-2xl border transition-all duration-200",
         open
-          ? "bg-black/[0.02] border-black/20 dark:bg-zinc-800/50 dark:border-zinc-700"
-          : "bg-white border-black/[0.08] hover:border-black/20 dark:bg-zinc-900 dark:border-zinc-800"
+          ? "bg-zinc-50 border-zinc-300"
+          : "bg-white border-zinc-200 hover:border-zinc-300"
       )}
     >
       <svg aria-hidden className="absolute size-0">
@@ -119,8 +119,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
           whileTap={still ? undefined : { scale: 0.99 }}
           className={cn(
             "group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold outline-none",
-            "focus-visible:ring-2 focus-visible:ring-black",
-            open ? "text-black dark:text-zinc-100" : "text-zinc-700 hover:text-black dark:text-zinc-300 dark:hover:text-zinc-100"
+            "focus-visible:ring-2 focus-visible:ring-zinc-950",
+            open ? "text-zinc-950 font-bold" : "text-zinc-700 hover:text-zinc-950"
           )}
         >
           <span>{item.title}</span>
@@ -129,8 +129,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
             className={cn(
               "relative grid size-6 shrink-0 place-items-center rounded-full transition-colors duration-200",
               open
-                ? "bg-black text-white"
-                : "bg-black/[0.04] text-zinc-700 group-hover:bg-black/[0.08] dark:bg-zinc-800 dark:text-zinc-300"
+                ? "bg-zinc-950 text-white"
+                : "bg-zinc-100 text-zinc-700 group-hover:bg-zinc-200"
             )}
           >
             <span className="absolute h-[1.5px] w-2.5 rounded-full bg-current" />
@@ -155,7 +155,7 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
           ref={inner}
           variants={PANEL_CONTENT}
           transition={{ duration: still ? 0 : 0.3, ease: [0.22, 1, 0.36, 1], delay: open && !still ? 0.05 : 0 }}
-          className="px-5 pb-5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
+          className="px-5 pb-5 text-sm leading-relaxed text-zinc-600"
         >
           {item.content}
         </motion.div>

@@ -125,13 +125,13 @@ export function RollingStepper({
   const lead = firstSignificant === -1 ? digits.length - 1 : firstSignificant;
 
   const buttonClass =
-    "grid size-9 cursor-pointer place-items-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-900/5 disabled:opacity-35 dark:text-zinc-300 dark:hover:bg-white/10 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400";
+    "grid size-9 cursor-pointer place-items-center rounded-full text-zinc-700 transition-colors hover:bg-zinc-100 disabled:opacity-35 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400";
 
   return (
     <motion.div
       ref={scope}
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 shadow-sm dark:border-zinc-800 dark:bg-zinc-900",
+        "inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white p-1 shadow-2xs",
         className,
       )}
     >
@@ -156,7 +156,7 @@ export function RollingStepper({
           if (e.key === "ArrowUp") (e.preventDefault(), change(1));
           if (e.key === "ArrowDown") (e.preventDefault(), change(-1));
         }}
-        className="flex min-w-14 justify-center rounded-lg px-2 text-2xl font-medium tabular-nums leading-none text-zinc-900 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 dark:text-zinc-100"
+        className="flex min-w-14 justify-center rounded-lg px-2 text-2xl font-medium tabular-nums leading-none text-zinc-900 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
       >
         {value < 0 && <span>-</span>}
         {digits.slice(lead).map((d, i) => (

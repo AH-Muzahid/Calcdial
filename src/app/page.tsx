@@ -33,29 +33,28 @@ export default function HomePage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <JsonLd data={websiteSchema} />
       <JsonLd data={organizationSchema} />
 
       {/* Hero Section */}
-      <section className="text-center py-10 sm:py-16 relative">
-        <div className="inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-black/[0.03] px-3.5 py-1 text-xs font-mono text-black shadow-2xs mb-6">
-          <span className="size-1.5 rounded-full bg-black" />
-          <ShimmerText text="2026 E-COMMERCE FEE SCHEDULES ACTIVE" className="font-semibold text-[11px] tracking-wider" />
+      <section className="text-center py-8 sm:py-14 relative">
+        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3.5 py-1 text-xs font-mono text-zinc-900 shadow-2xs mb-6">
+          <span className="size-1.5 rounded-full bg-zinc-950" />
+          <ShimmerText text="2026 E-COMMERCE FEE SCHEDULES ACTIVE" className="font-semibold text-[11px] tracking-wider text-zinc-900" />
         </div>
 
-        <h1 className="text-4xl font-extrabold tracking-tight text-black sm:text-5xl md:text-6xl max-w-4xl mx-auto leading-tight">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 max-w-3xl mx-auto leading-[1.18]">
           Know Your Real Profit on{" "}
           <FlipWords
-            before=""
-            words={["Etsy.", "Shopify.", "TikTok Shop.", "Print-on-Demand."]}
+            words={["Etsy", "Shopify", "TikTok Shop", "Print-on-Demand"]}
             after="Before You Sell."
-            wordClassName="text-black font-black underline decoration-black/20 decoration-2 underline-offset-8"
-            className="inline"
+            wordClassName="text-zinc-950 font-black underline decoration-zinc-300 decoration-2 underline-offset-8"
+            as="span"
           />
         </h1>
 
-        <div className="mx-auto mt-6 max-w-2xl">
+        <div className="mx-auto mt-5 max-w-2xl">
           <BlurText
             text="Zero tracking lag, 100% private client-side calculators. Test your listing price, calculate transaction commissions, and uncover hidden margins in seconds."
             as="p"
@@ -71,7 +70,7 @@ export default function HomePage() {
         <div className="mt-8 flex justify-center">
           <a
             href="#tools"
-            className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-black transition-colors"
+            className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-zinc-950 transition-colors"
           >
             <span>Explore All 6 Calculators</span>
             <span className="font-mono">↓</span>
@@ -82,26 +81,26 @@ export default function HomePage() {
       {/* Did You Know? Data-Driven Fintech Insights with 3D TiltCards */}
       <section className="my-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <TiltCard
-          maxTilt={8}
+          maxTilt={6}
           hoverScale={1.01}
-          glareOpacity={0.2}
-          className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xs transition-colors hover:border-black/30"
+          glareOpacity={0.1}
+          className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs transition-colors hover:border-zinc-400"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-medium uppercase tracking-wider text-black">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-900">
               Etsy Architecture
             </span>
-            <span className="rounded-full bg-black/[0.04] border border-black/[0.06] px-2.5 py-0.5 text-[10px] font-mono font-medium text-black">
+            <span className="rounded-full bg-zinc-100 border border-zinc-200/70 px-2.5 py-0.5 text-[10px] font-mono font-medium text-zinc-800">
               6.5% + 3% + $0.25
             </span>
           </div>
           <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
             Etsy deducts its 6.5% transaction commission on <strong>both item price AND buyer shipping charge</strong>, pushing total effective deductions to 15–20% on typical sales.
           </p>
-          <div className="mt-4 pt-3 border-t border-black/[0.06]">
+          <div className="mt-4 pt-3 border-t border-zinc-100">
             <Link
               href="/tools/etsy-fee-calculator"
-              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-black hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-zinc-900 hover:underline"
             >
               <span>Test Etsy listing</span>
               <span>→</span>
@@ -110,26 +109,26 @@ export default function HomePage() {
         </TiltCard>
 
         <TiltCard
-          maxTilt={8}
+          maxTilt={6}
           hoverScale={1.01}
-          glareOpacity={0.2}
-          className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xs transition-colors hover:border-black/30"
+          glareOpacity={0.1}
+          className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs transition-colors hover:border-zinc-400"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-medium uppercase tracking-wider text-black">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-900">
               Shopify Gateways
             </span>
-            <span className="rounded-full bg-black/[0.04] border border-black/[0.06] px-2.5 py-0.5 text-[10px] font-mono font-medium text-black">
+            <span className="rounded-full bg-zinc-100 border border-zinc-200/70 px-2.5 py-0.5 text-[10px] font-mono font-medium text-zinc-800">
               2.9% + $0.30
             </span>
           </div>
           <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
             Shopify Payments charges only <strong>2.9% + $0.30</strong> on Basic plans. However, third-party gateways trigger an additional 0.5% to 2.0% platform penalty fee.
           </p>
-          <div className="mt-4 pt-3 border-t border-black/[0.06]">
+          <div className="mt-4 pt-3 border-t border-zinc-100">
             <Link
               href="/tools/shopify-profit-calculator"
-              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-black hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-zinc-900 hover:underline"
             >
               <span>Calculate Shopify profit</span>
               <span>→</span>
@@ -138,26 +137,26 @@ export default function HomePage() {
         </TiltCard>
 
         <TiltCard
-          maxTilt={8}
+          maxTilt={6}
           hoverScale={1.01}
-          glareOpacity={0.2}
-          className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xs transition-colors hover:border-black/30"
+          glareOpacity={0.1}
+          className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs transition-colors hover:border-zinc-400"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono font-medium uppercase tracking-wider text-black">
+            <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-900">
               TikTok Shop Rules
             </span>
-            <span className="rounded-full bg-black/[0.04] border border-black/[0.06] px-2.5 py-0.5 text-[10px] font-mono font-medium text-black">
+            <span className="rounded-full bg-zinc-100 border border-zinc-200/70 px-2.5 py-0.5 text-[10px] font-mono font-medium text-zinc-800">
               5% - 6% Referral
             </span>
           </div>
           <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
             TikTok Shop category referral fees (5% to 6%) are taken directly from gross revenue <strong>before creator affiliate commissions</strong> and shipping deductions.
           </p>
-          <div className="mt-4 pt-3 border-t border-black/[0.06]">
+          <div className="mt-4 pt-3 border-t border-zinc-100">
             <Link
               href="/tools/tiktok-shop-fee-calculator"
-              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-black hover:underline"
+              className="inline-flex items-center gap-1 text-xs font-mono font-medium text-zinc-900 hover:underline"
             >
               <span>Calculate TikTok cuts</span>
               <span>→</span>
@@ -169,23 +168,23 @@ export default function HomePage() {
       <AdSlot position="in-content" />
 
       {/* Tools Directory */}
-      <section id="tools" className="my-16 scroll-mt-20">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8 pb-4 border-b border-black/[0.08]">
+      <section id="tools" className="my-16 scroll-mt-24">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-8 pb-4 border-b border-zinc-200">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="size-1.5 rounded-full bg-black" />
+              <span className="size-1.5 rounded-full bg-zinc-950" />
               <span className="text-xs font-mono font-medium uppercase tracking-wider text-zinc-500">
                 Precision Suite
               </span>
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-black sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
               Merchant Fee & Profit Calculators
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
               Choose an engineered tool below. Each includes country presets, fee breakdowns, and exportable summaries.
             </p>
           </div>
-          <span className="mt-3 sm:mt-0 text-xs font-mono font-medium text-black bg-black/[0.03] border border-black/[0.08] px-3 py-1 rounded-full w-fit">
+          <span className="mt-3 sm:mt-0 text-xs font-mono font-medium text-zinc-900 bg-zinc-100 border border-zinc-200 px-3 py-1 rounded-full w-fit">
             6 Calculators Ready
           </span>
         </div>
@@ -194,19 +193,19 @@ export default function HomePage() {
           {TOOLS.map((tool) => (
             <TiltCard
               key={tool.slug}
-              maxTilt={7}
-              hoverScale={1.015}
-              glareOpacity={0.2}
-              className="group flex flex-col justify-between rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xs transition-colors hover:border-black/40"
+              maxTilt={5}
+              hoverScale={1.01}
+              glareOpacity={0.1}
+              className="group flex flex-col justify-between rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs transition-colors hover:border-zinc-400"
             >
               <div>
                 <div className="flex items-center justify-between text-xs text-zinc-400 mb-3">
-                  <span className="font-mono text-[11px] font-medium text-black bg-black/[0.04] border border-black/[0.06] px-2.5 py-0.5 rounded-full">
+                  <span className="font-mono text-[11px] font-medium text-zinc-800 bg-zinc-100 border border-zinc-200/60 px-2.5 py-0.5 rounded-full">
                     {tool.isComparison ? "Comparison" : "Calculator"}
                   </span>
                   <span className="font-mono text-[11px]">{formatDate(tool.lastUpdated)}</span>
                 </div>
-                <h3 className="text-lg font-bold text-black group-hover:underline transition-all">
+                <h3 className="text-lg font-bold text-zinc-950 group-hover:underline transition-all">
                   <Link href={`/tools/${tool.slug}`}>
                     {tool.title}
                   </Link>
@@ -216,13 +215,13 @@ export default function HomePage() {
                 </p>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-black/[0.06] flex items-center justify-between">
+              <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between">
                 <span className="text-[11px] font-mono text-zinc-400">
                   {tool.pSEOPresets.length} presets
                 </span>
                 <Link
                   href={`/tools/${tool.slug}`}
-                  className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-black group-hover:translate-x-1 transition-transform"
+                  className="inline-flex items-center gap-1 text-xs font-mono font-semibold text-zinc-950 group-hover:translate-x-1 transition-transform"
                 >
                   <span>Dial in numbers</span>
                   <span>→</span>
@@ -234,15 +233,15 @@ export default function HomePage() {
       </section>
 
       {/* Seller Pillar Guides */}
-      <section id="guides" className="my-16 scroll-mt-20">
-        <div className="mb-8 pb-4 border-b border-black/[0.08]">
+      <section id="guides" className="my-16 scroll-mt-24">
+        <div className="mb-8 pb-4 border-b border-zinc-200">
           <div className="flex items-center gap-2 mb-1">
-            <span className="size-1.5 rounded-full bg-black" />
+            <span className="size-1.5 rounded-full bg-zinc-950" />
             <span className="text-xs font-mono font-medium uppercase tracking-wider text-zinc-500">
               Knowledge Base
             </span>
           </div>
-          <h2 className="text-2xl font-bold tracking-tight text-black sm:text-3xl">
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl">
             In-Depth Merchant Guides
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
@@ -254,16 +253,16 @@ export default function HomePage() {
           {GUIDES.map((guide) => (
             <TiltCard
               key={guide.slug}
-              maxTilt={6}
+              maxTilt={5}
               hoverScale={1.01}
-              glareOpacity={0.15}
-              className="rounded-3xl border border-black/[0.08] bg-white p-6 shadow-xs transition-colors hover:border-black/30"
+              glareOpacity={0.1}
+              className="rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-xs transition-colors hover:border-zinc-400"
             >
               <div className="flex items-center justify-between text-xs text-zinc-400 mb-2 font-mono">
                 <span>{guide.estimatedReadMinutes} min read</span>
                 <span>{formatDate(guide.publishedAt)}</span>
               </div>
-              <h3 className="text-lg font-bold text-black">
+              <h3 className="text-lg font-bold text-zinc-950">
                 <Link href={`/guides/${guide.slug}`} className="hover:underline">
                   {guide.title}
                 </Link>
@@ -271,10 +270,10 @@ export default function HomePage() {
               <p className="mt-2 text-xs sm:text-sm text-zinc-500 leading-relaxed">
                 {guide.description}
               </p>
-              <div className="mt-4 pt-3 border-t border-black/[0.06]">
+              <div className="mt-4 pt-3 border-t border-zinc-100">
                 <Link
                   href={`/guides/${guide.slug}`}
-                  className="text-xs font-mono font-medium text-black hover:underline inline-flex items-center gap-1"
+                  className="text-xs font-mono font-medium text-zinc-950 hover:underline inline-flex items-center gap-1"
                 >
                   <span>Read Full Guide</span>
                   <span>→</span>

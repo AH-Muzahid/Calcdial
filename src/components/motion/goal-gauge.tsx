@@ -35,11 +35,11 @@ function ArrowUpRightIcon({ className, strokeWidth = 2 }: { className?: string; 
 }
 
 const W = 280;
-const R = 120;
+const R = 110;
 const STROKE = 10;
 const CX = W / 2;
-const CY = R + STROKE / 2 + 6;
-const H = CY + STROKE / 2 + 2;
+const CY = R + STROKE / 2 + 10;
+const H = CY + STROKE / 2 + 10;
 
 const GLIDE = [0.22, 1, 0.36, 1] as const;
 const ROLL = { type: "spring", stiffness: 280, damping: 26, mass: 0.8 } as const;
@@ -377,20 +377,20 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
     <div
       ref={root}
       className={cn(
-        "w-full max-w-[340px] rounded-2xl bg-white border border-black/[0.08] p-5 text-black shadow-xs dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100",
+        "w-full max-w-[340px] rounded-2xl bg-white border border-zinc-200/80 p-5 text-zinc-950 shadow-xs",
         className
       )}
     >
       <header className="flex items-start justify-between gap-3 mb-2">
         <div>
-          <h3 className="text-base font-semibold tracking-tight text-black dark:text-zinc-100">{title}</h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">{subtitle}</p>
+          <h3 className="text-sm font-semibold tracking-tight text-zinc-900">{title}</h3>
+          <p className="text-xs text-zinc-500">{subtitle}</p>
         </div>
         {actionLabel !== null && (
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-black/[0.04] px-3 py-1 text-xs font-medium text-black hover:bg-black/[0.08]"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-900 hover:bg-zinc-200"
           >
             {actionLabel}
             <ArrowUpRightIcon className="size-3" strokeWidth={2.5} />
@@ -415,7 +415,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
             fill="none"
             strokeWidth={STROKE}
             strokeLinecap="round"
-            className="stroke-black/[0.06] dark:stroke-zinc-800"
+            className="stroke-zinc-100"
             animate={{ opacity: active === null || active === "rest" ? 1 : 0.4 }}
             style={{ pathLength: trackLength }}
           />
@@ -443,7 +443,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         </svg>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-2 flex flex-col items-center text-center">
-          <p className="text-2xl font-bold tracking-tight text-black dark:text-zinc-100 font-mono">
+          <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-zinc-950 font-mono">
             <Odometer amount={shown} format={money} label={money.format(total)} />
           </p>
           <div className="mt-1 h-5 text-xs text-zinc-500">
@@ -452,17 +452,17 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
                 <motion.span
                   key={caption.text}
                   {...POP}
-                  className="inline-flex items-center justify-center gap-1.5 font-medium text-black"
+                  className="inline-flex items-center justify-center gap-1.5 font-semibold text-zinc-900"
                 >
                   {caption.dot && <span className="size-2 rounded-full" style={{ background: caption.dot }} />}
                   {caption.text}
                 </motion.span>
               ) : done ? (
-                <motion.span key="done" {...POP} className="font-semibold text-black">
+                <motion.span key="done" {...POP} className="font-semibold text-zinc-900">
                   Gross Revenue (100%)
                 </motion.span>
               ) : (
-                <motion.span key="of" {...POP}>
+                <motion.span key="of" {...POP} className="text-zinc-600 font-medium">
                   of <Rolling text={whole.format(effectiveGoal)} still={!!reduceMotion} />
                 </motion.span>
               )}
@@ -471,7 +471,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-zinc-800 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-4 pt-3 border-t border-zinc-100 flex flex-wrap items-center justify-center gap-2.5">
         {segs.map((seg, idx) => (
           <div
             key={seg.label}
@@ -481,8 +481,8 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
             style={{ opacity: active === null || active === idx ? 1 : 0.4 }}
           >
             <span className="size-2 rounded-full" style={{ backgroundColor: seg.color }} />
-            <span className="text-zinc-600 dark:text-zinc-300 font-medium">{seg.label}</span>
-            <span className="font-mono text-black dark:text-zinc-100 font-semibold">{money.format(seg.value)}</span>
+            <span className="text-zinc-600 font-medium text-[11px] sm:text-xs">{seg.label}</span>
+            <span className="font-mono text-zinc-950 font-semibold text-[11px] sm:text-xs">{money.format(seg.value)}</span>
           </div>
         ))}
       </div>

@@ -54,7 +54,7 @@ export const ShimmerText = React.forwardRef<HTMLElement, ShimmerTextProps>(funct
     <Tag
       ref={ref as React.Ref<never>}
       className={cn(
-        "inline-block bg-clip-text text-transparent [--shimmer-base:#a1a1aa] [--shimmer-shine:#18181b] dark:[--shimmer-base:#71717a] dark:[--shimmer-shine:#fafafa]",
+        "inline-block bg-clip-text text-transparent [--shimmer-base:#71717a] [--shimmer-shine:#09090b]",
         still && "text-zinc-500",
         className,
       )}
