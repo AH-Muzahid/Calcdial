@@ -152,10 +152,22 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
       role="tablist"
       aria-label={label}
       onKeyDown={(e) => {
-        if (e.key === "ArrowRight") (e.preventDefault(), focusTab(index + 1));
-        if (e.key === "ArrowLeft") (e.preventDefault(), focusTab(index - 1));
-        if (e.key === "Home") (e.preventDefault(), focusTab(0));
-        if (e.key === "End") (e.preventDefault(), focusTab(tabs.length - 1));
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          focusTab(index + 1);
+        }
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          focusTab(index - 1);
+        }
+        if (e.key === "Home") {
+          e.preventDefault();
+          focusTab(0);
+        }
+        if (e.key === "End") {
+          e.preventDefault();
+          focusTab(tabs.length - 1);
+        }
       }}
       className={cn(
         "relative inline-flex items-center gap-1 rounded-full bg-zinc-100 p-1 border border-zinc-200/80 shadow-2xs",

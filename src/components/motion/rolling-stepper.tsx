@@ -153,8 +153,14 @@ export function RollingStepper({
         aria-valuemin={min}
         aria-valuemax={max}
         onKeyDown={(e) => {
-          if (e.key === "ArrowUp") (e.preventDefault(), change(1));
-          if (e.key === "ArrowDown") (e.preventDefault(), change(-1));
+          if (e.key === "ArrowUp") {
+            e.preventDefault();
+            change(1);
+          }
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            change(-1);
+          }
         }}
         className="flex min-w-14 justify-center rounded-lg px-2 text-2xl font-medium tabular-nums leading-none text-zinc-900 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
       >

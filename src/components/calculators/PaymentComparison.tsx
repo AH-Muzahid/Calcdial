@@ -92,14 +92,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-8">
+    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-8">
       {/* Mode Switcher */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-100 gap-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">
+          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
             Stripe vs PayPal Payment Architecture
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5">
             Compare transaction processing cuts, digital invoicing spreads, and client gross-up formulas
           </p>
         </div>
@@ -114,12 +114,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
       {/* Inputs Grid */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Card 1: Payment Details */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              1. {mode === "gross-up" ? "Desired Net Payout" : "Payment Amount"}
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              1
             </span>
-            <span className="text-xs font-medium text-slate-500">Transaction base</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              {mode === "gross-up" ? "Desired Net Payout" : "Payment Amount"}
+            </h3>
           </div>
 
           <InputField
@@ -144,12 +146,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
         </div>
 
         {/* Card 2: Transaction Method */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              2. Transaction Method
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              2
             </span>
-            <span className="text-xs font-medium text-slate-500">Processing channel</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              Transaction Method
+            </h3>
           </div>
 
           <PresetSelector
@@ -161,21 +165,21 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
           />
 
           <div className="space-y-3 pt-2">
-            <label className="flex items-center gap-2.5 text-xs font-medium text-slate-700 cursor-pointer">
+            <label className="flex items-center gap-2.5 text-xs font-medium text-zinc-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={isInternational}
                 onChange={(e) => setIsInternational(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                className="h-4 w-4 rounded border-zinc-300 text-zinc-950 accent-zinc-950"
               />
               <span>International Payment Card (+1.5%)</span>
             </label>
-            <label className="flex items-center gap-2.5 text-xs font-medium text-slate-700 cursor-pointer">
+            <label className="flex items-center gap-2.5 text-xs font-medium text-zinc-700 cursor-pointer">
               <input
                 type="checkbox"
                 checked={currencyConversion}
                 onChange={(e) => setCurrencyConversion(e.target.checked)}
-                className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                className="h-4 w-4 rounded border-zinc-300 text-zinc-950 accent-zinc-950"
               />
               <span>Cross-Border FX Conversion (+1% to 3%)</span>
             </label>
@@ -183,12 +187,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
         </div>
 
         {/* Card 3: Monthly Volume Simulator */}
-        <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              3. Monthly Processing Volume
+        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
+              3
             </span>
-            <span className="text-xs font-medium text-slate-500">Annual savings</span>
+            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
+              Monthly Processing Volume
+            </h3>
           </div>
 
           <InputField
@@ -200,14 +206,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
             presets={[2500, 5000, 10000, 25000]}
           />
 
-          <div className="rounded-xl border border-emerald-200/60 bg-emerald-50/60 p-3.5">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 block">
-              Estimated Annual Savings
+          <div className="rounded-xl border border-zinc-200 bg-white p-3.5">
+            <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
+              Estimated Annual Advantage
             </span>
-            <div className="text-xl font-black text-emerald-950 font-mono mt-0.5">
+            <div className="text-xl font-bold text-zinc-950 font-mono mt-0.5">
               {formatCurrency(result.annualSavings, result.currency)} / year
             </div>
-            <p className="text-[11px] text-emerald-700 mt-1">
+            <p className="text-[11px] text-zinc-400 mt-1">
               by selecting {result.recommended} for your checkout gateway
             </p>
           </div>
@@ -218,74 +224,74 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Stripe Card */}
         <div
-          className={`rounded-3xl border-2 p-6 space-y-5 transition-all ${
+          className={`rounded-3xl border p-6 space-y-5 transition-all ${
             result.recommended === "Stripe"
-              ? "border-emerald-500 bg-emerald-50/20 shadow-md ring-1 ring-emerald-500/20"
-              : "border-slate-200 bg-white"
+              ? "border-zinc-900 bg-zinc-50/40 shadow-xs ring-1 ring-zinc-900/10"
+              : "border-zinc-200 bg-white"
           }`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">Stripe</h3>
+              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight">Stripe</h3>
               {result.recommended === "Stripe" && (
-                <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-black text-white uppercase tracking-wider">
+                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-[11px] font-mono font-bold text-white uppercase tracking-wider">
                   Recommended
                 </span>
               )}
             </div>
-            <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-mono font-bold text-slate-700">
+            <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-mono font-bold text-zinc-700">
               {result.stripe.ratePct}% + {result.currencySymbol}{result.stripe.fixedFee.toFixed(2)}
             </span>
           </div>
 
           {mode === "gross-up" ? (
-            <div className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-xs">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Invoice This Amount to Client
               </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-black text-emerald-700 font-mono">
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
                 {formatCurrency(result.stripe.invoiceToReceiveTarget, result.currency)}
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
                 <span>Stripe deduction:</span>
-                <span className="font-mono font-semibold text-rose-600">
+                <span className="font-mono font-semibold text-zinc-700">
                   -{formatCurrency(result.stripe.feeOnGrossUp, result.currency)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-800 font-semibold pt-1">
+              <div className="flex items-center justify-between text-xs text-zinc-950 font-semibold pt-1">
                 <span>You deposit:</span>
-                <span className="font-mono text-emerald-800">
+                <span className="font-mono text-zinc-950">
                   {formatCurrency(result.stripe.targetPayout, result.currency)}
                 </span>
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-emerald-200/80 bg-white p-5 shadow-xs">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
               </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-black text-emerald-700 font-mono">
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
                 {formatCurrency(result.stripe.netPayoutOnCharge, result.currency)}
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
                 <span>Stripe processing fee:</span>
-                <span className="font-mono font-semibold text-rose-600">
+                <span className="font-mono font-semibold text-zinc-700">
                   -{formatCurrency(result.stripe.feeOnCharge, result.currency)} ({result.stripe.effectiveFeePct}%)
                 </span>
               </div>
             </div>
           )}
 
-          <div className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
+          <div className="space-y-2 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
             <div className="flex justify-between">
               <span>Monthly Fees on {result.currencySymbol}{monthlyVolume.toLocaleString()}:</span>
-              <span className="font-mono font-semibold text-slate-800">
+              <span className="font-mono font-semibold text-zinc-900">
                 {formatCurrency(result.stripe.monthlyFees, result.currency)}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Annual Net Deposited:</span>
-              <span className="font-mono font-bold text-slate-900">
+              <span className="font-mono font-bold text-zinc-950">
                 {formatCurrency(result.stripe.annualNetTakeHome, result.currency)}
               </span>
             </div>
@@ -294,74 +300,74 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
 
         {/* PayPal Card */}
         <div
-          className={`rounded-3xl border-2 p-6 space-y-5 transition-all ${
+          className={`rounded-3xl border p-6 space-y-5 transition-all ${
             result.recommended === "PayPal"
-              ? "border-emerald-500 bg-emerald-50/20 shadow-md ring-1 ring-emerald-500/20"
-              : "border-slate-200 bg-white"
+              ? "border-zinc-900 bg-zinc-50/40 shadow-xs ring-1 ring-zinc-900/10"
+              : "border-zinc-200 bg-white"
           }`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">PayPal</h3>
+              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight">PayPal</h3>
               {result.recommended === "PayPal" && (
-                <span className="rounded-full bg-emerald-600 px-2.5 py-0.5 text-[11px] font-black text-white uppercase tracking-wider">
+                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-[11px] font-mono font-bold text-white uppercase tracking-wider">
                   Recommended
                 </span>
               )}
             </div>
-            <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-mono font-bold text-slate-700">
+            <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-mono font-bold text-zinc-700">
               {result.paypal.ratePct}% + {result.currencySymbol}{result.paypal.fixedFee.toFixed(2)}
             </span>
           </div>
 
           {mode === "gross-up" ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Invoice This Amount to Client
               </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-black text-slate-800 font-mono">
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
                 {formatCurrency(result.paypal.invoiceToReceiveTarget, result.currency)}
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
                 <span>PayPal deduction:</span>
-                <span className="font-mono font-semibold text-rose-600">
+                <span className="font-mono font-semibold text-zinc-700">
                   -{formatCurrency(result.paypal.feeOnGrossUp, result.currency)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-xs text-slate-800 font-semibold pt-1">
+              <div className="flex items-center justify-between text-xs text-zinc-950 font-semibold pt-1">
                 <span>You deposit:</span>
-                <span className="font-mono text-slate-800">
+                <span className="font-mono text-zinc-950">
                   {formatCurrency(result.paypal.targetPayout, result.currency)}
                 </span>
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
               </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-black text-slate-800 font-mono">
+              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
                 {formatCurrency(result.paypal.netPayoutOnCharge, result.currency)}
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
                 <span>PayPal processing fee:</span>
-                <span className="font-mono font-semibold text-rose-600">
+                <span className="font-mono font-semibold text-zinc-700">
                   -{formatCurrency(result.paypal.feeOnCharge, result.currency)} ({result.paypal.effectiveFeePct}%)
                 </span>
               </div>
             </div>
           )}
 
-          <div className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
+          <div className="space-y-2 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
             <div className="flex justify-between">
               <span>Monthly Fees on {result.currencySymbol}{monthlyVolume.toLocaleString()}:</span>
-              <span className="font-mono font-semibold text-slate-800">
+              <span className="font-mono font-semibold text-zinc-900">
                 {formatCurrency(result.paypal.monthlyFees, result.currency)}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Annual Net Deposited:</span>
-              <span className="font-mono font-bold text-slate-900">
+              <span className="font-mono font-bold text-zinc-950">
                 {formatCurrency(result.paypal.annualNetTakeHome, result.currency)}
               </span>
             </div>
@@ -370,12 +376,12 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
       </div>
 
       {/* Decision Fact Banner */}
-      <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 text-xs sm:text-sm text-slate-800 flex items-center gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white font-bold text-xs">
+      <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 text-xs sm:text-sm text-zinc-800 flex items-center gap-3">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-zinc-950 text-white font-bold text-xs">
           💡
         </span>
         <p className="leading-relaxed font-medium">
-          <strong>Strategic Takeaway: </strong>
+          <strong className="text-zinc-950">Strategic Takeaway: </strong>
           {result.dataSnippet}
         </p>
       </div>

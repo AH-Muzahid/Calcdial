@@ -190,10 +190,22 @@ export const BlurAccordion = React.forwardRef<HTMLDivElement, BlurAccordionProps
       onKeyDown={(e) => {
         const at = headers.current.indexOf(document.activeElement as HTMLButtonElement);
         if (at < 0) return;
-        if (e.key === "ArrowDown") (e.preventDefault(), focusAt(at + 1));
-        if (e.key === "ArrowUp") (e.preventDefault(), focusAt(at - 1));
-        if (e.key === "Home") (e.preventDefault(), focusAt(0));
-        if (e.key === "End") (e.preventDefault(), focusAt(items.length - 1));
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          focusAt(at + 1);
+        }
+        if (e.key === "ArrowUp") {
+          e.preventDefault();
+          focusAt(at - 1);
+        }
+        if (e.key === "Home") {
+          e.preventDefault();
+          focusAt(0);
+        }
+        if (e.key === "End") {
+          e.preventDefault();
+          focusAt(items.length - 1);
+        }
       }}
       className={cn("flex w-full flex-col gap-2.5", className)}
     >
