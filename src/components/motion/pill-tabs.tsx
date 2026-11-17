@@ -158,7 +158,7 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
         if (e.key === "End") (e.preventDefault(), focusTab(tabs.length - 1));
       }}
       className={cn(
-        "relative inline-flex items-center gap-1 rounded-full bg-slate-100 p-1.5 border border-slate-200/80 dark:bg-slate-800 dark:border-slate-700",
+        "relative inline-flex items-center gap-1 rounded-full bg-black/[0.04] p-1.5 border border-black/[0.06] dark:bg-zinc-800 dark:border-zinc-700",
         className
       )}
     >
@@ -172,20 +172,20 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
         aria-hidden
         className="pointer-events-none absolute inset-y-1.5 left-0 w-full"
         style={{
-          filter: `url(#${filterId}) drop-shadow(0 1px 3px rgba(0,0,0,0.08)) drop-shadow(0 4px 8px rgba(0,0,0,0.04))`,
+          filter: `url(#${filterId}) drop-shadow(0 1px 3px rgba(0,0,0,0.06)) drop-shadow(0 4px 8px rgba(0,0,0,0.02))`,
           scaleY: thin,
         }}
       >
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white dark:bg-slate-700 shadow-sm"
+          className="absolute left-0 top-0 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
           style={{ x: left, width: height, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 w-px origin-left bg-white dark:bg-slate-700"
+          className="absolute left-0 top-0 w-px origin-left bg-white dark:bg-zinc-700"
           style={{ x: midX, scaleX: midScale, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white dark:bg-slate-700 shadow-sm"
+          className="absolute left-0 top-0 rounded-full bg-white dark:bg-zinc-700 shadow-sm"
           style={{ x: capX, width: height, height }}
         />
       </motion.span>
@@ -206,13 +206,13 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
             className={cn(
               "relative z-10 inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-full px-4 text-xs font-semibold outline-none transition-colors duration-200",
               active
-                ? "text-slate-900 dark:text-slate-100"
-                : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
+                ? "text-black dark:text-zinc-100"
+                : "text-zinc-500 hover:text-black dark:text-zinc-400 dark:hover:text-zinc-200"
             )}
           >
             {tab.label}
             {tab.badge !== undefined && (
-              <span className="ml-1 rounded-full bg-emerald-100 px-1.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+              <span className="ml-1 rounded-full bg-black text-white px-2 py-0.5 text-[10px] font-mono font-medium dark:bg-white dark:text-black">
                 {tab.badge}
               </span>
             )}

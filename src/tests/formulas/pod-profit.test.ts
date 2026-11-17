@@ -17,7 +17,23 @@ describe("POD Profit Formula", () => {
     expect(result.basePrintCost).toBe(9.50);
     expect(result.netProfit).toBeGreaterThan(0);
     expect(result.grossMarginPct).toBeGreaterThan(0);
+    expect(result.breakEvenPrice).toBeGreaterThan(0);
     expect(result.breakdown.length).toBe(4);
+  });
+
+  it("calculates Etsy channel fees and break-even accurately", () => {
+    const result = calculatePodProfit({
+      retailPrice: 29.99,
+      salesChannel: "etsy",
+      basePrintCost: 10.00,
+      shippingCost: 4.50,
+      shippingCharged: 4.99,
+      adSpendPerSale: 3.00,
+    });
+
+    expect(result.marketplaceFee).toBeGreaterThan(3.0);
+    expect(result.marketplacePayout).toBe(Number((result.grossRevenue - result.marketplaceFee).toFixed(2)));
+    expect(result.breakEvenPrice).toBeGreaterThan(0);
   });
 
   it("calculates mug preset when custom costs omitted", () => {

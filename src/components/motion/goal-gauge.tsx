@@ -6,132 +6,33 @@
  */
 
 import * as React from "react";
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import { type ClassValue, clsx } from "clsx";
-import { animate, AnimatePresence, motion, type MotionValue, useAnimation, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, useVelocity, type Variants } from "motion/react";
+import { animate, AnimatePresence, motion, type MotionValue, useInView, useMotionValue, useMotionValueEvent, useReducedMotion, useTransform, useVelocity } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
 }
 
-// Animated icon: arrow-up-right
-const ArrowUpRightIcon = (() => {
-  interface ArrowUpRightIconHandle {
-    startAnimation: () => void;
-    stopAnimation: () => void;
-  }
-
-  interface ArrowUpRightIconProps extends React.HTMLAttributes<HTMLSpanElement> {
-    size?: number;
-    active?: boolean;
-    strokeWidth?: number | string;
-  }
-
-  const ARROW_VARIANTS: Variants = {
-    normal: { scale: 1, translateX: 0, translateY: 0 },
-    animate: {
-      scale: [1, 0.85, 1],
-      translateX: [0, -4, 0],
-      translateY: [0, 4, 0],
-      originX: 1,
-      originY: 0,
-      transition: { duration: 0.5, ease: "easeInOut" },
-    },
-  };
-
-  const ArrowUpRightIcon = forwardRef<ArrowUpRightIconHandle, ArrowUpRightIconProps>(
-    ({ onMouseEnter, onMouseLeave, className, size, active, style, strokeWidth, ...props }, ref) => {
-      const controls = useAnimation();
-      const isControlledRef = useRef(false);
-
-      useImperativeHandle(ref, () => {
-        isControlledRef.current = true;
-        return {
-          startAnimation: () => controls.start("animate"),
-          stopAnimation: () => controls.start("normal"),
-        };
-      });
-
-      const handleMouseEnter = useCallback(
-        (e: React.MouseEvent<HTMLSpanElement>) => {
-          if (!isControlledRef.current) controls.start("animate");
-          onMouseEnter?.(e);
-        },
-        [controls, onMouseEnter]
-      );
-
-      const handleMouseLeave = useCallback(
-        (e: React.MouseEvent<HTMLSpanElement>) => {
-          if (!isControlledRef.current) controls.start("normal");
-          onMouseLeave?.(e);
-        },
-        [controls, onMouseLeave]
-      );
-
-      const wrap = useRef<HTMLSpanElement>(null);
-      const reduced = useReducedMotion();
-      const [hosted, setHosted] = useState(false);
-      useEffect(() => {
-        const fake = {} as React.MouseEvent<HTMLSpanElement>;
-        if (reduced) {
-          setHosted(true);
-          return;
-        }
-        if (active !== undefined) {
-          setHosted(true);
-          (active ? handleMouseEnter : handleMouseLeave)(fake);
-          return;
-        }
-        const host = wrap.current?.parentElement?.closest<HTMLElement>(
-          "button, a, [role=button], [role=menuitem], [role=tab], [role=switch], [role=radio], label"
-        );
-        setHosted(!!host);
-        if (!host) return;
-        const on = () => handleMouseEnter(fake);
-        const off = () => handleMouseLeave(fake);
-        host.addEventListener("pointerenter", on);
-        host.addEventListener("pointerleave", off);
-        return () => {
-          host.removeEventListener("pointerenter", on);
-          host.removeEventListener("pointerleave", off);
-        };
-      }, [active, reduced, handleMouseEnter, handleMouseLeave]);
-
-      return (
-        <span
-          ref={wrap}
-          className={cn("inline-grid size-6 shrink-0 place-items-center align-middle [&>svg]:size-full", className)}
-          style={size ? { width: size, height: size, ...style } : style}
-          onMouseEnter={hosted ? undefined : handleMouseEnter}
-          onMouseLeave={hosted ? undefined : handleMouseLeave}
-          {...props}
-        >
-          <svg
-            fill="none"
-            height={size}
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={strokeWidth ?? 2}
-            viewBox="0 0 24 24"
-            width={size}
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <motion.g animate={controls} variants={ARROW_VARIANTS}>
-              <path d="M7 7H17" />
-              <path d="M17 7V17" />
-              <path d="M7 17L17 7" />
-            </motion.g>
-          </svg>
-        </span>
-      );
-    }
+// Clean, lightweight SVG arrow-up-right icon
+function ArrowUpRightIcon({ className, strokeWidth = 2 }: { className?: string; strokeWidth?: number | string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={strokeWidth}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path d="M7 7H17" />
+      <path d="M17 7V17" />
+      <path d="M7 17L17 7" />
+    </svg>
   );
-
-  ArrowUpRightIcon.displayName = "ArrowUpRightIcon";
-  return ArrowUpRightIcon;
-})();
+}
 
 const W = 280;
 const R = 120;
@@ -304,7 +205,7 @@ function arcBetween(from: number, to: number) {
 }
 
 const GAP = (STROKE + 3) / (Math.PI * R);
-const PALETTE = ["#10b981", "#f59e0b", "#6366f1", "#06b6d4", "#ef4444"] as const;
+const PALETTE = ["#000000", "#52525b", "#71717a", "#a1a1aa", "#d4d4d8"] as const;
 
 export interface GaugeSegment {
   label: string;
@@ -368,7 +269,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
   {
     segments,
     value,
-    color = "#10b981",
+    color = "#000000",
     goal = 100,
     title = "Net Profit Split",
     subtitle = "Calculated live",
@@ -403,9 +304,9 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         : value !== undefined
         ? [{ label: typeof title === "string" ? title : "Net Profit", value, color }]
         : normalize([
-            { label: "Net Profit", value: 24.57, color: "#10b981" },
-            { label: "Etsy Fees", value: 5.42, color: "#f59e0b" },
-            { label: "Shipping/Cost", value: 5.0, color: "#6366f1" },
+            { label: "Net Profit", value: 24.57, color: "#000000" },
+            { label: "Platform Fees", value: 5.42, color: "#52525b" },
+            { label: "Shipping/Cost", value: 5.0, color: "#71717a" },
           ]),
     [segments, value, color, title]
   );
@@ -416,18 +317,21 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
   const done = total >= effectiveGoal;
 
   const ranges = React.useMemo(() => {
-    let cursor = 0;
-    return segs.map((seg, i) => {
-      const start = Math.min(1, cursor / effectiveGoal);
-      cursor += seg.value;
-      const end = Math.min(1, cursor / effectiveGoal);
-      return {
+    let runningTotal = 0;
+    const slices: Array<{ from: number; to: number; hitFrom: number; hitTo: number }> = [];
+    for (let i = 0; i < segs.length; i++) {
+      const seg = segs[i];
+      const start = Math.min(1, runningTotal / effectiveGoal);
+      runningTotal += seg.value;
+      const end = Math.min(1, runningTotal / effectiveGoal);
+      slices.push({
         from: start + (i > 0 ? GAP / 2 : 0),
         to: Math.max(start + (i > 0 ? GAP / 2 : 0), end - (i < segs.length - 1 || end < 1 ? GAP / 2 : 0)),
         hitFrom: start,
         hitTo: end,
-      };
-    });
+      });
+    }
+    return slices;
   }, [segs, effectiveGoal]);
 
   const amount = useMotionValue(0);
@@ -473,20 +377,20 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
     <div
       ref={root}
       className={cn(
-        "w-full max-w-[340px] rounded-2xl bg-white border border-slate-200/90 p-5 text-slate-900 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.06)] dark:bg-slate-900 dark:border-slate-800 dark:text-slate-100",
+        "w-full max-w-[340px] rounded-2xl bg-white border border-black/[0.08] p-5 text-black shadow-xs dark:bg-zinc-900 dark:border-zinc-800 dark:text-zinc-100",
         className
       )}
     >
       <header className="flex items-start justify-between gap-3 mb-2">
         <div>
-          <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">{title}</h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+          <h3 className="text-base font-semibold tracking-tight text-black dark:text-zinc-100">{title}</h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">{subtitle}</p>
         </div>
         {actionLabel !== null && (
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+            className="inline-flex shrink-0 items-center gap-1 rounded-full bg-black/[0.04] px-3 py-1 text-xs font-medium text-black hover:bg-black/[0.08]"
           >
             {actionLabel}
             <ArrowUpRightIcon className="size-3" strokeWidth={2.5} />
@@ -498,6 +402,9 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         role="meter"
         tabIndex={0}
         aria-label={typeof title === "string" ? title : "Profit breakdown"}
+        aria-valuenow={Math.round(total)}
+        aria-valuemin={0}
+        aria-valuemax={Math.round(effectiveGoal)}
         onBlur={() => setActive(null)}
         onPointerLeave={() => setActive(null)}
         className="relative mt-4 rounded-xl outline-none"
@@ -508,7 +415,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
             fill="none"
             strokeWidth={STROKE}
             strokeLinecap="round"
-            className="stroke-slate-100 dark:stroke-slate-800"
+            className="stroke-black/[0.06] dark:stroke-zinc-800"
             animate={{ opacity: active === null || active === "rest" ? 1 : 0.4 }}
             style={{ pathLength: trackLength }}
           />
@@ -536,22 +443,22 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         </svg>
 
         <div className="pointer-events-none absolute inset-x-0 bottom-2 flex flex-col items-center text-center">
-          <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-mono">
+          <p className="text-2xl font-bold tracking-tight text-black dark:text-zinc-100 font-mono">
             <Odometer amount={shown} format={money} label={money.format(total)} />
           </p>
-          <div className="mt-1 h-5 text-xs text-slate-500">
+          <div className="mt-1 h-5 text-xs text-zinc-500">
             <AnimatePresence initial={false} mode="popLayout">
               {caption ? (
                 <motion.span
                   key={caption.text}
                   {...POP}
-                  className="inline-flex items-center justify-center gap-1.5 font-medium"
+                  className="inline-flex items-center justify-center gap-1.5 font-medium text-black"
                 >
                   {caption.dot && <span className="size-2 rounded-full" style={{ background: caption.dot }} />}
                   {caption.text}
                 </motion.span>
               ) : done ? (
-                <motion.span key="done" {...POP} className="font-semibold text-emerald-600">
+                <motion.span key="done" {...POP} className="font-semibold text-black">
                   Gross Revenue (100%)
                 </motion.span>
               ) : (
@@ -564,7 +471,7 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-center gap-3">
+      <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-zinc-800 flex flex-wrap items-center justify-center gap-3">
         {segs.map((seg, idx) => (
           <div
             key={seg.label}
@@ -574,8 +481,8 @@ export const GoalGauge = React.forwardRef<HTMLDivElement, GoalGaugeProps>(functi
             style={{ opacity: active === null || active === idx ? 1 : 0.4 }}
           >
             <span className="size-2 rounded-full" style={{ backgroundColor: seg.color }} />
-            <span className="text-slate-600 dark:text-slate-300 font-medium">{seg.label}</span>
-            <span className="font-mono text-slate-900 dark:text-slate-100 font-semibold">{money.format(seg.value)}</span>
+            <span className="text-zinc-600 dark:text-zinc-300 font-medium">{seg.label}</span>
+            <span className="font-mono text-black dark:text-zinc-100 font-semibold">{money.format(seg.value)}</span>
           </div>
         ))}
       </div>

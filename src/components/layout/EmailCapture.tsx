@@ -33,21 +33,21 @@ export function EmailCapture({
   };
 
   return (
-    <div className="my-8 rounded-2xl border border-gray-200 bg-gradient-to-br from-gray-900 to-gray-800 p-6 sm:p-8 text-white shadow-md print:hidden">
+    <div className="my-8 rounded-3xl border border-black/10 bg-black p-6 sm:p-8 text-white shadow-md print:hidden">
       <div className="max-w-xl">
-        <span className="inline-block rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300">
+        <span className="inline-block rounded-full bg-white/10 border border-white/10 px-3 py-1 text-xs font-mono text-zinc-300">
           Seller Newsletter
         </span>
         <h3 className="mt-3 text-xl font-bold tracking-tight text-white sm:text-2xl">
           {headline}
         </h3>
-        <p className="mt-2 text-sm text-gray-300 leading-relaxed">
+        <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
           {description}
         </p>
       </div>
 
       {submitted ? (
-        <div className="mt-5 rounded-lg bg-emerald-500/20 border border-emerald-500/40 p-4 text-sm font-medium text-emerald-200">
+        <div className="mt-5 rounded-2xl bg-white/10 border border-white/20 p-4 text-sm font-medium text-white">
           ✓ Success! Check your inbox for the 2026 E-commerce Fee Cheat Sheet and alert confirmation.
         </div>
       ) : (
@@ -58,17 +58,17 @@ export function EmailCapture({
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your seller email..."
             required
-            className="w-full sm:max-w-xs rounded-lg border border-gray-700 bg-gray-800/90 px-4 py-2.5 text-sm text-white placeholder-gray-400 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500"
+            className="w-full sm:max-w-xs rounded-full border border-white/20 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-white focus:outline-hidden"
           />
           <button
             type="submit"
-            className="rounded-lg bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-emerald-400 focus:outline-hidden"
+            className="rounded-full bg-white px-5 py-2.5 text-xs sm:text-sm font-semibold text-black shadow-xs transition hover:bg-zinc-200 focus:outline-hidden cursor-pointer"
           >
             {buttonText}
           </button>
         </form>
       )}
-      <p className="mt-3 text-[11px] text-gray-400">
+      <p className="mt-3 text-[11px] text-zinc-500">
         Zero spam. Unsubscribe anytime. We respect your privacy.
       </p>
     </div>

@@ -8,6 +8,7 @@ export interface ComparisonInput {
   shippingCharge?: number;
   shippingCost?: number;
   country?: string; // e.g. "us"
+  monthlyOrders?: number; // Volume projection
 }
 
 export interface PlatformResult {
@@ -18,12 +19,21 @@ export interface PlatformResult {
   netPayout: number;
   netProfit: number;
   netMarginPct: number;
+  breakdown: { label: string; amount: number }[];
+  annualProjection: {
+    orders: number;
+    grossRevenue: number;
+    platformFees: number;
+    netProfit: number;
+  };
 }
 
 export interface ComparisonSummary {
   input: ComparisonInput;
   results: PlatformResult[];
   winner: PlatformResult;
+  monthlyOrders: number;
+  annualSavingsWinnerVsEtsy: number;
   dataSnippet: string;
 }
 
@@ -33,88 +43,108 @@ export function compareMarketplaces(input: ComparisonInput): ComparisonSummary {
   const shippingCharge = Math.max(0, input.shippingCharge || 0);
   const shippingCost = Math.max(0, input.shippingCost || 0);
   const country = input.country || "us";
+  const monthlyOrders = Math.max(1, input.monthlyOrders || 100);
+  const annualMultiplier = monthlyOrders * 12;
 
-  // 1. Etsy
+  // 1. Etsy Calculation
   const etsy = calculateEtsyFees({
     itemPrice: price,
     shippingCharge: shippingCharge,
+    itemCost: cogs,
+    shippingCost: shippingCost,
     country: country,
     offsiteAdsOptIn: false,
   });
-  const etsyPlatformFees = etsy.totalFees;
-  const etsyGross = price + shippingCharge;
-  const etsyPayout = Number((etsyGross - etsyPlatformFees).toFixed(2));
-  const etsyProfit = Number((etsyPayout - (cogs + shippingCost)).toFixed(2));
-  const etsyMargin = etsyGross > 0 ? Number(((etsyProfit / etsyGross) * 100).toFixed(2)) : 0;
 
-  // 2. Shopify (Shopify Payments: 2.9% + $0.30)
+  const etsyResult: PlatformResult = {
+    platform: "Etsy",
+    grossRevenue: etsy.grossRevenue,
+    totalPlatformFees: etsy.totalFees,
+    effectiveFeePct: etsy.effectiveFeePct,
+    netPayout: etsy.etsyPayout,
+    netProfit: etsy.netProfit,
+    netMarginPct: etsy.netMarginPct,
+    breakdown: etsy.breakdown.map((b) => ({ label: b.label, amount: b.amount })),
+    annualProjection: {
+      orders: annualMultiplier,
+      grossRevenue: Number((etsy.grossRevenue * annualMultiplier).toFixed(2)),
+      platformFees: Number((etsy.totalFees * annualMultiplier).toFixed(2)),
+      netProfit: Number((etsy.netProfit * annualMultiplier).toFixed(2)),
+    },
+  };
+
+  // 2. Shopify (Shopify Payments Basic: 2.9% + $0.30)
   const shopify = calculateShopifyProfit({
-    revenue: price + shippingCharge,
+    itemPrice: price,
+    shippingCharged: shippingCharge,
     cogs: cogs,
     shippingCost: shippingCost,
+    shopifyPlan: "basic",
     gateway: "shopify-payments",
   });
-  const shopifyPlatformFees = shopify.paymentFee;
-  const shopifyGross = price + shippingCharge;
-  const shopifyPayout = Number((shopifyGross - shopifyPlatformFees).toFixed(2));
-  const shopifyProfit = Number((shopifyPayout - (cogs + shippingCost)).toFixed(2));
-  const shopifyMargin = shopifyGross > 0 ? Number(((shopifyProfit / shopifyGross) * 100).toFixed(2)) : 0;
 
-  // 3. TikTok Shop (standard category referral 6%)
+  const shopifyResult: PlatformResult = {
+    platform: "Shopify",
+    grossRevenue: shopify.revenue,
+    totalPlatformFees: shopify.totalPlatformFees,
+    effectiveFeePct: shopify.revenue > 0 ? Number(((shopify.totalPlatformFees / shopify.revenue) * 100).toFixed(2)) : 0,
+    netPayout: shopify.netPayout,
+    netProfit: shopify.netProfit,
+    netMarginPct: shopify.netMarginPct,
+    breakdown: shopify.breakdown.map((b) => ({ label: b.label, amount: b.amount })),
+    annualProjection: {
+      orders: annualMultiplier,
+      grossRevenue: Number((shopify.revenue * annualMultiplier).toFixed(2)),
+      platformFees: Number((shopify.totalPlatformFees * annualMultiplier).toFixed(2)),
+      netProfit: Number((shopify.netProfit * annualMultiplier).toFixed(2)),
+    },
+  };
+
+  // 3. TikTok Shop (Category referral 6.0% + $0.30 flat)
   const tiktok = calculateTikTokFees({
     salePrice: price,
-    category: "beauty",
-    creatorAffiliatePct: 0,
+    shippingCharged: shippingCharge,
     cogs: cogs,
     shippingCost: shippingCost,
+    category: "apparel",
+    creatorAffiliatePct: 0,
   });
-  const tiktokPlatformFees = tiktok.referralFee;
-  const tiktokGross = price + shippingCharge;
-  const tiktokPayout = Number((price - tiktok.referralFee + shippingCharge).toFixed(2));
-  const tiktokProfit = Number((tiktokPayout - (cogs + shippingCost)).toFixed(2));
-  const tiktokMargin = tiktokGross > 0 ? Number(((tiktokProfit / tiktokGross) * 100).toFixed(2)) : 0;
 
-  const results: PlatformResult[] = [
-    {
-      platform: "Shopify",
-      grossRevenue: shopifyGross,
-      totalPlatformFees: shopifyPlatformFees,
-      effectiveFeePct: shopifyGross > 0 ? Number(((shopifyPlatformFees / shopifyGross) * 100).toFixed(2)) : 0,
-      netPayout: shopifyPayout,
-      netProfit: shopifyProfit,
-      netMarginPct: shopifyMargin,
+  const tiktokResult: PlatformResult = {
+    platform: "TikTok Shop",
+    grossRevenue: tiktok.grossRevenue,
+    totalPlatformFees: tiktok.totalFees,
+    effectiveFeePct: tiktok.effectiveFeePct,
+    netPayout: tiktok.netPayout,
+    netProfit: tiktok.netProfit,
+    netMarginPct: tiktok.netMarginPct,
+    breakdown: tiktok.breakdown.map((b) => ({ label: b.label, amount: b.amount })),
+    annualProjection: {
+      orders: annualMultiplier,
+      grossRevenue: Number((tiktok.grossRevenue * annualMultiplier).toFixed(2)),
+      platformFees: Number((tiktok.totalFees * annualMultiplier).toFixed(2)),
+      netProfit: Number((tiktok.netProfit * annualMultiplier).toFixed(2)),
     },
-    {
-      platform: "TikTok Shop",
-      grossRevenue: tiktokGross,
-      totalPlatformFees: tiktokPlatformFees,
-      effectiveFeePct: tiktokGross > 0 ? Number(((tiktokPlatformFees / tiktokGross) * 100).toFixed(2)) : 0,
-      netPayout: tiktokPayout,
-      netProfit: tiktokProfit,
-      netMarginPct: tiktokMargin,
-    },
-    {
-      platform: "Etsy",
-      grossRevenue: etsyGross,
-      totalPlatformFees: etsyPlatformFees,
-      effectiveFeePct: etsy.effectiveFeePct,
-      netPayout: etsyPayout,
-      netProfit: etsyProfit,
-      netMarginPct: etsyMargin,
-    },
-  ];
+  };
+
+  const results: PlatformResult[] = [shopifyResult, tiktokResult, etsyResult];
 
   // Sorted by net profit descending
   const sorted = [...results].sort((a, b) => b.netProfit - a.netProfit);
   const winner = sorted[0];
 
-  const savingsOverEtsy = Number((winner.netPayout - etsyPayout).toFixed(2));
-  const dataSnippet = `On a $${price.toFixed(2)} item, ${winner.platform} leaves the highest net payout of $${winner.netPayout.toFixed(2)} (${winner.effectiveFeePct}% fee) — saving $${Math.max(0, savingsOverEtsy).toFixed(2)} compared to Etsy ($${etsyPayout.toFixed(2)}).`;
+  const annualSavingsWinnerVsEtsy = Number(
+    Math.max(0, winner.annualProjection.netProfit - etsyResult.annualProjection.netProfit).toFixed(2)
+  );
+
+  const dataSnippet = `On a $${price.toFixed(2)} item, ${winner.platform} yields the highest net profit of $${winner.netProfit.toFixed(2)} (${winner.effectiveFeePct}% platform fee). At ${monthlyOrders} orders/month, selling on ${winner.platform} puts an extra $${annualSavingsWinnerVsEtsy.toLocaleString()} into your bank account each year compared to Etsy.`;
 
   return {
     input,
     results,
     winner,
+    monthlyOrders,
+    annualSavingsWinnerVsEtsy,
     dataSnippet,
   };
 }

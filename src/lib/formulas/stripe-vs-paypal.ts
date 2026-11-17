@@ -1,36 +1,57 @@
 import { PAYMENT_CURRENCY_PRESETS, FeePreset } from "@/data/fee-presets";
 
+export type PaymentMode = "direct" | "gross-up";
+export type TransactionType = "checkout" | "invoice";
+
 export interface PaymentCompInput {
-  targetPayout: number;
+  amount?: number; // Either charge amount (direct) or desired net payout (gross-up)
+  targetPayout?: number; // Backward compatibility
   currency?: string; // e.g. "usd", "gbp", "eur"
+  transactionType?: TransactionType; // "checkout" | "invoice"
   isInternational?: boolean;
   currencyConversion?: boolean;
+  monthlyVolume?: number; // e.g. $5,000 / month
+  averageTicket?: number; // e.g. $100 / transaction
 }
 
-export interface ProcessorPayout {
+export interface ProcessorMetrics {
   name: "Stripe" | "PayPal";
   ratePct: number;
   fixedFee: number;
-  invoiceToReceiveTarget: number; // Gross-up amount
+  // Direct mode (Charging $X)
+  chargeAmount: number;
+  feeOnCharge: number;
+  effectiveFeePct: number;
+  netPayoutOnCharge: number;
+  // Gross-Up mode (Receiving $X net)
+  targetPayout: number;
+  invoiceToReceiveTarget: number;
   feeOnGrossUp: number;
-  feeOnDirectTarget: number;
-  payoutOnDirectTarget: number;
+  // Projections
+  monthlyFees: number;
+  monthlyNetTakeHome: number;
+  annualNetTakeHome: number;
 }
 
 export interface PaymentCompResult {
+  amount: number;
   targetPayout: number;
   currency: string;
   currencySymbol: string;
-  stripe: ProcessorPayout;
-  paypal: ProcessorPayout;
+  transactionType: TransactionType;
+  stripe: ProcessorMetrics;
+  paypal: ProcessorMetrics;
   recommended: "Stripe" | "PayPal";
+  savingsOnDirectCharge: number;
   savingsOnGrossUp: number;
+  annualSavings: number;
   dataSnippet: string;
 }
 
 export function comparePaymentProcessors(input: PaymentCompInput): PaymentCompResult {
-  const target = Math.max(0, input.targetPayout || 0);
+  const amt = Math.max(0, input.amount !== undefined ? input.amount : (input.targetPayout || 0));
   const curId = (input.currency || "usd").toLowerCase();
+  const txType = input.transactionType || "checkout";
   const preset: FeePreset | undefined = PAYMENT_CURRENCY_PRESETS.find((p) => p.id === curId);
 
   const symbol = preset?.currencySymbol || "$";
@@ -39,69 +60,110 @@ export function comparePaymentProcessors(input: PaymentCompInput): PaymentCompRe
   // Base Stripe rates
   let stripeRate = preset?.fees.domesticRate ?? 2.9;
   const stripeFixed = preset?.fees.domesticFixed ?? 0.30;
+  if (txType === "invoice") {
+    stripeRate += 0.4; // Stripe Invoicing starter fee (+0.4%)
+  }
   if (input.isInternational) stripeRate += preset?.fees.intlRate ?? 1.5;
   if (input.currencyConversion) stripeRate += preset?.fees.fxRate ?? 1.0;
 
-  // Base PayPal rates (PayPal is typically 3.49% + $0.49 domestic card checkout)
-  let paypalRate = 3.49;
+  // Base PayPal rates
+  // Standard card checkout: 3.49% + $0.49
+  // Invoicing: 2.99% + $0.49
+  let paypalRate = txType === "invoice" ? 2.99 : 3.49;
   const paypalFixed = curId === "gbp" ? 0.30 : curId === "eur" ? 0.39 : 0.49;
   if (input.isInternational) paypalRate += 1.50;
-  if (input.currencyConversion) paypalRate += 3.00; // PayPal FX spread is typically 3-4%
+  if (input.currencyConversion) paypalRate += 3.00; // PayPal standard currency conversion margin
 
-  // Gross-Up Formula:
+  // 1. Direct Charge Calculation: Customer pays `amt`
+  let stripeFeeDirect = 0;
+  let paypalFeeDirect = 0;
+  if (amt > 0) {
+    stripeFeeDirect = Number((((amt * stripeRate) / 100) + stripeFixed).toFixed(2));
+    paypalFeeDirect = Number((((amt * paypalRate) / 100) + paypalFixed).toFixed(2));
+  }
+  const stripePayoutDirect = Number(Math.max(0, amt - stripeFeeDirect).toFixed(2));
+  const paypalPayoutDirect = Number(Math.max(0, amt - paypalFeeDirect).toFixed(2));
+
+  // 2. Gross-Up Calculation: Merchant wants `amt` in bank
   // Gross = (Target + Fixed) / (1 - (Rate / 100))
   const stripeRateDecimal = stripeRate / 100;
   const paypalRateDecimal = paypalRate / 100;
 
   const stripeInvoice =
-    target > 0 && stripeRateDecimal < 1
-      ? Number(((target + stripeFixed) / (1 - stripeRateDecimal)).toFixed(2))
-      : target;
+    amt > 0 && stripeRateDecimal < 1
+      ? Number(((amt + stripeFixed) / (1 - stripeRateDecimal)).toFixed(2))
+      : amt;
 
   const paypalInvoice =
-    target > 0 && paypalRateDecimal < 1
-      ? Number(((target + paypalFixed) / (1 - paypalRateDecimal)).toFixed(2))
-      : target;
+    amt > 0 && paypalRateDecimal < 1
+      ? Number(((amt + paypalFixed) / (1 - paypalRateDecimal)).toFixed(2))
+      : amt;
 
-  const stripeFeeOnGrossUp = Number((stripeInvoice - target).toFixed(2));
-  const paypalFeeOnGrossUp = Number((paypalInvoice - target).toFixed(2));
+  const stripeFeeOnGrossUp = Number((stripeInvoice - amt).toFixed(2));
+  const paypalFeeOnGrossUp = Number((paypalInvoice - amt).toFixed(2));
 
-  // Fee if customer pays exact target
-  const stripeFeeDirect = Number((((target * stripeRate) / 100) + stripeFixed).toFixed(2));
-  const paypalFeeDirect = Number((((target * paypalRate) / 100) + paypalFixed).toFixed(2));
+  // 3. Scale / Volume Simulation
+  const monthlyVol = Math.max(0, input.monthlyVolume || 5000);
+  const avgTicket = Math.max(1, input.averageTicket || 100);
+  const estimatedMonthlyTxs = Math.max(1, Math.round(monthlyVol / avgTicket));
 
-  const stripePayoutDirect = Number((target - stripeFeeDirect).toFixed(2));
-  const paypalPayoutDirect = Number((target - paypalFeeDirect).toFixed(2));
+  const stripeMonthlyFees = Number((((monthlyVol * stripeRate) / 100) + (estimatedMonthlyTxs * stripeFixed)).toFixed(2));
+  const paypalMonthlyFees = Number((((monthlyVol * paypalRate) / 100) + (estimatedMonthlyTxs * paypalFixed)).toFixed(2));
 
-  const savings = Number(Math.abs(paypalFeeOnGrossUp - stripeFeeOnGrossUp).toFixed(2));
-  const recommended: "Stripe" | "PayPal" = stripeFeeOnGrossUp <= paypalFeeOnGrossUp ? "Stripe" : "PayPal";
+  const stripeMonthlyTakeHome = Number((monthlyVol - stripeMonthlyFees).toFixed(2));
+  const paypalMonthlyTakeHome = Number((monthlyVol - paypalMonthlyFees).toFixed(2));
 
-  const dataSnippet = `To receive exactly ${symbol}${target.toFixed(2)} net payout, bill ${symbol}${stripeInvoice.toFixed(2)} on Stripe (${stripeRate}% + ${symbol}${stripeFixed.toFixed(2)}) versus ${symbol}${paypalInvoice.toFixed(2)} on PayPal — saving ${symbol}${savings.toFixed(2)} via Stripe.`;
+  const stripeAnnualTakeHome = Number((stripeMonthlyTakeHome * 12).toFixed(2));
+  const paypalAnnualTakeHome = Number((paypalMonthlyTakeHome * 12).toFixed(2));
+
+  const savingsDirect = Number(Math.max(0, stripePayoutDirect - paypalPayoutDirect).toFixed(2));
+  const savingsGrossUp = Number(Math.abs(paypalFeeOnGrossUp - stripeFeeOnGrossUp).toFixed(2));
+  const annualSavings = Number(Math.abs(stripeAnnualTakeHome - paypalAnnualTakeHome).toFixed(2));
+
+  const recommended: "Stripe" | "PayPal" = stripeFeeDirect <= paypalFeeDirect ? "Stripe" : "PayPal";
+
+  const dataSnippet = `On a ${symbol}${amt.toFixed(2)} payment, Stripe deducts ${symbol}${stripeFeeDirect.toFixed(2)} (${stripeRate}% + ${symbol}${stripeFixed.toFixed(2)}) versus ${symbol}${paypalFeeDirect.toFixed(2)} on PayPal (${paypalRate}% + ${symbol}${paypalFixed.toFixed(2)}) — keeping an extra ${symbol}${savingsDirect.toFixed(2)} in your bank account per transaction.`;
 
   return {
-    targetPayout: target,
+    amount: amt,
+    targetPayout: amt,
     currency: currencyCode,
     currencySymbol: symbol,
+    transactionType: txType,
     stripe: {
       name: "Stripe",
-      ratePct: stripeRate,
+      ratePct: Number(stripeRate.toFixed(2)),
       fixedFee: stripeFixed,
+      chargeAmount: amt,
+      feeOnCharge: stripeFeeDirect,
+      effectiveFeePct: amt > 0 ? Number(((stripeFeeDirect / amt) * 100).toFixed(2)) : 0,
+      netPayoutOnCharge: stripePayoutDirect,
+      targetPayout: amt,
       invoiceToReceiveTarget: stripeInvoice,
       feeOnGrossUp: stripeFeeOnGrossUp,
-      feeOnDirectTarget: stripeFeeDirect,
-      payoutOnDirectTarget: stripePayoutDirect,
+      monthlyFees: stripeMonthlyFees,
+      monthlyNetTakeHome: stripeMonthlyTakeHome,
+      annualNetTakeHome: stripeAnnualTakeHome,
     },
     paypal: {
       name: "PayPal",
-      ratePct: paypalRate,
+      ratePct: Number(paypalRate.toFixed(2)),
       fixedFee: paypalFixed,
+      chargeAmount: amt,
+      feeOnCharge: paypalFeeDirect,
+      effectiveFeePct: amt > 0 ? Number(((paypalFeeDirect / amt) * 100).toFixed(2)) : 0,
+      netPayoutOnCharge: paypalPayoutDirect,
+      targetPayout: amt,
       invoiceToReceiveTarget: paypalInvoice,
       feeOnGrossUp: paypalFeeOnGrossUp,
-      feeOnDirectTarget: paypalFeeDirect,
-      payoutOnDirectTarget: paypalPayoutDirect,
+      monthlyFees: paypalMonthlyFees,
+      monthlyNetTakeHome: paypalMonthlyTakeHome,
+      annualNetTakeHome: paypalAnnualTakeHome,
     },
     recommended,
-    savingsOnGrossUp: savings,
+    savingsOnDirectCharge: savingsDirect,
+    savingsOnGrossUp: savingsGrossUp,
+    annualSavings,
     dataSnippet,
   };
 }

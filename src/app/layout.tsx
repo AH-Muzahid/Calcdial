@@ -62,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} scroll-smooth`}>
-      <body className="min-h-screen bg-[#fbfbfd] text-slate-900 font-sans antialiased flex flex-col selection:bg-emerald-100 selection:text-emerald-900">
+      <body className="min-h-screen bg-white text-zinc-950 font-sans antialiased flex flex-col selection:bg-black selection:text-white">
         {/* Google Analytics 4 */}
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
 

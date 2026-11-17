@@ -99,8 +99,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
       className={cn(
         "rounded-2xl border transition-all duration-200",
         open
-          ? "bg-slate-50/80 border-slate-300 dark:bg-slate-800/50 dark:border-slate-700"
-          : "bg-white border-slate-200/80 hover:border-slate-300 dark:bg-slate-900 dark:border-slate-800"
+          ? "bg-black/[0.02] border-black/20 dark:bg-zinc-800/50 dark:border-zinc-700"
+          : "bg-white border-black/[0.08] hover:border-black/20 dark:bg-zinc-900 dark:border-zinc-800"
       )}
     >
       <svg aria-hidden className="absolute size-0">
@@ -119,8 +119,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
           whileTap={still ? undefined : { scale: 0.99 }}
           className={cn(
             "group flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold outline-none",
-            "focus-visible:ring-2 focus-visible:ring-emerald-500",
-            open ? "text-slate-900 dark:text-slate-100" : "text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+            "focus-visible:ring-2 focus-visible:ring-black",
+            open ? "text-black dark:text-zinc-100" : "text-zinc-700 hover:text-black dark:text-zinc-300 dark:hover:text-zinc-100"
           )}
         >
           <span>{item.title}</span>
@@ -129,8 +129,8 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
             className={cn(
               "relative grid size-6 shrink-0 place-items-center rounded-full transition-colors duration-200",
               open
-                ? "bg-emerald-600 text-white"
-                : "bg-slate-100 text-slate-600 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                ? "bg-black text-white"
+                : "bg-black/[0.04] text-zinc-700 group-hover:bg-black/[0.08] dark:bg-zinc-800 dark:text-zinc-300"
             )}
           >
             <span className="absolute h-[1.5px] w-2.5 rounded-full bg-current" />
@@ -155,7 +155,7 @@ function Row({ item, open, onToggle, blur, stiffness, still, uid, headerRef }: R
           ref={inner}
           variants={PANEL_CONTENT}
           transition={{ duration: still ? 0 : 0.3, ease: [0.22, 1, 0.36, 1], delay: open && !still ? 0.05 : 0 }}
-          className="px-5 pb-5 text-sm leading-relaxed text-slate-600 dark:text-slate-400"
+          className="px-5 pb-5 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400"
         >
           {item.content}
         </motion.div>

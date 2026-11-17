@@ -11,6 +11,7 @@ import { ShareButton } from "@/components/layout/ShareButton";
 import { PrintButton } from "@/components/layout/PrintButton";
 import { EmbedModal } from "@/components/layout/EmbedModal";
 import { PillTabs } from "@/components/motion/pill-tabs";
+import { RollingStepper } from "@/components/motion/rolling-stepper";
 import { trackEvent } from "@/lib/analytics";
 
 interface EtsyFeeCalculatorProps {
@@ -146,14 +147,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
   };
 
   return (
-    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+    <div className="rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       {/* Mode Switcher Tabs */}
-      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-slate-100 gap-4">
+      <div className="flex flex-col sm:flex-row items-center justify-between pb-6 border-b border-black/[0.06] gap-4">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-900">
+          <h2 className="text-lg font-bold tracking-tight text-black">
             Etsy Profit & Fee Architecture
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-zinc-500 mt-0.5">
             Switch between forward profit modeling and target margin pricing
           </p>
         </div>
@@ -170,12 +171,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         <div className="lg:col-span-7 space-y-6">
 
           {/* Group 1: 🏷️ Sale & Shipping Pricing */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 space-y-4">
+          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                 1
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
                 Sale & Customer Pricing
               </h3>
             </div>
@@ -200,14 +201,19 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <InputField
-                label="Quantity Sold in Order"
-                value={quantity}
-                onChange={(val) => setQuantity(Math.max(1, Math.round(val)))}
-                min={1}
-                step={1}
-                helpText="Number of units per order"
-              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-black">Quantity Sold in Order</label>
+                <div className="flex items-center justify-between rounded-2xl border border-black/[0.12] bg-white px-3 py-1 min-h-[44px]">
+                  <span className="text-xs font-mono text-zinc-400">Items</span>
+                  <RollingStepper
+                    value={quantity}
+                    min={1}
+                    max={100}
+                    onValueChange={(val) => setQuantity(Math.max(1, Math.round(val)))}
+                  />
+                </div>
+                <p className="text-[11px] text-zinc-400">Number of units per order</p>
+              </div>
 
               {mode === "target" && (
                 <InputField
@@ -223,12 +229,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 2: 📦 Item Costs & Postage (COGS) */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 space-y-4">
+          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                 2
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
                 Your Costs & Fulfillment (COGS)
               </h3>
             </div>
@@ -254,12 +260,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 3: ⚙️ Store & Fee Settings */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 space-y-4">
+          <div className="rounded-2xl border border-black/[0.06] bg-black/[0.02] p-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+              <span className="flex size-5 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
                 3
               </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-700">
+              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
                 Etsy Payments & Location Rules
               </h3>
             </div>
@@ -274,17 +280,17 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               />
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-700">
+                <label className="text-xs font-semibold text-black">
                   Buyer Location
                 </label>
                 <div className="flex items-center gap-2 h-11">
                   <button
                     type="button"
                     onClick={() => setIsInternational(false)}
-                    className={`flex-1 h-full rounded-xl text-xs font-semibold border transition-all ${
+                    className={`flex-1 h-full rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
                       !isInternational
-                        ? "bg-slate-900 text-white border-slate-900"
-                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-zinc-600 border-black/[0.08] hover:bg-black/[0.04]"
                     }`}
                   >
                     Domestic
@@ -292,27 +298,27 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <button
                     type="button"
                     onClick={() => setIsInternational(true)}
-                    className={`flex-1 h-full rounded-xl text-xs font-semibold border transition-all ${
+                    className={`flex-1 h-full rounded-2xl text-xs font-semibold border transition-all cursor-pointer ${
                       isInternational
-                        ? "bg-slate-900 text-white border-slate-900"
-                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-100"
+                        ? "bg-black text-white border-black"
+                        : "bg-white text-zinc-600 border-black/[0.08] hover:bg-black/[0.04]"
                     }`}
                   >
                     International (+1%)
                   </button>
                 </div>
-                <p className="text-[11px] text-slate-500">Cross-border payment fee</p>
+                <p className="text-[11px] text-zinc-400">Cross-border payment fee</p>
               </div>
             </div>
 
             {/* Offsite Ads Toggle */}
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <div className="rounded-2xl border border-black/[0.08] bg-white p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="text-xs font-semibold text-slate-800 cursor-pointer">
+                  <label className="text-xs font-semibold text-black cursor-pointer">
                     Etsy Offsite Ads
                   </label>
-                  <p className="text-[11px] text-slate-500">
+                  <p className="text-[11px] text-zinc-400">
                     Charged when buyers find you via external search engine ads
                   </p>
                 </div>
@@ -320,29 +326,29 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   type="checkbox"
                   checked={offsiteAds}
                   onChange={(e) => setOffsiteAds(e.target.checked)}
-                  className="size-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                  className="size-5 rounded border-black/20 text-black accent-black cursor-pointer"
                 />
               </div>
 
               {offsiteAds && (
-                <div className="mt-3 flex gap-4 pt-3 border-t border-slate-100 text-xs">
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                <div className="mt-3 flex gap-4 pt-3 border-t border-black/[0.06] text-xs">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-zinc-800">
                     <input
                       type="radio"
                       name="adsTier"
                       checked={adsTier === 0.15}
                       onChange={() => setAdsTier(0.15)}
-                      className="text-emerald-600"
+                      className="accent-black"
                     />
                     <span>15% (Under $10k/yr annual shop sales)</span>
                   </label>
-                  <label className="flex items-center gap-1.5 cursor-pointer">
+                  <label className="flex items-center gap-1.5 cursor-pointer text-zinc-800">
                     <input
                       type="radio"
                       name="adsTier"
                       checked={adsTier === 0.12}
                       onChange={() => setAdsTier(0.12)}
-                      className="text-emerald-600"
+                      className="accent-black"
                     />
                     <span>12% ($10k+ mandatory tier)</span>
                   </label>

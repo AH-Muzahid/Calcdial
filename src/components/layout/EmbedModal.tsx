@@ -33,34 +33,34 @@ export function EmbedModal({ toolSlug, title }: EmbedModalProps) {
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 shadow-xs transition hover:bg-gray-50 focus:outline-hidden print:hidden"
+        className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-white px-3.5 py-1.5 text-xs font-mono font-medium text-black shadow-2xs transition hover:bg-black/[0.03] focus:outline-hidden print:hidden cursor-pointer"
       >
-        <svg className="h-3.5 w-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="size-3.5 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
         </svg>
         Embed Tool
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="text-base font-semibold text-gray-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-7 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
+              <h3 className="text-base font-bold text-black">
                 Embed this Calculator on your Website
               </h3>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-zinc-400 hover:text-black cursor-pointer"
               >
                 ✕
               </button>
             </div>
-            <p className="mt-3 text-xs text-gray-600 leading-relaxed">
+            <p className="mt-3 text-xs text-zinc-500 leading-relaxed">
               Copy and paste this HTML snippet into your WordPress, Shopify blog, or custom website. It is 100% free, responsive, and mobile-friendly.
             </p>
-            <div className="mt-3 rounded-lg bg-gray-900 p-3">
-              <pre className="overflow-x-auto text-xs text-gray-300 font-mono whitespace-pre-wrap break-all">
+            <div className="mt-3 rounded-2xl bg-black p-4">
+              <pre className="overflow-x-auto text-xs text-zinc-300 font-mono whitespace-pre-wrap break-all">
                 {embedCode}
               </pre>
             </div>
@@ -68,14 +68,14 @@ export function EmbedModal({ toolSlug, title }: EmbedModalProps) {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
+                className="rounded-full border border-black/[0.08] px-4 py-2 text-xs font-mono font-medium text-zinc-700 hover:bg-black/[0.03] cursor-pointer"
               >
                 Close
               </button>
               <button
                 type="button"
                 onClick={copyCode}
-                className="rounded-lg bg-emerald-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                className="rounded-full bg-black px-4 py-2 text-xs font-mono font-semibold text-white hover:bg-zinc-800 cursor-pointer shadow-xs"
               >
                 {copied ? "Copied to Clipboard!" : "Copy Embed HTML"}
               </button>

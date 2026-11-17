@@ -10,6 +10,7 @@ import { RelatedTools } from "@/components/seo/RelatedTools";
 import { AdSlot } from "@/components/layout/AdSlot";
 import { AffiliateCallout } from "@/components/layout/AffiliateCallout";
 import { EmailCapture } from "@/components/layout/EmailCapture";
+import { ShimmerText } from "@/components/motion/shimmer-text";
 import { formatDate } from "@/lib/utils";
 
 // Calculators
@@ -146,18 +147,18 @@ export default async function ToolPage({
       {/* SECTION 1: H1 Title + "Last updated" Trust Badge + 2-Sentence Value Summary */}
       <header className="mb-6">
         <div className="flex flex-wrap items-center gap-2 mb-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-            Verified for 2026
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] bg-black/[0.03] px-3 py-1 text-xs font-mono text-black">
+            <span className="size-1.5 rounded-full bg-black"></span>
+            <ShimmerText text="VERIFIED FOR 2026" className="text-[11px] font-semibold tracking-wider" />
           </span>
-          <span className="text-xs text-gray-500">
+          <span className="text-xs font-mono text-zinc-400">
             Last updated: <time dateTime={tool.lastUpdated}>{formatDate(tool.lastUpdated)}</time>
           </span>
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+        <h1 className="text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
           {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
         </h1>
-        <p className="mt-2 text-base text-gray-600 leading-relaxed max-w-3xl">
+        <p className="mt-2 text-base text-zinc-500 leading-relaxed max-w-3xl">
           {tool.shortDescription}
         </p>
       </header>
