@@ -20,6 +20,7 @@ export interface TikTokResult {
   netPayout: number;
   netProfit: number;
   netMarginPct: number;
+  breakEvenPrice: number;
   breakdown: { label: string; amount: number; rate?: string }[];
   dataSnippet: string;
 }
@@ -52,6 +53,12 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
   const netProfit = Number((price - totalDeductions).toFixed(2));
   const netMarginPct = price > 0 ? Number(((netProfit / price) * 100).toFixed(2)) : 0;
 
+  // Break-even price
+  const totalPctDeductions = referralRatePct + affiliateRatePct;
+  const breakEvenPrice = totalPctDeductions < 100
+    ? Number(((cogs + shipping) / (1 - totalPctDeductions / 100)).toFixed(2))
+    : 0;
+
   const breakdown = [
     { label: "Category Referral Fee", amount: referralFee, rate: `${referralRatePct}%` },
     { label: "Creator Affiliate Commission", amount: affiliateCommission, rate: `${affiliateRatePct}%` },
@@ -72,6 +79,7 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
     netPayout,
     netProfit,
     netMarginPct,
+    breakEvenPrice,
     breakdown,
     dataSnippet,
   };

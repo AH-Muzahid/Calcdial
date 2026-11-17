@@ -120,12 +120,14 @@ Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
 
         <div className="lg:col-span-5">
           <ResultCard
-            primaryLabel="Net Profit"
+            primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
-            secondaryLabel="TikTok Payout (Pre-COGS)"
-            secondaryValue={result.netPayout}
-            effectiveRateLabel="Net Margin"
-            effectiveRatePct={result.netMarginPct}
+            secondaryLabel="Total Deductions (Fees + Costs)"
+            secondaryValue={result.totalDeductions}
+            payoutLabel="TikTok Bank Deposit"
+            payoutValue={result.netPayout}
+            breakEvenPrice={result.breakEvenPrice}
+            marginPct={result.netMarginPct}
             breakdown={result.breakdown}
           />
         </div>

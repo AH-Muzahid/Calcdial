@@ -21,6 +21,7 @@ export interface PodResult {
   netProfit: number;
   grossMarginPct: number;
   netMarginPct: number;
+  breakEvenPrice: number;
   breakdown: { label: string; amount: number; rate?: string }[];
   dataSnippet: string;
 }
@@ -46,6 +47,11 @@ export function calculatePodProfit(input: PodInput): PodResult {
   const grossMarginPct = grossRevenue > 0 ? Number(((grossProfitBeforeAds / grossRevenue) * 100).toFixed(2)) : 0;
   const netMarginPct = grossRevenue > 0 ? Number(((netProfit / grossRevenue) * 100).toFixed(2)) : 0;
 
+  // Break-even retail price
+  const breakEvenPrice = mktPct < 100
+    ? Number(Math.max(0, ((baseCost + shipCost + adSpend) / (1 - mktPct / 100)) - shipCharged).toFixed(2))
+    : 0;
+
   const breakdown = [
     { label: "Base Print & Blank Cost", amount: baseCost },
     { label: "Fulfillment Shipping Cost", amount: shipCost },
@@ -66,6 +72,7 @@ export function calculatePodProfit(input: PodInput): PodResult {
     netProfit,
     grossMarginPct,
     netMarginPct,
+    breakEvenPrice,
     breakdown,
     dataSnippet,
   };

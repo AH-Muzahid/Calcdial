@@ -137,12 +137,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
 
         <div className="lg:col-span-5">
           <ResultCard
-            primaryLabel="Net Profit"
+            primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
-            secondaryLabel="Gross Profit (Pre-Ads)"
-            secondaryValue={result.grossProfit}
-            effectiveRateLabel="Gross Margin"
-            effectiveRatePct={result.grossMarginPct}
+            secondaryLabel="Total Store Expenses"
+            secondaryValue={result.totalExpenses}
+            payoutLabel="Gross Margin Profit"
+            payoutValue={result.grossProfit}
+            breakEvenPrice={result.breakEvenPrice}
+            marginPct={result.netMarginPct}
             breakdown={result.breakdown}
           />
         </div>

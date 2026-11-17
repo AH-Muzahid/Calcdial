@@ -150,12 +150,14 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
 
         <div className="lg:col-span-5">
           <ResultCard
-            primaryLabel="Estimated Net Profit"
+            primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
             secondaryLabel="Total Production & Ads"
             secondaryValue={result.totalCosts}
-            effectiveRateLabel="Net Margin"
-            effectiveRatePct={result.netMarginPct}
+            payoutLabel="Marketplace Payout"
+            payoutValue={Number((result.grossRevenue - result.marketplaceFee).toFixed(2))}
+            breakEvenPrice={result.breakEvenPrice}
+            marginPct={result.netMarginPct}
             breakdown={result.breakdown}
           />
         </div>

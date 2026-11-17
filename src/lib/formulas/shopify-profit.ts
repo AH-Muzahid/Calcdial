@@ -24,6 +24,7 @@ export interface ShopifyResult {
   netProfit: number;
   netMarginPct: number;
   breakEvenRoas: number;
+  breakEvenPrice: number;
   breakdown: { label: string; amount: number; rate?: string }[];
   dataSnippet: string;
 }
@@ -69,6 +70,12 @@ export function calculateShopifyProfit(input: ShopifyInput): ShopifyResult {
   const breakEvenRoas =
     grossMarginDecimal > 0 ? Number((1 / grossMarginDecimal).toFixed(2)) : 0;
 
+  // Break-even price
+  const totalRatePct = ratePct + thirdPartyTxPct;
+  const breakEvenPrice = totalRatePct < 100
+    ? Number(((cogs + shipping + adSpend + fixedFee) / (1 - totalRatePct / 100)).toFixed(2))
+    : 0;
+
   const breakdown = [
     { label: "Cost of Goods (COGS)", amount: cogs },
     { label: "Payment Gateway Fee", amount: paymentFee, rate: `${ratePct}% + $${fixedFee.toFixed(2)}` },
@@ -100,6 +107,7 @@ export function calculateShopifyProfit(input: ShopifyInput): ShopifyResult {
     netProfit,
     netMarginPct,
     breakEvenRoas,
+    breakEvenPrice,
     breakdown,
     dataSnippet,
   };
