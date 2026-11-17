@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { TOOLS, GUIDES } from "@/data/tools-registry";
 
+export const dynamic = "force-static";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://feesnap.com";
 
