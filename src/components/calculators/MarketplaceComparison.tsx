@@ -57,13 +57,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm space-y-6">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <InputField
           label="Item Retail Price"
           value={sellingPrice}
           onChange={setSellingPrice}
           prefix="$"
+          presets={[25, 35, 55, 95]}
         />
         <InputField
           label="Product COGS"

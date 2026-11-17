@@ -60,7 +60,7 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-5">
           <PresetSelector
@@ -77,6 +77,7 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
               value={revenue}
               onChange={setRevenue}
               prefix="$"
+              presets={[25, 45, 75, 120]}
             />
             <InputField
               label="Product Cost (COGS)"

@@ -1,46 +1,37 @@
 "use client";
 
-import { useState } from "react";
 import { FAQItem } from "@/data/tools-registry";
+import { BlurAccordion } from "@/components/motion/blur-accordion";
 
 export function FAQAccordion({ faqs }: { faqs: FAQItem[] }) {
-  const [openIdx, setOpenIdx] = useState<number | null>(0);
-
   if (!faqs || faqs.length === 0) return null;
 
+  const items = faqs.map((faq, idx) => ({
+    id: `faq-${idx}`,
+    title: faq.question,
+    content: (
+      <div className="leading-relaxed text-slate-600 dark:text-slate-400">
+        {faq.answer}
+      </div>
+    ),
+  }));
+
   return (
-    <section className="my-8 rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 shadow-xs">
-      <h2 className="text-xl font-bold tracking-tight text-gray-900">
+    <section className="my-10 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="size-2 rounded-full bg-emerald-500" />
+        <span className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">
+          Official Fee Breakdown
+        </span>
+      </div>
+      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
         Frequently Asked Questions
       </h2>
-      <p className="mt-2 text-sm text-gray-600">
-        Common questions and official merchant fee schedule details for online sellers.
+      <p className="mt-1 text-xs sm:text-sm text-slate-500 mb-6">
+        Click to expand verified merchant policy details and 2026 platform rules.
       </p>
 
-      <div className="mt-6 divide-y divide-gray-200 border-t border-gray-200">
-        {faqs.map((faq, idx) => {
-          const isOpen = openIdx === idx;
-          return (
-            <div key={idx} className="py-4">
-              <button
-                type="button"
-                onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="flex w-full items-center justify-between text-left text-sm font-semibold text-gray-900 focus:outline-hidden"
-              >
-                <span>{faq.question}</span>
-                <span className="ml-4 shrink-0 text-emerald-600 text-lg">
-                  {isOpen ? "−" : "+"}
-                </span>
-              </button>
-              {isOpen && (
-                <p className="mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed pr-4">
-                  {faq.answer}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      <BlurAccordion items={items} multiple={false} />
     </section>
   );
 }

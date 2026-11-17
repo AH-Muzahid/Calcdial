@@ -74,7 +74,7 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-5">
           <PresetSelector
@@ -91,6 +91,7 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
               value={retail}
               onChange={setRetail}
               prefix="$"
+              presets={[19.99, 27.99, 34.99, 49.99]}
             />
             <InputField
               label="Base Print & Blank Cost"

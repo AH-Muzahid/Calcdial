@@ -59,7 +59,7 @@ Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-5">
           <PresetSelector
@@ -76,6 +76,7 @@ Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
               value={salePrice}
               onChange={setSalePrice}
               prefix="$"
+              presets={[15, 24.99, 39.99, 59.99]}
             />
             <InputField
               label="Creator Affiliate Commission %"

@@ -54,7 +54,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm space-y-6">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <InputField
           label="Desired Net Payout Amount"
@@ -62,6 +62,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
           onChange={setTargetPayout}
           prefix={result.currencySymbol}
           helpText="The exact amount you want in your bank account"
+          presets={[50, 100, 250, 500]}
         />
         <PresetSelector
           label="Settlement Currency"

@@ -103,7 +103,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-8 shadow-sm">
+    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
         {/* Left Column: Inputs */}
         <div className="lg:col-span-7 space-y-5">
@@ -114,6 +114,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               onChange={setPrice}
               prefix="$"
               helpText="Buyer retail listing price"
+              presets={[15, 29.99, 49.99, 99.99]}
             />
             <InputField
               label="Shipping Charged"
@@ -121,6 +122,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               onChange={setShipping}
               prefix="$"
               helpText="Paid by buyer (enter 0 for free shipping)"
+              presets={[0, 4.99, 9.99]}
             />
           </div>
 
@@ -143,13 +145,13 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Offsite Ads Toggle */}
-          <div className="rounded-xl border border-gray-200 bg-gray-50/60 p-4">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
             <div className="flex items-center justify-between">
               <div>
-                <label className="text-xs font-semibold text-gray-800 cursor-pointer">
+                <label className="text-xs font-semibold text-slate-800 cursor-pointer">
                   Etsy Offsite Ads
                 </label>
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-slate-500">
                   Applied when buyers find you via Google/Bing ads
                 </p>
               </div>
@@ -157,12 +159,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 type="checkbox"
                 checked={offsiteAds}
                 onChange={(e) => setOffsiteAds(e.target.checked)}
-                className="h-5 w-5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                className="h-5 w-5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
               />
             </div>
 
             {offsiteAds && (
-              <div className="mt-3 flex gap-4 pt-2 border-t border-gray-200 text-xs">
+              <div className="mt-3 flex gap-4 pt-2 border-t border-slate-200 text-xs">
                 <label className="flex items-center gap-1.5 cursor-pointer">
                   <input
                     type="radio"
