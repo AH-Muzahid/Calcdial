@@ -30,20 +30,19 @@ export function InputField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      {/* Label Row - 100% width, never collides with preset chips */}
-      <div className="flex items-start justify-between gap-2">
+      <div className="flex items-center justify-between">
         <label
           htmlFor={inputId}
-          className="text-xs font-semibold text-zinc-900 leading-snug tracking-tight"
+          className="text-xs font-semibold text-zinc-900 tracking-tight"
         >
           {label}
         </label>
       </div>
 
-      {/* Input Box */}
-      <div className="relative flex items-center rounded-xl border border-zinc-200 bg-white shadow-2xs transition-all focus-within:border-zinc-900 focus-within:ring-2 focus-within:ring-zinc-900/5">
+      {/* Input container */}
+      <div className="relative flex items-center rounded-xl border border-zinc-200 bg-white transition-all hover:border-zinc-300 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
         {prefix && (
-          <span className="pl-3.5 pr-1 text-sm font-mono font-semibold text-zinc-400 select-none">
+          <span className="pl-3.5 pr-1 text-sm font-mono font-medium text-zinc-400 select-none">
             {prefix}
           </span>
         )}
@@ -60,7 +59,7 @@ export function InputField({
             onChange(isNaN(parsed) ? 0 : parsed);
           }}
           placeholder="0.00"
-          className="h-11 min-h-[44px] w-full rounded-xl bg-transparent px-3 text-base sm:text-sm font-mono font-medium text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+          className="h-11 min-h-[44px] w-full rounded-xl bg-transparent px-3 text-sm font-mono font-medium text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
         />
         {suffix && (
           <span className="pr-3.5 pl-1 text-xs font-mono font-medium text-zinc-400 select-none">
@@ -69,10 +68,9 @@ export function InputField({
         )}
       </div>
 
-      {/* Quick Presets Row - positioned cleanly below input, completely isolated from label */}
+      {/* Presets Row */}
       {presets && presets.length > 0 && (
-        <div className="flex flex-wrap items-center gap-1 pt-0.5">
-          <span className="text-[10px] font-mono text-zinc-400 mr-0.5 select-none">Presets:</span>
+        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
           {presets.map((preset) => {
             const isSelected = Math.abs(numValue - preset) < 0.001;
             const displayVal = suffix === "%" ? `${preset}%` : prefix ? `${prefix}${preset}` : `${preset}`;
@@ -81,10 +79,10 @@ export function InputField({
                 key={preset}
                 type="button"
                 onClick={() => onChange(preset)}
-                className={`h-6 px-2 rounded-md text-[11px] font-mono font-medium transition-all cursor-pointer ${
+                className={`h-6 px-2 rounded-md text-[11px] font-mono transition-colors cursor-pointer ${
                   isSelected
-                    ? "bg-zinc-900 text-white font-medium shadow-2xs border border-zinc-900"
-                    : "bg-zinc-100/90 text-zinc-600 hover:bg-zinc-200/80 hover:text-zinc-950 border border-zinc-200/70"
+                    ? "bg-zinc-950 text-white font-medium"
+                    : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                 }`}
               >
                 {displayVal}
@@ -94,7 +92,7 @@ export function InputField({
         </div>
       )}
 
-      {helpText && <p className="text-[11px] text-zinc-400">{helpText}</p>}
+      {helpText && <p className="text-[11px] text-zinc-400 leading-tight">{helpText}</p>}
     </div>
   );
 }

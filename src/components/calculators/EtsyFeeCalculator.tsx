@@ -54,7 +54,7 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
       const c = new URLSearchParams(window.location.search).get("cost");
       if (c && !isNaN(parseFloat(c))) return parseFloat(c);
     }
-    return 10.00; // Default material/labor cost
+    return 10.00;
   });
 
   const [shippingCost, setShippingCost] = useState<number>(() => {
@@ -62,7 +62,7 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
       const sc = new URLSearchParams(window.location.search).get("shipcost");
       if (sc && !isNaN(parseFloat(sc))) return parseFloat(sc);
     }
-    return 4.50; // Default carrier postage
+    return 4.50;
   });
 
   // Group 3: Store & Fee Settings
@@ -88,6 +88,19 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
 
   // Target Margin for Reverse Pricing Mode
   const [targetMargin, setTargetMargin] = useState<number>(35);
+
+  const handleReset = () => {
+    setPrice(35.00);
+    setShippingCharged(5.00);
+    setQuantity(1);
+    setItemCost(10.00);
+    setShippingCost(4.50);
+    setCountry(initialCountry.toLowerCase());
+    setIsInternational(false);
+    setOffsiteAds(false);
+    setAdsTier(0.15);
+    setTargetMargin(35);
+  };
 
   const result = useMemo(() => {
     return calculateEtsyFees({
@@ -147,7 +160,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs">
       {/* Mode Switcher Tabs */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
@@ -158,12 +171,23 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             Switch between forward profit modeling and target margin pricing
           </p>
         </div>
-        <PillTabs
-          tabs={modeTabs}
-          value={mode}
-          onValueChange={setMode}
-          label="Calculator Mode"
-        />
+        <div className="flex items-center gap-3">
+          <PillTabs
+            tabs={modeTabs}
+            value={mode}
+            onValueChange={setMode}
+            label="Calculator Mode"
+          />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
+            title="Reset to defaults"
+          >
+            <span>↺</span>
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -171,7 +195,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         <div className="lg:col-span-7 space-y-6">
 
           {/* Group 1: 🏷️ Sale & Shipping Pricing */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 1
@@ -229,7 +253,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 2: 📦 Item Costs & Postage (COGS) */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 2
@@ -260,7 +284,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Group 3: ⚙️ Store & Fee Settings */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 3
@@ -312,7 +336,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             </div>
 
             {/* Offsite Ads Toggle */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-4">
+            <div className="rounded-xl border border-zinc-200 bg-zinc-50/60 p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <label className="text-xs font-semibold text-zinc-900 cursor-pointer">
@@ -331,7 +355,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               </div>
 
               {offsiteAds && (
-                <div className="mt-3 flex gap-4 pt-3 border-t border-zinc-100 text-xs">
+                <div className="mt-3 flex gap-4 pt-3 border-t border-zinc-200/60 text-xs">
                   <label className="flex items-center gap-1.5 cursor-pointer text-zinc-800">
                     <input
                       type="radio"
@@ -365,6 +389,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 getFormattedText={getFormattedSummary}
               />
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                >
+                  <span>↺</span>
+                  <span>Reset Form</span>
+                </button>
                 <PrintButton toolSlug="etsy-fee-calculator" />
                 <EmbedModal toolSlug="etsy-fee-calculator" title="Etsy Fee Calculator" />
               </div>

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -62,7 +61,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} scroll-smooth light`} style={{ colorScheme: "light" }}>
-      <body className="min-h-screen bg-white text-zinc-950 font-sans antialiased flex flex-col selection:bg-black selection:text-white">
+      <body className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white">
         {/* Google Analytics 4 */}
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
 
@@ -82,9 +81,7 @@ export default function RootLayout({
           />
         )}
 
-        <Header />
-        <main className="flex-1 pb-20">{children}</main>
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

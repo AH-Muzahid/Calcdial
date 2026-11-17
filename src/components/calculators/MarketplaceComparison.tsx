@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { compareMarketplaces } from "@/lib/formulas/platform-comparison";
+import { compareMarketplaces, PlatformResult } from "@/lib/formulas/platform-comparison";
 import { ETSY_FEE_PRESETS } from "@/data/fee-presets";
 import { InputField } from "./InputField";
 import { PresetSelector } from "./PresetSelector";
@@ -15,24 +15,34 @@ import { trackEvent } from "@/lib/analytics";
 import { formatCurrency } from "@/lib/utils";
 
 export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }) {
-  const [viewMode, setViewMode] = useState<string>("per-order");
   const [sellingPrice, setSellingPrice] = useState<number>(38.00);
-  const [cogs, setCogs] = useState<number>(10.50);
   const [shippingCharge, setShippingCharge] = useState<number>(4.99);
+  const [cogs, setCogs] = useState<number>(10.50);
   const [shippingCost, setShippingCost] = useState<number>(4.50);
-  const [country, setCountry] = useState<string>("us");
   const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
+  const [country, setCountry] = useState<string>("us");
+  const [viewMode, setViewMode] = useState<string>("per-order");
+
+  const handleReset = () => {
+    setSellingPrice(38.00);
+    setShippingCharge(4.99);
+    setCogs(10.50);
+    setShippingCost(4.50);
+    setMonthlyOrders(100);
+    setCountry("us");
+    setViewMode("per-order");
+  };
 
   const comparison = useMemo(() => {
     return compareMarketplaces({
       sellingPrice,
-      cogs,
       shippingCharge,
+      cogs,
       shippingCost,
-      country,
       monthlyOrders,
+      country,
     });
-  }, [sellingPrice, cogs, shippingCharge, shippingCost, country, monthlyOrders]);
+  }, [sellingPrice, shippingCharge, cogs, shippingCost, monthlyOrders, country]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,7 +52,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [sellingPrice, country, monthlyOrders]);
+  }, [sellingPrice, cogs, monthlyOrders, country]);
 
   const countryOptions = ETSY_FEE_PRESETS.map((p) => ({
     id: p.id,
@@ -55,49 +65,58 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
   ];
 
   const getFormattedSummary = () => {
-    return `Marketplace Profit Comparison & Annual Projection (2026)
+    return `Etsy vs Shopify vs TikTok Shop Comparison (2026)
 ----------------------------------------
-Item Retail Price:    $${sellingPrice.toFixed(2)}
-Shipping Charged:     $${shippingCharge.toFixed(2)}
-COGS & Carrier Post:  $${(cogs + shippingCost).toFixed(2)}
-Monthly Order Volume: ${monthlyOrders} orders/mo
+Item Retail Price:   $${sellingPrice.toFixed(2)}
+Shipping Charged:    $${shippingCharge.toFixed(2)}
+COGS & Postage:      $${(cogs + shippingCost).toFixed(2)}
+Monthly Volume:      ${monthlyOrders} orders/mo
 ----------------------------------------
-${comparison.results
-  .map(
-    (r) =>
-      `${r.platform.padEnd(12)}: Net $${r.netProfit.toFixed(2)}/order (${r.netMarginPct}% margin) | Annual Net: $${r.annualProjection.netProfit.toLocaleString()}`
-  )
-  .join("\n")}
+MOST PROFITABLE:     ${comparison.winner.platform} (Net Profit: $${comparison.winner.netProfit.toFixed(2)}/order)
+Extra vs Etsy:       +$${comparison.annualSavingsWinnerVsEtsy.toLocaleString()}/yr
 ----------------------------------------
-Winner: ${comparison.winner.platform} (Net Profit $${comparison.winner.netProfit.toFixed(2)}/order)
-Annual Savings vs Etsy: $${comparison.annualSavingsWinnerVsEtsy.toLocaleString()}
+Etsy Net Profit:     $${comparison.results.find((r: PlatformResult) => r.platform === "Etsy")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "Etsy")?.effectiveFeePct}%)
+Shopify Net Profit:  $${comparison.results.find((r: PlatformResult) => r.platform === "Shopify")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "Shopify")?.effectiveFeePct}%)
+TikTok Net Profit:   $${comparison.results.find((r: PlatformResult) => r.platform === "TikTok Shop")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "TikTok Shop")?.effectiveFeePct}%)
+----------------------------------------
 Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-shop-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-8">
-      {/* View Switcher Header */}
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs space-y-8">
+      {/* Header & Tabs */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
           <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
-            Marketplace Head-to-Head Fee Audit
+            3-Way Platform Profit Engine
           </h2>
           <p className="text-xs text-zinc-500 mt-0.5">
-            Compare true seller take-home between Etsy, Shopify, and TikTok Shop
+            Compare Etsy, Shopify, and TikTok Shop side-by-side on identical order economics
           </p>
         </div>
-        <PillTabs
-          tabs={viewTabs}
-          value={viewMode}
-          onValueChange={setViewMode}
-          label="Comparison View Mode"
-        />
+        <div className="flex items-center gap-3">
+          <PillTabs
+            tabs={viewTabs}
+            value={viewMode}
+            onValueChange={setViewMode}
+            label="Comparison View Mode"
+          />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
+            title="Reset to defaults"
+          >
+            <span>↺</span>
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       {/* Input Cards Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pb-6 border-b border-zinc-100">
         {/* Card 1: Retail Price & Shipping */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               1
@@ -124,7 +143,7 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
         </div>
 
         {/* Card 2: COGS & Carrier Postage */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               2
@@ -152,7 +171,7 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
         </div>
 
         {/* Card 3: Volume & Region */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               3
@@ -179,7 +198,7 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
       </div>
 
       {/* Winner Recommendation Banner */}
-      <div className="rounded-2xl border border-zinc-200 bg-zinc-50/90 p-5 shadow-xs">
+      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 shadow-xs">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-950 text-white font-bold text-sm shadow-xs">
@@ -220,14 +239,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
 
       {/* Platform Cards Breakdown */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {comparison.results.map((r) => {
+        {comparison.results.map((r: PlatformResult) => {
           const isWinner = r.platform === comparison.winner.platform;
           return (
             <div
               key={r.platform}
-              className={`rounded-2xl border p-5 space-y-3 transition-all ${
+              className={`rounded-xl border p-5 space-y-3 transition-all ${
                 isWinner
-                  ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
+                  ? "border-zinc-900 bg-zinc-50 shadow-xs ring-1 ring-zinc-900/10"
                   : "border-zinc-200 bg-white"
               }`}
             >
@@ -273,7 +292,7 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
                 </div>
               </div>
 
-              <div className="mt-2 rounded-xl bg-zinc-50 p-2.5 text-center text-xs border border-zinc-100">
+              <div className="mt-2 rounded-lg bg-zinc-50 p-2.5 text-center text-xs border border-zinc-100">
                 <span className="text-zinc-400 block text-[11px] font-mono">
                   Annual Profit ({monthlyOrders * 12} sales):
                 </span>
@@ -293,6 +312,14 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
             getFormattedText={getFormattedSummary}
           />
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+            >
+              <span>↺</span>
+              <span>Reset Form</span>
+            </button>
             <PrintButton toolSlug="etsy-vs-shopify-vs-tiktok-shop-calculator" />
             <EmbedModal
               toolSlug="etsy-vs-shopify-vs-tiktok-shop-calculator"

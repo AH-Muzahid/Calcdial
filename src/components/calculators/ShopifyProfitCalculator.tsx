@@ -34,6 +34,17 @@ export function ShopifyProfitCalculator({
   const [gateway, setGateway] = useState<string>(initialGateway.toLowerCase());
   const [targetMargin, setTargetMargin] = useState<number>(30);
 
+  const handleReset = () => {
+    setItemPrice(48.00);
+    setShippingCharged(0.00);
+    setCogs(12.50);
+    setShippingCost(4.80);
+    setAdSpend(14.00);
+    setShopifyPlan("basic");
+    setGateway(initialGateway.toLowerCase());
+    setTargetMargin(30);
+  };
+
   const result = useMemo(() => {
     return calculateShopifyProfit({
       itemPrice,
@@ -94,7 +105,7 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs">
       {/* Mode Switcher */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
@@ -105,18 +116,30 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
             Model exact 2026 Shopify Payments rates, 3rd-party transaction fees, and Break-Even ROAS
           </p>
         </div>
-        <PillTabs
-          tabs={modeTabs}
-          value={mode}
-          onValueChange={setMode}
-          label="Shopify Calculator Mode"
-        />
+        <div className="flex items-center gap-3">
+          <PillTabs
+            tabs={modeTabs}
+            value={mode}
+            onValueChange={setMode}
+            label="Shopify Calculator Mode"
+          />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
+            title="Reset to defaults"
+          >
+            <span>↺</span>
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-6">
-          {/* Card 1: Retail Pricing & Shipping */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+
+          {/* Group 1: Retail Pricing & Shipping */}
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 1
@@ -145,92 +168,45 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
             </div>
           </div>
 
-          {/* Card 2: Landed COGS & Fulfillment */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          {/* Group 2: Landed COGS & Fulfillment */}
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 2
               </span>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-                Landed COGS & Fulfillment
+                Unit Costs & Fulfillment (COGS)
               </h3>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <InputField
-                label="Product Cost (COGS)"
+                label="Product Manufacturing / COGS"
                 value={cogs}
                 onChange={setCogs}
                 prefix="$"
-                helpText="Manufacturing, packaging, and inbound freight"
-                presets={[5, 12.5, 25, 45]}
+                helpText="Landed inventory cost per unit"
+                presets={[8, 12.50, 20, 35]}
               />
               <InputField
-                label="Carrier Shipping Label Cost"
+                label="Carrier Shipping Postage"
                 value={shippingCost}
                 onChange={setShippingCost}
                 prefix="$"
-                helpText="What you pay USPS, UPS, or DHL for postage"
-                presets={[3.5, 4.8, 8.5]}
+                helpText="Actual postage paid to carrier"
+                presets={[0, 4.80, 8.50, 12.00]}
               />
             </div>
           </div>
 
-          {/* Card 3: Customer Acquisition / Ad Spend */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          {/* Group 3: Plan, Gateway & Ad Spend */}
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 3
               </span>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-                Customer Acquisition Cost (CAC)
-              </h3>
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <InputField
-                label="Ad Spend / CAC per Order"
-                value={adSpend}
-                onChange={setAdSpend}
-                prefix="$"
-                helpText="Blended Meta, TikTok, or Google Ads CPA"
-                presets={[0, 8, 14, 22]}
-              />
-              {mode === "target" ? (
-                <InputField
-                  label="Desired Net Profit Margin"
-                  value={targetMargin}
-                  onChange={setTargetMargin}
-                  suffix="%"
-                  helpText="Target profit margin on retail sale"
-                  presets={[20, 30, 40, 50]}
-                />
-              ) : (
-                <div className="rounded-xl border border-zinc-200 bg-white p-3.5 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-700">
-                      Break-Even ROAS
-                    </span>
-                    <span className="text-lg font-black text-zinc-950 font-mono">
-                      {result.breakEvenRoas}x
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-zinc-500 mt-1 leading-snug">
-                    Minimum ad return needed to avoid losing money on ad campaigns
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Card 4: Shopify Plan & Payment Gateway */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-                4
-              </span>
-              <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-                Shopify Plan & Gateway
+                Shopify Plan & Payment Gateway
               </h3>
             </div>
 
@@ -239,24 +215,39 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
                 label="Shopify Subscription Plan"
                 selectedId={shopifyPlan}
                 options={planOptions}
-                onSelect={(id) => setShopifyPlan(id as ShopifyPlan)}
-                helpText="Higher tiers offer lower credit card rates"
+                onSelect={(val) => setShopifyPlan(val as ShopifyPlan)}
+                helpText="Determines transaction fee tiers"
               />
+
               <PresetSelector
                 label="Payment Gateway"
                 selectedId={gateway}
                 options={gatewayOptions}
                 onSelect={setGateway}
-                helpText="Shopify Payments has 0% 3rd-party fee"
+                helpText="Shopify Payments vs 3rd party penalty"
               />
             </div>
 
-            {gateway !== "shopify-payments" && (
-              <div className="rounded-xl border border-zinc-200 bg-zinc-100 p-3 text-xs text-zinc-900">
-                ⚠️ <strong>External Gateway Notice:</strong> Using {gateway.toUpperCase()} adds a{" "}
-                <strong>{SHOPIFY_PLAN_RATES[shopifyPlan].thirdPartyPct}%</strong> third-party transaction fee charged by Shopify on the {SHOPIFY_PLAN_RATES[shopifyPlan].name.split(" ")[0]} plan.
-              </div>
-            )}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <InputField
+                label="Ad Spend per Attributed Order (CAC)"
+                value={adSpend}
+                onChange={setAdSpend}
+                prefix="$"
+                helpText="Blended customer acquisition cost"
+                presets={[0, 8, 14, 25]}
+              />
+
+              {mode === "target" && (
+                <InputField
+                  label="Target Net Profit Margin %"
+                  value={targetMargin}
+                  onChange={setTargetMargin}
+                  suffix="%"
+                  presets={[20, 30, 40]}
+                />
+              )}
+            </div>
           </div>
 
           {!isEmbed && (
@@ -266,6 +257,14 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
                 getFormattedText={getFormattedSummary}
               />
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                >
+                  <span>↺</span>
+                  <span>Reset Form</span>
+                </button>
                 <PrintButton toolSlug="shopify-profit-calculator" />
                 <EmbedModal toolSlug="shopify-profit-calculator" title="Shopify Profit Calculator" />
               </div>

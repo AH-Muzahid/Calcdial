@@ -34,6 +34,18 @@ export function PodProfitCalculator({ initialProduct = "t-shirts", isEmbed = fal
     }
   };
 
+  const handleReset = () => {
+    setRetail(29.99);
+    setProductType(initialProduct.toLowerCase());
+    setBaseCost(9.50);
+    setShippingCharged(4.99);
+    setShippingCost(4.50);
+    setSalesChannel("etsy");
+    setCustomFeePct(12.0);
+    setAdSpend(4.00);
+    setTargetMargin(35);
+  };
+
   const result = useMemo(() => {
     return calculatePodProfit({
       retailPrice: retail,
@@ -98,7 +110,7 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)]">
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs">
       {/* Mode Switcher */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
@@ -109,19 +121,30 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
             Model exact margins across Printify, Gelato, Printful, and sales channels
           </p>
         </div>
-        <PillTabs
-          tabs={modeTabs}
-          value={mode}
-          onValueChange={setMode}
-          label="POD Calculator Mode"
-        />
+        <div className="flex items-center gap-3">
+          <PillTabs
+            tabs={modeTabs}
+            value={mode}
+            onValueChange={setMode}
+            label="POD Calculator Mode"
+          />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
+            title="Reset to defaults"
+          >
+            <span>↺</span>
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
         <div className="lg:col-span-7 space-y-6">
 
           {/* Group 1: 🏷️ Retail Pricing & Sales Channel */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 1
@@ -181,7 +204,7 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
           </div>
 
           {/* Group 2: 🖨️ Provider Production & Fulfillment */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 2
@@ -201,42 +224,42 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <InputField
-                label="Base Print & Blank Cost"
+                label="Base Item Print Cost"
                 value={baseCost}
                 onChange={setBaseCost}
                 prefix="$"
-                helpText="Provider charge for garment + printing"
-                presets={[8.50, 10.50, 15.00, 22.00]}
+                helpText="Manufacturing fee invoiced by print lab"
+                presets={[8.00, 9.50, 14.00, 22.00]}
               />
               <InputField
-                label="Provider Fulfillment Shipping"
+                label="Fulfillment Postage to Print Lab"
                 value={shippingCost}
                 onChange={setShippingCost}
                 prefix="$"
-                helpText="Actual postage charged by print provider"
-                presets={[3.99, 4.50, 6.00, 8.50]}
+                helpText="Shipping cost paid to production provider"
+                presets={[3.99, 4.50, 7.50]}
               />
             </div>
           </div>
 
-          {/* Group 3: 📣 Marketing & Ad Spend */}
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+          {/* Group 3: 📣 Customer Acquisition / Ad Spend */}
+          <div className="space-y-4 pb-6 border-b border-zinc-100">
             <div className="flex items-center gap-2">
               <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
                 3
               </span>
               <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-                Marketing & Customer Acquisition
+                Marketing & Customer Acquisition Cost (CAC)
               </h3>
             </div>
 
             <InputField
-              label="Target Ad Spend per Order (CAC)"
+              label="Ad Spend / Marketing Allocation per Order"
               value={adSpend}
               onChange={setAdSpend}
               prefix="$"
-              helpText="Estimated Meta / TikTok / Etsy Ads cost per conversion (enter 0 for organic sales)"
-              presets={[0, 3.00, 5.00, 10.00]}
+              helpText="Meta, TikTok, or Etsy search advertising cost per attributed sale"
+              presets={[0, 3.50, 6.00, 10.00]}
             />
           </div>
 
@@ -247,8 +270,16 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
                 getFormattedText={getFormattedSummary}
               />
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+                >
+                  <span>↺</span>
+                  <span>Reset Form</span>
+                </button>
                 <PrintButton toolSlug="pod-profit-calculator" />
-                <EmbedModal toolSlug="pod-profit-calculator" title="POD Profit Calculator" />
+                <EmbedModal toolSlug="pod-profit-calculator" title="Print-on-Demand Profit Calculator" />
               </div>
             </div>
           )}

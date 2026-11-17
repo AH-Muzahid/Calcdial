@@ -26,6 +26,16 @@ export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {
   const [currencyConversion, setCurrencyConversion] = useState<boolean>(false);
   const [monthlyVolume, setMonthlyVolume] = useState<number>(5000);
 
+  const handleReset = () => {
+    setMode("direct");
+    setAmount(100.00);
+    setCurrency("usd");
+    setTransactionType("checkout");
+    setIsInternational(false);
+    setCurrencyConversion(false);
+    setMonthlyVolume(5000);
+  };
+
   const result = useMemo(() => {
     return comparePaymentProcessors({
       amount,
@@ -78,22 +88,19 @@ Annual Volume Savings: ${result.currencySymbol}${result.annualSavings.toLocaleSt
 Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculator`;
     }
 
-    return `Stripe vs PayPal Processing Fee Comparison (2026)
+    return `Stripe vs PayPal Payment Fee Breakdown (2026)
 ----------------------------------------
 Charge Amount:         ${result.currencySymbol}${amount.toFixed(2)}
-Payment Type:          ${transactionType === "invoice" ? "Digital Invoicing" : "Online Checkout"}
+Stripe Cut:            -${result.currencySymbol}${result.stripe.feeOnCharge.toFixed(2)} (${result.stripe.ratePct}% + ${result.currencySymbol}${result.stripe.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.stripe.netPayoutOnCharge.toFixed(2)}
+PayPal Cut:            -${result.currencySymbol}${result.paypal.feeOnCharge.toFixed(2)} (${result.paypal.ratePct}% + ${result.currencySymbol}${result.paypal.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.paypal.netPayoutOnCharge.toFixed(2)}
 ----------------------------------------
-Stripe Payout:         ${result.currencySymbol}${result.stripe.netPayoutOnCharge.toFixed(2)} (Fee: ${result.currencySymbol}${result.stripe.feeOnCharge.toFixed(2)} | ${result.stripe.ratePct}% + ${result.currencySymbol}${result.stripe.fixedFee.toFixed(2)})
-PayPal Payout:         ${result.currencySymbol}${result.paypal.netPayoutOnCharge.toFixed(2)} (Fee: ${result.currencySymbol}${result.paypal.feeOnCharge.toFixed(2)} | ${result.paypal.ratePct}% + ${result.currencySymbol}${result.paypal.fixedFee.toFixed(2)})
-----------------------------------------
-Recommended: ${result.recommended} (Keeps +${result.currencySymbol}${result.savingsOnDirectCharge.toFixed(2)} more)
-Annual Volume Savings: ${result.currencySymbol}${result.annualSavings.toLocaleString()}
+Recommended:           ${result.recommended} (Keeps ${result.currencySymbol}${Math.abs(result.stripe.netPayoutOnCharge - result.paypal.netPayoutOnCharge).toFixed(2)} more)
 Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculator`;
   };
 
   return (
-    <div className="rounded-3xl border border-zinc-200/90 bg-white p-6 sm:p-8 shadow-[0_4px_24px_rgba(0,0,0,0.03)] space-y-8">
-      {/* Mode Switcher */}
+    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs space-y-8">
+      {/* Header with Mode Tabs */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
         <div>
           <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
@@ -103,18 +110,29 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
             Compare transaction processing cuts, digital invoicing spreads, and client gross-up formulas
           </p>
         </div>
-        <PillTabs
-          tabs={modeTabs}
-          value={mode}
-          onValueChange={(val) => setMode(val as PaymentMode)}
-          label="Payment Comparison Mode"
-        />
+        <div className="flex items-center gap-3">
+          <PillTabs
+            tabs={modeTabs}
+            value={mode}
+            onValueChange={(val) => setMode(val as PaymentMode)}
+            label="Payment Comparison Mode"
+          />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
+            title="Reset to defaults"
+          >
+            <span>↺</span>
+            <span>Reset</span>
+          </button>
+        </div>
       </div>
 
       {/* Inputs Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pb-6 border-b border-zinc-100">
         {/* Card 1: Payment Details */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               1
@@ -146,7 +164,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
         </div>
 
         {/* Card 2: Transaction Method */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               2
@@ -187,7 +205,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
         </div>
 
         {/* Card 3: Monthly Volume Simulator */}
-        <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-5 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
             <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
               3
@@ -206,7 +224,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
             presets={[2500, 5000, 10000, 25000]}
           />
 
-          <div className="rounded-xl border border-zinc-200 bg-white p-3.5">
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3.5">
             <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
               Estimated Annual Advantage
             </span>
@@ -224,9 +242,9 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Stripe Card */}
         <div
-          className={`rounded-3xl border p-6 space-y-5 transition-all ${
+          className={`rounded-2xl border p-6 space-y-5 transition-all ${
             result.recommended === "Stripe"
-              ? "border-zinc-900 bg-zinc-50/40 shadow-xs ring-1 ring-zinc-900/10"
+              ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
               : "border-zinc-200 bg-white"
           }`}
         >
@@ -245,7 +263,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
           </div>
 
           {mode === "gross-up" ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Invoice This Amount to Client
               </span>
@@ -266,7 +284,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
               </span>
@@ -300,9 +318,9 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
 
         {/* PayPal Card */}
         <div
-          className={`rounded-3xl border p-6 space-y-5 transition-all ${
+          className={`rounded-2xl border p-6 space-y-5 transition-all ${
             result.recommended === "PayPal"
-              ? "border-zinc-900 bg-zinc-50/40 shadow-xs ring-1 ring-zinc-900/10"
+              ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
               : "border-zinc-200 bg-white"
           }`}
         >
@@ -321,7 +339,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
           </div>
 
           {mode === "gross-up" ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Invoice This Amount to Client
               </span>
@@ -342,7 +360,7 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
               </div>
             </div>
           ) : (
-            <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-2xs">
+            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
               <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
                 Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
               </span>
@@ -375,17 +393,6 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
         </div>
       </div>
 
-      {/* Decision Fact Banner */}
-      <div className="rounded-2xl border border-zinc-200 bg-zinc-50/70 p-4 text-xs sm:text-sm text-zinc-800 flex items-center gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-zinc-950 text-white font-bold text-xs">
-          💡
-        </span>
-        <p className="leading-relaxed font-medium">
-          <strong className="text-zinc-950">Strategic Takeaway: </strong>
-          {result.dataSnippet}
-        </p>
-      </div>
-
       {!isEmbed && (
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
           <ShareButton
@@ -393,6 +400,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
             getFormattedText={getFormattedSummary}
           />
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
+            >
+              <span>↺</span>
+              <span>Reset Form</span>
+            </button>
             <PrintButton toolSlug="stripe-vs-paypal-fee-calculator" />
             <EmbedModal
               toolSlug="stripe-vs-paypal-fee-calculator"
@@ -404,18 +419,22 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
 
       {!isEmbed && (
         <StickyResultBar
-          label={mode === "gross-up" ? "Stripe Invoice" : "Stripe Payout"}
+          label={
+            mode === "gross-up"
+              ? `Gross-Up (${result.recommended})`
+              : `Net Deposit (${result.recommended})`
+          }
           value={
             mode === "gross-up"
-              ? result.stripe.invoiceToReceiveTarget
-              : result.stripe.netPayoutOnCharge
-          }
-          subLabel={mode === "gross-up" ? "PayPal Invoice" : "PayPal Payout"}
-          subValue={
-            mode === "gross-up"
-              ? result.paypal.invoiceToReceiveTarget
+              ? result.recommended === "Stripe"
+                ? result.stripe.invoiceToReceiveTarget
+                : result.paypal.invoiceToReceiveTarget
+              : result.recommended === "Stripe"
+              ? result.stripe.netPayoutOnCharge
               : result.paypal.netPayoutOnCharge
           }
+          subLabel="Advantage"
+          subValue={result.savingsOnGrossUp}
         />
       )}
     </div>
