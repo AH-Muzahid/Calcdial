@@ -8,6 +8,7 @@ import {
 } from "@/lib/formulas/shopify-profit";
 import { SHOPIFY_GATEWAY_PRESETS } from "@/data/fee-presets";
 import { StickyResultBar } from "./StickyResultBar";
+import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import {
@@ -31,6 +32,24 @@ const CURRENCY_MAP: Record<string, { label: string; symbol: string }> = {
   eur: { label: "EUR (€)", symbol: "€" },
   aud: { label: "AUD (A$)", symbol: "A$" },
 };
+
+const PLAN_OPTIONS: CustomSelectOption[] = [
+  { value: "basic", label: "Basic Shopify ($39/mo)" },
+  { value: "shopify", label: "Shopify ($105/mo)" },
+  { value: "advanced", label: "Advanced Shopify ($399/mo)" },
+  { value: "plus", label: "Shopify Plus ($2,300/mo)" },
+];
+
+const GATEWAY_OPTIONS: CustomSelectOption[] = [
+  { value: "shopify-payments", label: "Shopify Payments (No extra fee)" },
+  { value: "stripe", label: "Stripe" },
+  { value: "paypal", label: "PayPal" },
+  { value: "square", label: "Square" },
+  { value: "authorize-net", label: "Authorize.Net" },
+  { value: "klarna", label: "Klarna" },
+  { value: "afterpay", label: "Afterpay" },
+  { value: "2checkout", label: "2Checkout" },
+];
 
 export function ShopifyProfitCalculator({
   initialGateway = "shopify-payments",
@@ -247,23 +266,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             <label className="text-[11px] font-bold text-zinc-950">
               Currency
             </label>
-            <div className="relative">
-              <select
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
-                className="h-9 w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 pr-8 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer"
-              >
-                {Object.entries(CURRENCY_MAP).map(([id, item]) => (
-                  <option key={id} value={id}>
-                    {item.label}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-500">
-                <ChevronDown className="size-3.5" />
-              </div>
-            </div>
+            <CustomSelect
+              value={currency}
+              options={Object.entries(CURRENCY_MAP).map(([id, item]) => ({
+                value: id,
+                label: item.label,
+              }))}
+              onChange={(val) => setCurrency(val)}
+            />
           </div>
 
           {/* ========================================================= */}
@@ -345,17 +355,19 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           ) : (
             /* REVERSE TARGET PRICING INPUTS */
             <div className="space-y-3 pt-1">
-              <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3.5 space-y-3">
-                <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
                   <div>
-                    <span className="text-xs font-bold text-zinc-950 block">
+                    <span className="text-[11px] font-bold text-zinc-950 block">
                       Target Goal <span className="text-rose-600">*</span>
                     </span>
-                    <p className="text-[11px] text-zinc-500 font-sans">
+                    <span className="text-[10px] text-zinc-400 font-sans block">
                       Minimum required to achieve your target
-                    </p>
+                    </span>
                   </div>
-                  <div className="inline-flex rounded-lg border border-zinc-200 bg-white p-0.5 text-[11px] font-semibold">
+
+                  {/* Segmented Pill Toggle - whitespace-nowrap prevents 2-line break */}
+                  <div className="inline-flex shrink-0 rounded-lg bg-zinc-100 p-0.5 text-xs font-semibold">
                     <button
                       type="button"
                       onClick={() => {
@@ -363,13 +375,13 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         setTargetValStr("30");
                       }}
                       className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer",
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
                         targetType === "margin"
-                          ? "bg-zinc-950 text-white font-bold"
+                          ? "bg-white text-zinc-950 font-bold shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950"
                       )}
                     >
-                      Margin (%)
+                      Margin %
                     </button>
                     <button
                       type="button"
@@ -378,13 +390,13 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         setTargetValStr("15.00");
                       }}
                       className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer",
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
                         targetType === "dollar"
-                          ? "bg-zinc-950 text-white font-bold"
+                          ? "bg-white text-zinc-950 font-bold shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950"
                       )}
                     >
-                      Profit ({curr.symbol})
+                      Net Profit ({curr.symbol})
                     </button>
                   </div>
                 </div>
@@ -532,22 +544,11 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     {activePlanConfig.ratePct}% + 30¢
                   </span>
                 </div>
-                <div className="relative">
-                  <select
-                    value={shopifyPlan}
-                    onChange={(e) => setShopifyPlan(e.target.value as ShopifyPlan)}
-                    style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
-                    className="h-9 w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 pr-8 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer"
-                  >
-                    <option value="basic">Basic Shopify ($39/mo)</option>
-                    <option value="shopify">Shopify ($105/mo)</option>
-                    <option value="advanced">Advanced Shopify ($399/mo)</option>
-                    <option value="plus">Shopify Plus ($2,300/mo)</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-500">
-                    <ChevronDown className="size-3.5" />
-                  </div>
-                </div>
+                <CustomSelect
+                  value={shopifyPlan}
+                  options={PLAN_OPTIONS}
+                  onChange={(val) => setShopifyPlan(val as ShopifyPlan)}
+                />
               </div>
 
               {/* Payment Gateway */}
@@ -560,26 +561,11 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     {isShopifyPayments ? "0% 3rd-party fee" : `+${activePlanConfig.thirdPartyPct}% fee`}
                   </span>
                 </div>
-                <div className="relative">
-                  <select
-                    value={gateway}
-                    onChange={(e) => setGateway(e.target.value)}
-                    style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
-                    className="h-9 w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 pr-8 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer"
-                  >
-                    <option value="shopify-payments">Shopify Payments (No extra fee)</option>
-                    <option value="stripe">Stripe</option>
-                    <option value="paypal">PayPal</option>
-                    <option value="square">Square</option>
-                    <option value="authorize-net">Authorize.Net</option>
-                    <option value="klarna">Klarna</option>
-                    <option value="afterpay">Afterpay</option>
-                    <option value="2checkout">2Checkout</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-500">
-                    <ChevronDown className="size-3.5" />
-                  </div>
-                </div>
+                <CustomSelect
+                  value={gateway}
+                  options={GATEWAY_OPTIONS}
+                  onChange={(val) => setGateway(val)}
+                />
               </div>
             </div>
 

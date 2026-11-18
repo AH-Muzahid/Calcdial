@@ -212,17 +212,14 @@ export function FormulaBreakdown({
 
       {/* Accordion Content — Streamlined Single Layer */}
       {isOpen && (
-        <div className="px-3.5 sm:px-4.5 pb-4 pt-1 border-t border-zinc-100 space-y-2.5">
-          {/* Formula Line (Subtle tinted background, no double card border) */}
-          <div className="rounded-lg bg-zinc-50/90 px-3 py-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 leading-relaxed text-center sm:text-left">
-            {methodology.formulaHtml}
+        <div className="px-3.5 sm:px-4.5 pb-4 pt-2.5 border-t border-zinc-100 space-y-3">
+          {/* Clean Formula Lines — No nested background boxes */}
+          <div className="pb-3 border-b border-zinc-100 space-y-1.5 text-xs sm:text-sm font-mono font-bold text-zinc-950 leading-relaxed">
+            <div>{methodology.formulaHtml}</div>
+            {methodology.secondaryFormula && (
+              <div className="text-xs text-blue-700">{methodology.secondaryFormula}</div>
+            )}
           </div>
-
-          {methodology.secondaryFormula && (
-            <div className="rounded-lg bg-blue-50/60 px-3 py-1.5 text-xs font-mono font-bold text-zinc-900 leading-relaxed text-center sm:text-left">
-              {methodology.secondaryFormula}
-            </div>
-          )}
 
           {/* Bulleted Fee Explanation */}
           <ul className="space-y-2 text-xs text-zinc-850 leading-relaxed pt-1">

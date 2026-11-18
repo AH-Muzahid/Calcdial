@@ -5,6 +5,7 @@ import { calculateEtsyFees, calculateReverseEtsyPrice } from "@/lib/formulas/ets
 import { ETSY_FEE_PRESETS } from "@/data/fee-presets";
 import { formatCurrency, formatPercent, cn } from "@/lib/utils";
 import { StickyResultBar } from "./StickyResultBar";
+import { CustomSelect } from "@/components/common/CustomSelect";
 import { ChevronDown, ChevronUp, Copy, Check, Info, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 
@@ -267,23 +268,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <label className="text-[11px] font-bold text-zinc-950">
                   Currency
                 </label>
-                <div className="relative">
-                  <select
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
-                    className="h-9 w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 pr-9 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer"
-                  >
-                    {Object.entries(CURRENCY_MAP).map(([id, item]) => (
-                      <option key={id} value={id}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-zinc-600">
-                    <ChevronDown className="size-3.5" />
-                  </div>
-                </div>
+                <CustomSelect
+                  value={country}
+                  options={Object.entries(CURRENCY_MAP).map(([id, item]) => ({
+                    value: id,
+                    label: item.label,
+                  }))}
+                  onChange={(val) => setCountry(val)}
+                />
               </div>
 
               {/* Standard: Item Price Input */}

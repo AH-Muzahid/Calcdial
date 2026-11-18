@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.s1 {
+  appearance: none;
+}
+.s2 {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.s3 {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+.s4 {
+  background: transparent;
+  border: 1px solid #ccc;
+  -webkit-appearance: none;
+  appearance: none;
+}
+</style>
+</head>
+<body style="padding: 50px; font-family: sans-serif;">
+  <h3>Testing Select on Windows Edge/Chrome</h3>
+  <div>
+    <label>Default:</label><br>
+    <select><option>USD ($)</option></select>
+  </div>
+  <br>
+  <div>
+    <label>Class appearance: none:</label><br>
+    <select class="s1"><option>USD ($)</option></select>
+  </div>
+  <br>
+  <div>
+    <label>Class -webkit-appearance: none + appearance: none:</label><br>
+    <select class="s2"><option>USD ($)</option></select>
+  </div>
+  <br>
+  <div>
+    <label>Inline style="-webkit-appearance:none;appearance:none":</label><br>
+    <select style="-webkit-appearance:none;appearance:none"><option>USD ($)</option></select>
+  </div>
+</body>
+</html>

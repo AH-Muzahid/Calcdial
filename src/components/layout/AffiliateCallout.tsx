@@ -25,7 +25,7 @@ export function AffiliateCallout({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Left Side: Icon + Content */}
         <div className="flex items-start gap-3.5">
-          <div className="size-10 rounded-lg bg-zinc-100 border border-zinc-200 text-[#008060] flex items-center justify-center shrink-0">
+          <div className="size-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
             {/* Shopify Shopping Bag Icon */}
             <svg className="size-5 text-emerald-700" viewBox="0 0 24 24" fill="currentColor">
               <path d="M19.34 7.62a1 1 0 0 0-.89-.62h-2.73a4.5 4.5 0 0 0-8.44 0H4.55a1 1 0 0 0-.89.62L2.05 18.62A1 1 0 0 0 3.04 20h17.92a1 1 0 0 0 .99-1.38L19.34 7.62zM12 4.5a2.5 2.5 0 0 1 2.45 2h-4.9A2.5 2.5 0 0 1 12 4.5z" />
@@ -43,7 +43,7 @@ export function AffiliateCallout({
 
         {/* Right Side: Partner Badge + CTA Button */}
         <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
-          <span className="rounded-md bg-zinc-100 text-zinc-900 border border-zinc-200 px-2.5 py-1 text-xs font-bold">
+          <span className="rounded-full bg-zinc-100 text-zinc-700 px-2.5 py-0.5 text-[11px] font-semibold">
             Partner
           </span>
           <a
