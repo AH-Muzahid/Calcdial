@@ -63,7 +63,7 @@ export function StickyResultBar({
       {/* Slide-Up Drawer for Mobile Fee Breakdown */}
       {isDrawerOpen && (
         <div
-          className="fixed bottom-[60px] left-0 right-0 z-50 max-h-[75vh] overflow-y-auto rounded-t-2xl border-t border-zinc-200 bg-white p-4 shadow-2xl lg:hidden animate-in slide-in-from-bottom duration-200"
+          className="fixed bottom-[60px] left-0 right-0 z-50 max-h-[75vh] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-t-2xl border-t border-zinc-200 bg-white p-4 shadow-2xl lg:hidden animate-in slide-in-from-bottom duration-200"
           role="dialog"
           aria-modal="true"
           aria-label="Fee Breakdown"

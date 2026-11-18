@@ -41,7 +41,7 @@ export function MobileToolPills({ currentSlug }: MobileToolNavProps) {
   return (
     <nav
       aria-label="Mobile quick calculator switcher"
-      className="lg:hidden my-3 -mx-4 px-4 overflow-x-auto no-scrollbar print:hidden"
+      className="lg:hidden my-3 -mx-4 px-4 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden print:hidden"
     >
       <div className="flex items-center gap-1.5 w-max py-0.5">
         <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-600 mr-1 select-none">

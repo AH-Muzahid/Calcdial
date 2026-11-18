@@ -80,7 +80,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
         <div className="mt-4">
           {/* TAB 1: Global Country-by-Country Schedule */}
           {activeTab === "global" && (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
@@ -147,7 +147,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
           {/* TAB 2: Offsite Ads Tier Breakdown */}
           {activeTab === "ads" && (
             <div className="space-y-4">
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                 <table className="w-full text-left text-xs">
                   <thead>
                     <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
@@ -205,7 +205,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
 
           {/* TAB 3: Cross-Platform Comparison */}
           {activeTab === "comparison" && (
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
@@ -259,7 +259,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
 
       {/* POD Benchmarks */}
       {toolSlug === "pod-profit-calculator" && (
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
@@ -291,7 +291,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
 
       {/* TikTok Shop Category Fees */}
       {toolSlug === "tiktok-shop-fee-calculator" && (
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
@@ -321,7 +321,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
 
       {/* Shopify Gateway Comparison */}
       {toolSlug === "shopify-profit-calculator" && (
-        <div className="mt-4 overflow-x-auto">
+        <div className="mt-4 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">

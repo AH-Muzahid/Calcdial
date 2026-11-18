@@ -51,7 +51,7 @@ export function WorkedExample({ examples }: { examples?: WorkedExampleType[] }) 
 
       {/* Accordion Content: Clean Tabular Scenarios */}
       {isOpen && (
-        <div className="px-3.5 sm:px-4.5 pb-4 pt-0.5 border-t border-zinc-100 overflow-x-auto">
+        <div className="px-3.5 sm:px-4.5 pb-4 pt-0.5 border-t border-zinc-100 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <table className="w-full text-left text-xs font-sans">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-900 font-bold">

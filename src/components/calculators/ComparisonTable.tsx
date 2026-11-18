@@ -12,7 +12,7 @@ export function ComparisonTable({
   const highestProfit = sorted[0]?.netProfit ?? 0;
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-zinc-200 bg-white shadow-2xs">
+    <div className="overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-2xl border border-zinc-200 bg-white shadow-2xs">
       <table className="w-full text-left text-xs sm:text-sm">
         <thead className="bg-zinc-50 border-b border-zinc-200 text-zinc-500 uppercase tracking-wider text-[11px] font-mono">
           <tr>
