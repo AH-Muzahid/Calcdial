@@ -15,11 +15,23 @@ import { trackEvent } from "@/lib/analytics";
 
 export function TikTokFeeCalculator({ initialCategory = "beauty", isEmbed = false }: { initialCategory?: string; isEmbed?: boolean }) {
   const [mode, setMode] = useState<string>("profit");
-  const [salePrice, setSalePrice] = useState<number>(30.00);
+  const [salePrice, setSalePrice] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search).get("price");
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+    }
+    return 30.00;
+  });
   const [shippingCharged, setShippingCharged] = useState<number>(0.00);
   const [category, setCategory] = useState<string>(initialCategory.toLowerCase());
   const [affiliatePct, setAffiliatePct] = useState<number>(10.0);
-  const [cogs, setCogs] = useState<number>(8.50);
+  const [cogs, setCogs] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const c = new URLSearchParams(window.location.search).get("cost");
+      if (c && !isNaN(parseFloat(c))) return parseFloat(c);
+    }
+    return 8.50;
+  });
   const [shipping, setShipping] = useState<number>(4.00);
   const [targetMargin, setTargetMargin] = useState<number>(35);
 
@@ -247,7 +259,7 @@ Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
         </div>
 
         {/* Right Column: Verified Outputs */}
-        <div className="lg:col-span-5">
+        <div className="hidden lg:block lg:col-span-5">
           <ResultCard
             primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
@@ -260,6 +272,9 @@ Calculated on CalcDial: https://calcdial.com/tools/tiktok-shop-fee-calculator`;
             marginPct={result.netMarginPct}
             roiPct={result.roiPct}
             breakdown={result.breakdown}
+            currentTool={isEmbed ? undefined : "tiktok-shop-fee-calculator"}
+            toolPrice={salePrice}
+            toolCost={cogs}
           />
         </div>
       </div>

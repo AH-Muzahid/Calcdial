@@ -60,8 +60,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrainsMono.variable} scroll-smooth light`} style={{ colorScheme: "light" }}>
-      <body className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white">
+    <html
+      lang="en"
+      className={`${jakarta.variable} ${jetbrainsMono.variable} light`}
+      style={{ colorScheme: "light" }}
+      suppressHydrationWarning
+    >
+      <body
+        className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white"
+        suppressHydrationWarning
+      >
         {/* Google Analytics 4 */}
         {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
 

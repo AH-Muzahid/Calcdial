@@ -1,42 +1,72 @@
+"use client";
+
+import { useState } from "react";
+import { Calculator, ChevronUp, ChevronDown } from "lucide-react";
+
 interface FormulaBreakdownProps {
-  formulaMarkdown: string;
-  toolTitle: string;
+  formulaMarkdown?: string;
+  toolTitle?: string;
 }
 
-export function FormulaBreakdown({ formulaMarkdown, toolTitle }: FormulaBreakdownProps) {
+export function FormulaBreakdown({ formulaMarkdown, toolTitle = "Etsy Fee Calculator" }: FormulaBreakdownProps) {
+  const [isOpen, setIsOpen] = useState(true);
+
   return (
-    <section className="my-10 rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="size-1.5 rounded-full bg-black" />
-        <span className="text-xs font-mono font-medium uppercase tracking-wider text-zinc-500">
-          Mathematical Model
-        </span>
-      </div>
-      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-black">
-        How the {toolTitle} Works (2026 Methodology)
-      </h2>
-      <p className="mt-2 text-xs sm:text-sm text-zinc-500 leading-relaxed">
-        Our calculations use official published merchant fee schedules. We calculate all percentage rates on gross transaction order totals (item price plus buyer-paid shipping where applicable), add flat item transaction or listing fees, and compute net margin percentages.
-      </p>
+    <div className="rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white shadow-2xs overflow-hidden h-full">
+      {/* Header with Accordion Toggle */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left hover:bg-zinc-50 transition-colors cursor-pointer"
+      >
+        <div className="flex items-center gap-2">
+          <Calculator className="size-4 text-zinc-800" />
+          <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
+            Formula &amp; Methodology
+          </h3>
+        </div>
+        <div className="text-zinc-500 hover:text-zinc-900">
+          {isOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+        </div>
+      </button>
 
-      <div className="mt-5 rounded-2xl bg-black p-5 text-white font-mono text-xs sm:text-sm overflow-x-auto shadow-inner border border-black/10">
-        <div className="flex items-center gap-1.5 text-zinc-500 text-[10px] uppercase font-bold mb-2">
-          <span className="size-1.5 rounded-full bg-zinc-600" />
-          <span>Formula Engine</span>
-        </div>
-        <code>{formulaMarkdown.replace(/`/g, "")}</code>
-      </div>
+      {/* Accordion Content */}
+      {isOpen && (
+        <div className="px-3.5 sm:px-4.5 pb-4 pt-0.5 border-t border-zinc-100 space-y-3">
+          {/* Formula Line (High-contrast, clean container) */}
+          <div className="rounded-lg bg-zinc-50 border border-zinc-200/80 p-2.5 sm:p-3 text-xs sm:text-sm font-mono font-bold text-zinc-950 leading-relaxed text-center sm:text-left">
+            <span className="text-emerald-700 font-extrabold">Net Profit</span> = Item Price − (Product Cost + Shipping + Etsy Fees)
+          </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 text-xs text-zinc-600">
-        <div className="rounded-2xl bg-black/[0.02] p-4 border border-black/[0.06]">
-          <strong className="block font-semibold text-black mb-1">Direct Gross Deductions</strong>
-          Transaction commission and category referral percentages are deducted directly from gross customer checkout values.
+          {/* Bulleted Fee Explanation (Crisp text color, high contrast) */}
+          <ul className="space-y-2 text-xs text-zinc-850 leading-relaxed">
+            <li className="flex items-start gap-2">
+              <span className="text-zinc-500 font-bold">•</span>
+              <span>
+                <strong className="text-zinc-950 font-bold">Listing Fee:</strong> $0.20 per item (valid for 4 months or until sold)
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-zinc-500 font-bold">•</span>
+              <span>
+                <strong className="text-zinc-950 font-bold">Transaction Fee:</strong> 6.5% of (item price + buyer shipping)
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-zinc-500 font-bold">•</span>
+              <span>
+                <strong className="text-zinc-950 font-bold">Payment Processing Fee:</strong> 3% + $0.25 (varies by seller bank country)
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="text-zinc-500 font-bold">•</span>
+              <span>
+                <strong className="text-zinc-950 font-bold">Offsite Ads Fee:</strong> 12–15% of the item price (only if order originates from Etsy Ads)
+              </span>
+            </li>
+          </ul>
         </div>
-        <div className="rounded-2xl bg-black/[0.02] p-4 border border-black/[0.06]">
-          <strong className="block font-semibold text-black mb-1">Client-Side Computation</strong>
-          Zero calculations touch an external server. Your financial inputs remain 100% private in your browser.
-        </div>
-      </div>
-    </section>
+      )}
+    </div>
   );
 }

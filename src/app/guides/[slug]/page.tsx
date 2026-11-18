@@ -195,6 +195,9 @@ export default async function GuidePage({
         </div>
       </section>
 
+      {/* Mid-Guide Ad Placement */}
+      <AdSlot position="in-content" />
+
       {/* Frequently Asked Questions */}
       <div id="frequently-asked-questions" className="scroll-mt-20">
         <FAQAccordion faqs={guide.faqs} />

@@ -1,65 +1,91 @@
+"use client";
+
+import { useState } from "react";
+import { Table, ChevronUp, ChevronDown } from "lucide-react";
 import { WorkedExample as WorkedExampleType } from "@/data/tools-registry";
 
-export function WorkedExample({ examples }: { examples: WorkedExampleType[] }) {
-  if (!examples || examples.length === 0) return null;
+const DEFAULT_ROWS = [
+  { scenario: "A. Low-cost item", price: "$25.00", fees: "$7.12", profit: "$12.88", margin: "51.5%" },
+  { scenario: "B. Mid-range item", price: "$50.00", fees: "$12.79", profit: "$22.21", margin: "44.4%" },
+  { scenario: "C. High-value item", price: "$100.00", fees: "$23.14", profit: "$56.86", margin: "56.9%" },
+];
+
+export function WorkedExample({ examples }: { examples?: WorkedExampleType[] }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  const rows = (examples && examples.length > 0)
+    ? examples.map((ex, idx) => {
+        const letter = String.fromCharCode(65 + idx);
+        const price = String(ex.inputs["Item Price"] || ex.inputs["Retail Price"] || "$50.00");
+        const fees = String(ex.result["Etsy Fees"] || ex.result["Total Fees"] || ex.result["Platform Fees"] || "$12.79");
+        const profit = String(ex.result["Net Profit"] || "$22.21");
+        const margin = String(ex.result["Effective Fee %"] || ex.result["Net Margin %"] || "44.4%");
+        return {
+          scenario: `${letter}. ${ex.label.split("(")[0].trim()}`,
+          price,
+          fees,
+          profit,
+          margin,
+        };
+      })
+    : DEFAULT_ROWS;
 
   return (
-    <section className="my-10 rounded-3xl border border-black/[0.08] bg-white p-6 sm:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.03)]">
-      <div className="flex items-center gap-2 mb-2">
-        <span className="size-1.5 rounded-full bg-black" />
-        <span className="text-xs font-mono font-medium uppercase tracking-wider text-zinc-500">
-          Real Scenarios
-        </span>
-      </div>
-      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-black">
-        Realistic Worked Examples & Scenarios
-      </h2>
-      <p className="mt-2 text-xs sm:text-sm text-zinc-500 leading-relaxed">
-        See how fee schedules and margins apply to real products and typical seller basket values.
-      </p>
+    <div className="rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white shadow-2xs overflow-hidden h-full">
+      {/* Header with Accordion Toggle */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left hover:bg-zinc-50 transition-colors cursor-pointer"
+      >
+        <div className="flex items-center gap-2">
+          <Table className="size-4 text-zinc-800" />
+          <h3 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
+            Worked Example
+          </h3>
+        </div>
+        <div className="text-zinc-500 hover:text-zinc-900">
+          {isOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+        </div>
+      </button>
 
-      <div className="mt-6 space-y-5">
-        {examples.map((example, idx) => (
-          <div key={idx} className="rounded-2xl border border-black/[0.08] overflow-hidden shadow-2xs">
-            <div className="bg-black/[0.02] px-5 py-3 border-b border-black/[0.06] flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-black">
-                Scenario #{idx + 1}: {example.label}
-              </h3>
-              <span className="text-[10px] font-mono font-medium uppercase tracking-wider text-black bg-white px-2.5 py-0.5 rounded-full border border-black/[0.08]">
-                Verified Model
-              </span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-black/[0.06] p-5 gap-5 text-xs">
-              <div>
-                <span className="block font-mono font-semibold uppercase tracking-wider text-zinc-400 mb-2">
-                  Seller Inputs
-                </span>
-                <dl className="space-y-1.5">
-                  {Object.entries(example.inputs).map(([k, v]) => (
-                    <div key={k} className="flex justify-between py-0.5">
-                      <dt className="text-zinc-500">{k}:</dt>
-                      <dd className="font-mono font-medium text-black">{v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-              <div className="md:pl-5">
-                <span className="block font-mono font-semibold uppercase tracking-wider text-black mb-2">
-                  Calculated Output
-                </span>
-                <dl className="space-y-1.5">
-                  {Object.entries(example.result).map(([k, v]) => (
-                    <div key={k} className="flex justify-between py-0.5">
-                      <dt className="text-zinc-500">{k}:</dt>
-                      <dd className="font-mono font-bold text-black">{v}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
+      {/* Accordion Content: Clean Tabular Scenarios */}
+      {isOpen && (
+        <div className="px-3.5 sm:px-4.5 pb-4 pt-0.5 border-t border-zinc-100 overflow-x-auto">
+          <table className="w-full text-left text-xs font-sans">
+            <thead>
+              <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-900 font-bold">
+                <th className="py-2 px-2.5 rounded-l-md">Scenario</th>
+                <th className="py-2 px-2.5 text-right">Item Price</th>
+                <th className="py-2 px-2.5 text-right">Total Fees</th>
+                <th className="py-2 px-2.5 text-right">Net Profit</th>
+                <th className="py-2 px-2.5 text-right rounded-r-md">Margin</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-100 text-zinc-800">
+              {rows.map((row, idx) => (
+                <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
+                  <td className="py-2.5 px-2.5 font-bold text-zinc-950">
+                    {row.scenario}
+                  </td>
+                  <td className="py-2.5 px-2.5 text-right font-mono text-zinc-800">
+                    {row.price}
+                  </td>
+                  <td className="py-2.5 px-2.5 text-right font-mono text-zinc-800">
+                    {row.fees}
+                  </td>
+                  <td className="py-2.5 px-2.5 text-right font-mono font-extrabold text-emerald-600">
+                    {row.profit}
+                  </td>
+                  <td className="py-2.5 px-2.5 text-right font-mono font-bold text-zinc-950">
+                    {row.margin}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
   );
 }

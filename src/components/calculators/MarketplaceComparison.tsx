@@ -7,6 +7,7 @@ import { InputField } from "./InputField";
 import { PresetSelector } from "./PresetSelector";
 import { ComparisonTable } from "./ComparisonTable";
 import { StickyResultBar } from "./StickyResultBar";
+import { ContextualToolBridge } from "./ContextualToolBridge";
 import { ShareButton } from "@/components/layout/ShareButton";
 import { PrintButton } from "@/components/layout/PrintButton";
 import { EmbedModal } from "@/components/layout/EmbedModal";
@@ -15,9 +16,21 @@ import { trackEvent } from "@/lib/analytics";
 import { formatCurrency } from "@/lib/utils";
 
 export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }) {
-  const [sellingPrice, setSellingPrice] = useState<number>(38.00);
+  const [sellingPrice, setSellingPrice] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search).get("price");
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+    }
+    return 38.00;
+  });
   const [shippingCharge, setShippingCharge] = useState<number>(4.99);
-  const [cogs, setCogs] = useState<number>(10.50);
+  const [cogs, setCogs] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const c = new URLSearchParams(window.location.search).get("cost");
+      if (c && !isNaN(parseFloat(c))) return parseFloat(c);
+    }
+    return 10.50;
+  });
   const [shippingCost, setShippingCost] = useState<number>(4.50);
   const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
   const [country, setCountry] = useState<string>("us");
@@ -304,6 +317,15 @@ Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-sho
           );
         })}
       </div>
+
+      {/* Contextual Next Tool Bridge */}
+      {!isEmbed && (
+        <ContextualToolBridge
+          currentTool="etsy-vs-shopify-vs-tiktok-shop-calculator"
+          price={sellingPrice}
+          cost={cogs}
+        />
+      )}
 
       {!isEmbed && (
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">

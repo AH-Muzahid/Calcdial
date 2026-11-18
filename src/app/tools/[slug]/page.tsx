@@ -12,6 +12,10 @@ import { AffiliateCallout } from "@/components/layout/AffiliateCallout";
 import { EmailCapture } from "@/components/layout/EmailCapture";
 import { ShimmerText } from "@/components/motion/shimmer-text";
 import { ToolIcon } from "@/components/common/ToolIcons";
+import { ActionButtons } from "@/components/layout/ActionButtons";
+import { DesktopToolSidebar } from "@/components/layout/DesktopToolSidebar";
+import { FeeScheduleTable } from "@/components/seo/FeeScheduleTable";
+import { InDepthGuide } from "@/components/seo/InDepthGuide";
 import { formatDate } from "@/lib/utils";
 
 // Calculators
@@ -132,7 +136,7 @@ export default async function ToolPage({
   };
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-3 sm:py-5">
       {/* Schemas */}
       <JsonLd data={softwareAppSchema} />
       {tool.faqs.length > 0 && <JsonLd data={faqSchema} />}
@@ -145,87 +149,104 @@ export default async function ToolPage({
         ]}
       />
 
-      {/* SECTION 1: H1 Title + "Last updated" Trust Badge + 2-Sentence Value Summary */}
-      <header className="mb-8 pt-2">
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-mono text-zinc-900">
-            <span className="size-1.5 rounded-full bg-emerald-600"></span>
-            <ShimmerText text="VERIFIED FOR 2026" className="text-[11px] font-semibold tracking-wider text-zinc-900" />
-          </span>
-          <span className="text-xs font-mono text-zinc-400">
-            Last updated: <time dateTime={tool.lastUpdated}>{formatDate(tool.lastUpdated)}</time>
-          </span>
+      <div className="flex flex-col lg:flex-row lg:items-start lg:gap-6 xl:gap-8 mt-2">
+        {/* Main Content Column */}
+        <div className="min-w-0 flex-1">
+          {/* SECTION 1: H1 Title + Quick Actions */}
+          <header className="mb-4">
+            <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <ToolIcon slug={tool.slug} size="md" className="mt-0.5" />
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-950">
+                      {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
+                    </h1>
+                  </div>
+                  <p className="mt-1.5 text-xs sm:text-sm text-zinc-800 font-medium leading-normal max-w-2xl">
+                    {tool.shortDescription}
+                  </p>
+                </div>
+              </div>
+
+              {/* Quick Actions (Desktop & Mobile) */}
+              <div className="shrink-0 self-start md:self-auto">
+                <ActionButtons toolSlug={tool.slug} title={tool.title} />
+              </div>
+            </div>
+          </header>
+
+          {/* SECTION 2: Interactive Calculator Card (Above the Fold) */}
+          <section className="my-3">
+            {tool.slug === "etsy-fee-calculator" && (
+              <EtsyFeeCalculator initialCountry={matchedPreset || "us"} />
+            )}
+            {tool.slug === "pod-profit-calculator" && (
+              <PodProfitCalculator initialProduct={matchedPreset || "t-shirts"} />
+            )}
+            {tool.slug === "tiktok-shop-fee-calculator" && (
+              <TikTokFeeCalculator initialCategory={matchedPreset || "beauty"} />
+            )}
+            {tool.slug === "shopify-profit-calculator" && (
+              <ShopifyProfitCalculator initialGateway={matchedPreset || "shopify-payments"} />
+            )}
+            {tool.slug === "etsy-vs-shopify-vs-tiktok-shop-calculator" && (
+              <MarketplaceComparison />
+            )}
+            {tool.slug === "stripe-vs-paypal-fee-calculator" && (
+              <PaymentComparison />
+            )}
+          </section>
+
+          {/* SECTION 3: Ad Slot 1 (Below Calculator Output - CLS-Safe 728 x 250) */}
+          <AdSlot position="below-calculator" />
+
+          {/* Contextual Affiliate Recommendation Slot (Shopify Partner) */}
+          {tool.affiliatePartner && tool.affiliateUrl && (
+            <AffiliateCallout
+              partner={tool.affiliatePartner}
+              toolSlug={tool.slug}
+              headline={tool.affiliateCta || `Recommended Partner: ${tool.affiliatePartner}`}
+              description={`Sell online, manage orders, and grow your business with Shopify's all-in-one platform.`}
+              ctaText={tool.slug.includes("etsy") ? "Try Shopify" : "Visit Partner Website"}
+              url={tool.affiliateUrl}
+            />
+          )}
+
+          {/* SECTION 4: 2-Column Responsive Section: Formula & Methodology (Left) | Worked Example (Right) */}
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 my-5 sm:my-8">
+            <FormulaBreakdown
+              formulaMarkdown={tool.formulaMarkdown}
+              toolTitle={tool.title}
+            />
+            <WorkedExample examples={tool.workedExamples} />
+          </section>
+
+          {/* SECTION 5: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
+          <FeeScheduleTable toolSlug={tool.slug} />
+
+          {/* SECTION 6: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
+          <InDepthGuide toolSlug={tool.slug} />
+
+          {/* Email Capture for Fee Alerts */}
+          <EmailCapture source="calculator-result" toolSlug={tool.slug} />
+
+          {/* SECTION 7: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
+          <AdSlot position="in-content" />
+
+          {/* SECTION 8: FAQ Accordion + JSON-LD Schema */}
+          <FAQAccordion faqs={tool.faqs} />
+
+          {/* SECTION 9: Related Calculators & Guides Internal Links */}
+          <RelatedTools
+            relatedToolSlugs={tool.relatedTools}
+            relatedGuideSlugs={tool.relatedGuides}
+          />
         </div>
-        <div className="flex items-start gap-4">
-          <ToolIcon slug={tool.slug} size="lg" className="mt-1" />
-          <div>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950">
-              {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
-            </h1>
-            <p className="mt-2 text-sm sm:text-base text-zinc-500 leading-relaxed max-w-3xl">
-              {tool.shortDescription}
-            </p>
-          </div>
-        </div>
-      </header>
 
-      {/* SECTION 2: Interactive Calculator Card (Above the Fold) */}
-      <section className="my-6">
-        {tool.slug === "etsy-fee-calculator" && (
-          <EtsyFeeCalculator initialCountry={matchedPreset || "us"} />
-        )}
-        {tool.slug === "pod-profit-calculator" && (
-          <PodProfitCalculator initialProduct={matchedPreset || "t-shirts"} />
-        )}
-        {tool.slug === "tiktok-shop-fee-calculator" && (
-          <TikTokFeeCalculator initialCategory={matchedPreset || "beauty"} />
-        )}
-        {tool.slug === "shopify-profit-calculator" && (
-          <ShopifyProfitCalculator initialGateway={matchedPreset || "shopify-payments"} />
-        )}
-        {tool.slug === "etsy-vs-shopify-vs-tiktok-shop-calculator" && (
-          <MarketplaceComparison />
-        )}
-        {tool.slug === "stripe-vs-paypal-fee-calculator" && (
-          <PaymentComparison />
-        )}
-      </section>
-
-      {/* SECTION 3: Ad Slot 1 (Below Calculator Output - CLS-Safe min-h-[90px]/[250px]) */}
-      <AdSlot position="below-calculator" />
-
-      {/* Contextual Affiliate Recommendation Slot */}
-      {tool.affiliatePartner && tool.affiliateUrl && (
-        <AffiliateCallout
-          partner={tool.affiliatePartner}
-          toolSlug={tool.slug}
-          headline={tool.affiliateCta || `Recommended Partner: ${tool.affiliatePartner}`}
-          description={`High-volume sellers trust ${tool.affiliatePartner} to reduce unit costs and optimize merchant cash flow.`}
-          ctaText={tool.affiliateCta || "Visit Partner Website"}
-          url={tool.affiliateUrl}
-        />
-      )}
-
-      {/* SECTION 4: Formula & Methodology Section */}
-      <FormulaBreakdown
-        formulaMarkdown={tool.formulaMarkdown}
-        toolTitle={tool.title}
-      />
-
-      {/* SECTION 5: Worked Example Table */}
-      <WorkedExample examples={tool.workedExamples} />
-
-      {/* Email Capture for Fee Alerts */}
-      <EmailCapture source="calculator-result" toolSlug={tool.slug} />
-
-      {/* SECTION 6: FAQ Accordion + JSON-LD Schema */}
-      <FAQAccordion faqs={tool.faqs} />
-
-      {/* SECTION 7: Related Calculators & Guides Internal Links */}
-      <RelatedTools
-        relatedToolSlugs={tool.relatedTools}
-        relatedGuideSlugs={tool.relatedGuides}
-      />
+        {/* Right Desktop Sticky Sidebar (Visible on lg and above) */}
+        <DesktopToolSidebar currentSlug={slug} />
+      </div>
     </div>
   );
 }

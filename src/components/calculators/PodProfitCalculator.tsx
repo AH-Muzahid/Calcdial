@@ -15,9 +15,21 @@ import { trackEvent } from "@/lib/analytics";
 
 export function PodProfitCalculator({ initialProduct = "t-shirts", isEmbed = false }: { initialProduct?: string; isEmbed?: boolean }) {
   const [mode, setMode] = useState<string>("profit");
-  const [retail, setRetail] = useState<number>(29.99);
+  const [retail, setRetail] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search).get("price");
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+    }
+    return 29.99;
+  });
   const [productType, setProductType] = useState<string>(initialProduct.toLowerCase());
-  const [baseCost, setBaseCost] = useState<number>(9.50);
+  const [baseCost, setBaseCost] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const c = new URLSearchParams(window.location.search).get("cost");
+      if (c && !isNaN(parseFloat(c))) return parseFloat(c);
+    }
+    return 9.50;
+  });
   const [shippingCharged, setShippingCharged] = useState<number>(4.99);
   const [shippingCost, setShippingCost] = useState<number>(4.50);
   const [salesChannel, setSalesChannel] = useState<"etsy" | "shopify" | "tiktok" | "ebay" | "custom">("etsy");
@@ -286,7 +298,7 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
         </div>
 
         {/* Right Column: Verified Outputs */}
-        <div className="lg:col-span-5">
+        <div className="hidden lg:block lg:col-span-5">
           <ResultCard
             primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
@@ -299,6 +311,9 @@ Calculated on CalcDial: https://calcdial.com/tools/pod-profit-calculator`;
             marginPct={result.netMarginPct}
             roiPct={result.roiPct}
             breakdown={result.breakdown}
+            currentTool={isEmbed ? undefined : "pod-profit-calculator"}
+            toolPrice={retail}
+            toolCost={baseCost}
           />
         </div>
       </div>

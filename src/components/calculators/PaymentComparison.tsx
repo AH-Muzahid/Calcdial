@@ -10,6 +10,7 @@ import { PAYMENT_CURRENCY_PRESETS } from "@/data/fee-presets";
 import { InputField } from "./InputField";
 import { PresetSelector } from "./PresetSelector";
 import { StickyResultBar } from "./StickyResultBar";
+import { ContextualToolBridge } from "./ContextualToolBridge";
 import { ShareButton } from "@/components/layout/ShareButton";
 import { PrintButton } from "@/components/layout/PrintButton";
 import { EmbedModal } from "@/components/layout/EmbedModal";
@@ -19,7 +20,15 @@ import { formatCurrency } from "@/lib/utils";
 
 export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {
   const [mode, setMode] = useState<PaymentMode>("direct");
-  const [amount, setAmount] = useState<number>(100.00);
+  const [amount, setAmount] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const p =
+        new URLSearchParams(window.location.search).get("amount") ||
+        new URLSearchParams(window.location.search).get("price");
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+    }
+    return 100.00;
+  });
   const [currency, setCurrency] = useState<string>("usd");
   const [transactionType, setTransactionType] = useState<TransactionType>("checkout");
   const [isInternational, setIsInternational] = useState<boolean>(false);
@@ -392,6 +401,14 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
           </div>
         </div>
       </div>
+
+      {/* Contextual Next Tool Bridge */}
+      {!isEmbed && (
+        <ContextualToolBridge
+          currentTool="stripe-vs-paypal-fee-calculator"
+          price={amount}
+        />
+      )}
 
       {!isEmbed && (
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">

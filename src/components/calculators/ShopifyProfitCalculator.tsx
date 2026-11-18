@@ -25,9 +25,21 @@ export function ShopifyProfitCalculator({
   isEmbed?: boolean;
 }) {
   const [mode, setMode] = useState<string>("profit");
-  const [itemPrice, setItemPrice] = useState<number>(48.00);
+  const [itemPrice, setItemPrice] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const p = new URLSearchParams(window.location.search).get("price");
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+    }
+    return 48.00;
+  });
   const [shippingCharged, setShippingCharged] = useState<number>(0.00);
-  const [cogs, setCogs] = useState<number>(12.50);
+  const [cogs, setCogs] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      const c = new URLSearchParams(window.location.search).get("cost");
+      if (c && !isNaN(parseFloat(c))) return parseFloat(c);
+    }
+    return 12.50;
+  });
   const [shippingCost, setShippingCost] = useState<number>(4.80);
   const [adSpend, setAdSpend] = useState<number>(14.00);
   const [shopifyPlan, setShopifyPlan] = useState<ShopifyPlan>("basic");
@@ -272,7 +284,7 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
           )}
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="hidden lg:block lg:col-span-5">
           <ResultCard
             primaryLabel="Real Net Profit"
             primaryValue={result.netProfit}
@@ -285,6 +297,9 @@ Calculated on CalcDial: https://calcdial.com/tools/shopify-profit-calculator`;
             marginPct={result.netMarginPct}
             roiPct={result.roiPct}
             breakdown={result.breakdown}
+            currentTool={isEmbed ? undefined : "shopify-profit-calculator"}
+            toolPrice={itemPrice}
+            toolCost={cogs}
           />
         </div>
       </div>

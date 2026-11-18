@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateEtsyFees } from "@/lib/formulas/etsy-fees";
+import { calculateEtsyFees, calculateReverseEtsyPrice } from "@/lib/formulas/etsy-fees";
 
 describe("Etsy Fee Formula Comprehensive", () => {
   it("calculates standard US sale correctly", () => {
@@ -142,5 +142,35 @@ describe("Etsy Fee Formula Comprehensive", () => {
 
     expect(ukResult.regulatoryFee).toBeGreaterThan(0);
     expect(ukResult.breakdown.some((b) => b.label.includes("Regulatory"))).toBe(true);
+  });
+
+  it("calculates reverse pricing accurately for target dollar profit", () => {
+    const reverse = calculateReverseEtsyPrice({
+      targetProfitType: "dollar",
+      targetValue: 20.0,
+      itemCost: 15.0,
+      shippingCost: 4.5,
+      shippingCharge: 0,
+      country: "us",
+    });
+
+    expect(reverse.recommendedPrice).toBeGreaterThan(35);
+    // Verified profit at recommended price should be approximately $20.00
+    expect(Math.abs(reverse.estimatedNetProfit - 20.0)).toBeLessThan(0.15);
+  });
+
+  it("calculates reverse pricing accurately for target margin percentage", () => {
+    const reverse = calculateReverseEtsyPrice({
+      targetProfitType: "margin",
+      targetValue: 40.0, // 40% margin
+      itemCost: 12.0,
+      shippingCost: 4.0,
+      shippingCharge: 5.0,
+      country: "us",
+    });
+
+    expect(reverse.recommendedPrice).toBeGreaterThan(20);
+    // Estimated margin should be close to 40%
+    expect(Math.abs(reverse.estimatedMarginPct - 40.0)).toBeLessThan(1.0);
   });
 });

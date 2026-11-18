@@ -97,8 +97,8 @@ export const GUIDES: GuideMeta[] = [
 export const TOOLS: ToolConfig[] = [
   {
     slug: "etsy-fee-calculator",
-    title: "Etsy Fee Calculator (2026 Updated)",
-    shortDescription: "Calculate exact net profit, listing fees, 6.5% transaction charges, payment processing, and optional 12-15% Offsite Ads across 10 international markets.",
+    title: "Etsy Fee Calculator",
+    shortDescription: "Calculate your Etsy fees, including transaction, payment processing and optional Offsite Ads, and see your net profit instantly.",
     cluster: "A",
     phase: 1,
     targetKeywords: ["etsy fee calculator 2026", "etsy offsite ads profit calculator", "etsy seller fee breakdown"],
@@ -108,9 +108,9 @@ export const TOOLS: ToolConfig[] = [
     lastUpdated: "2026-11-01",
     isComparison: false,
     dataSnippet: "Selling a $29.99 item with $5 shipping on Etsy incurs $5.42 in total seller fees (15.5%), leaving a clean net profit of $29.57.",
-    affiliatePartner: "Printify",
-    affiliateUrl: "https://printify.com/?ref=calcdial",
-    affiliateCta: "Source low-cost POD inventory on Printify",
+    affiliatePartner: "Shopify",
+    affiliateUrl: "https://shopify.pxf.io/c/calcdial",
+    affiliateCta: "Build your store with Shopify",
     howToSteps: [
       { name: "Enter Item Price", text: "Type the retail listing price of your Etsy product in your store's native currency." },
       { name: "Enter Shipping Charged", text: "Input the shipping amount charged to the buyer (or 0 if offering free shipping)." },
