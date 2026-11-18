@@ -218,6 +218,7 @@ export default async function ToolPage({
             <FormulaBreakdown
               formulaMarkdown={tool.formulaMarkdown}
               toolTitle={tool.title}
+              toolSlug={tool.slug}
             />
             <WorkedExample examples={tool.workedExamples} />
           </section>

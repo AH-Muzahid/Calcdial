@@ -248,14 +248,50 @@ export const TOOLS: ToolConfig[] = [
     ],
     workedExamples: [
       {
-        label: "D2C Skincare ($45.00 Retail, $11.00 COGS, Shopify Payments)",
-        inputs: { "Retail Price": "$45.00", "COGS": "$11.00", "Payment Fee": "$1.61", "Ad Spend": "$18.00" },
-        result: { "Gross Margin": "75.6%", "Break-Even ROAS": "1.32x", "Net Profit": "$14.39" },
+        label: "D2C Skincare ($48.00 Retail, $12.50 COGS, $14.00 Ad Spend)",
+        inputs: { "Retail Price": "$48.00", "COGS": "$12.50", "Shipping": "$4.80", "Payment Fee": "$1.69", "Ad Spend": "$14.00" },
+        result: { "Retail Price": "$48.00", "Total Fees": "$1.69", "Net Profit": "$15.01", "Net Margin %": "31.3%" },
+      },
+      {
+        label: "Low-Ticket Dropship ($24.99 Retail, $8.00 COGS, 3rd-Party Gateway)",
+        inputs: { "Retail Price": "$24.99", "COGS": "$8.00", "Shipping": "$3.50", "Payment Fee": "$1.52", "Ad Spend": "$10.00" },
+        result: { "Retail Price": "$24.99", "Total Fees": "$1.52", "Net Profit": "$1.97", "Net Margin %": "7.9%" },
+      },
+      {
+        label: "Premium Apparel ($120.00 Retail, $28.00 COGS, Shopify Plan)",
+        inputs: { "Retail Price": "$120.00", "COGS": "$28.00", "Shipping": "$8.50", "Payment Fee": "$3.54", "Ad Spend": "$35.00" },
+        result: { "Retail Price": "$120.00", "Total Fees": "$3.54", "Net Profit": "$44.96", "Net Margin %": "37.5%" },
       },
     ],
     faqs: [
-      { question: "What is break-even ROAS?", answer: "Break-even ROAS is the minimum return on ad spend you must achieve so that advertising costs equal gross profit without losing money. Formula: 1 / Gross Margin %." },
-      { question: "Are third-party gateway fees higher on Shopify?", answer: "Yes, Shopify charges an extra 0.5% to 2.0% transaction fee if you use third-party gateways instead of native Shopify Payments." },
+      {
+        question: "What is the exact mathematical formula for Shopify net profit in 2026?",
+        answer: "Net Profit = Gross Revenue (Retail Price + Buyer Shipping Charged) − [Landed COGS + Carrier Postage + Payment Gateway Processing Fee (e.g., 2.9% + $0.30) + 3rd-Party Gateway Surcharge (0% to 2.0%) + Customer Acquisition Cost (CAC / Ad Spend)].",
+      },
+      {
+        question: "How do I calculate and use Break-Even ROAS for Meta & Google ads?",
+        answer: "Break-Even ROAS represents the minimum return on ad spend you must maintain so advertising does not produce a net financial loss. Formula: Break-Even ROAS = 1 / Gross Margin % = Gross Revenue / (Gross Revenue − (Landed COGS + Carrier Shipping + Gateway Fees)). For example, if an item sells for $50 and direct costs total $20, your gross margin is 60%, requiring a minimum break-even ROAS of 1 / 0.60 = 1.67x.",
+      },
+      {
+        question: "Why does Shopify charge a penalty fee for third-party gateways like Stripe or PayPal?",
+        answer: "Shopify waives all extra platform transaction fees when you use native Shopify Payments. However, if you connect an external processor (Stripe, PayPal Express, Authorize.Net, or Klarna), Shopify assesses an additional platform surcharge: 2.0% on the Basic plan, 1.0% on the Shopify plan, and 0.6% on Advanced, charged on top of the external payment gateway's own merchant processing rate.",
+      },
+      {
+        question: "Does Shopify refund payment processing fees when an order is refunded?",
+        answer: "No. Since 2020, neither Shopify Payments nor third-party processors like Stripe refund the original merchant transaction fee (2.9% + $0.30) when a customer initiates a return or cancellation. If you refund a $100 order, you lose approximately $3.20 out of pocket on non-refundable payment processing fees.",
+      },
+      {
+        question: "When does it make financial sense to upgrade from Basic ($39/mo) to the Shopify plan ($105/mo)?",
+        answer: "Upgrading becomes cost-effective when the 0.2% savings on credit card rates (2.9% down to 2.7%) or the 1.0% reduction in 3rd-party transaction fees exceeds the $66/month plan price delta. This tipping point occurs at ~$16,500/month in gross volume if using Shopify Payments, or ~$6,600/month if processing via third-party gateways like PayPal.",
+      },
+      {
+        question: "How should I account for monthly recurring Shopify app subscriptions?",
+        answer: "Divide your monthly SaaS app expenses (e.g., $150/month across email marketing, reviews, and page builder apps) by your average monthly order volume. If your store fulfills 300 orders per month, app overhead costs $0.50 per order. Subtract this amount from your per-unit gross contribution margin to protect true bottom-line profitability.",
+      },
+      {
+        question: "What is considered a healthy net profit margin for a Shopify e-commerce brand?",
+        answer: "A healthy net profit margin for an established D2C e-commerce store is typically between 15% and 25% after deducting all COGS, carrier shipping, transaction fees, and paid customer acquisition. High-growth scaling stores operating aggressive acquisition funnels may target 10% to 15%, while proprietary or high-AOV brands often exceed 30% to 40%.",
+      },
     ],
     relatedTools: ["etsy-vs-shopify-vs-tiktok-shop-calculator", "pod-profit-calculator", "tiktok-shop-fee-calculator"],
     relatedGuides: ["etsy-vs-shopify-vs-tiktok-shop-comparison"],
