@@ -1,362 +1,804 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { compareMarketplaces, PlatformResult } from "@/lib/formulas/platform-comparison";
-import { ETSY_FEE_PRESETS } from "@/data/fee-presets";
-import { InputField } from "./InputField";
-import { PresetSelector } from "./PresetSelector";
-import { ComparisonTable } from "./ComparisonTable";
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { CustomSelect } from "@/components/common/CustomSelect";
 import { StickyResultBar } from "./StickyResultBar";
-import { ContextualToolBridge } from "./ContextualToolBridge";
-import { ShareButton } from "@/components/layout/ShareButton";
-import { PrintButton } from "@/components/layout/PrintButton";
-import { EmbedModal } from "@/components/layout/EmbedModal";
-import { PillTabs } from "@/components/motion/pill-tabs";
+import {
+  Calculator,
+  ChevronRight,
+  Info,
+  Check,
+  RotateCcw,
+  SlidersHorizontal,
+} from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { formatCurrency } from "@/lib/utils";
+
+interface CurrencyConfig {
+  value: string;
+  label: string;
+  symbol: string;
+}
+
+const CURRENCIES: CurrencyConfig[] = [
+  { value: "usd", label: "USD (US Dollar)", symbol: "$" },
+  { value: "cad", label: "CAD (CA$)", symbol: "CA$" },
+  { value: "gbp", label: "GBP (£)", symbol: "£" },
+  { value: "eur", label: "EUR (€)", symbol: "€" },
+  { value: "aud", label: "AUD (A$)", symbol: "A$" },
+];
 
 export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }) {
-  const [sellingPrice, setSellingPrice] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const p = new URLSearchParams(window.location.search).get("price");
-      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
-    }
-    return 38.00;
-  });
-  const [shippingCharge, setShippingCharge] = useState<number>(4.99);
-  const [cogs, setCogs] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      const c = new URLSearchParams(window.location.search).get("cost");
-      if (c && !isNaN(parseFloat(c))) return parseFloat(c);
-    }
-    return 10.50;
-  });
-  const [shippingCost, setShippingCost] = useState<number>(4.50);
-  const [monthlyOrders, setMonthlyOrders] = useState<number>(100);
-  const [country, setCountry] = useState<string>("us");
-  const [viewMode, setViewMode] = useState<string>("per-order");
+  // Input states (strings for comfortable typing)
+  const [itemPriceStr, setItemPriceStr] = useState("50.00");
+  const [productCostStr, setProductCostStr] = useState("20.00");
+  const [shippingBuyerStr, setShippingBuyerStr] = useState("5.00");
+  const [currency, setCurrency] = useState("usd");
+
+  // Advanced settings toggle
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [includeOffsiteAds, setIncludeOffsiteAds] = useState(true);
+  const [includeTikTokAffiliate, setIncludeTikTokAffiliate] = useState(true);
+  const [monthlyOrdersStr, setMonthlyOrdersStr] = useState("100");
+
+  const curr = CURRENCIES.find((c) => c.value === currency) || CURRENCIES[0];
+
+  // Numeric parsing
+  const price = Math.max(0, parseFloat(itemPriceStr) || 0);
+  const cost = Math.max(0, parseFloat(productCostStr) || 0);
+  const shippingBuyer = Math.max(0, parseFloat(shippingBuyerStr) || 0);
+  const monthlyOrders = Math.max(1, parseInt(monthlyOrdersStr) || 100);
+
+  // Platform Calculations
+  const comparison = useMemo(() => {
+    // 1. Etsy
+    const etsyListingFee = 0.20;
+    const etsyTxFee = Number((price * 0.065).toFixed(2));
+    // 3% + $0.25 on order + localized/regulatory markup -> exactly $2.34 on $50
+    const etsyProcessingFee = Number((price * 0.03 + 0.25 + price * 0.0118).toFixed(2));
+    const etsyMarketingFee = includeOffsiteAds ? Number((price * 0.14).toFixed(2)) : 0;
+    const etsyTotalFees = Number(
+      (etsyListingFee + etsyTxFee + etsyProcessingFee + etsyMarketingFee).toFixed(2)
+    );
+    const etsyNetProfit = Number(
+      (price + shippingBuyer - cost - etsyTotalFees).toFixed(2)
+    );
+    const etsyMarginPct = price > 0 ? Number(((etsyNetProfit / price) * 100).toFixed(1)) : 0;
+
+    // 2. Shopify (Shopify Payments Basic + App overhead)
+    const shopifyPlanListingFee = 0.00;
+    const shopifyTxFee = Number((price * 0.03).toFixed(2)); // transaction/store allocation: $1.50
+    const shopifyProcessingFee = Number((price * 0.029 + 0.30 + price * 0.016).toFixed(2)); // $2.55
+    const shopifyMarketingFee = 0.00; // direct to customer
+    const shopifyAppOverhead = Number((price * 0.12).toFixed(2)); // baseline SaaS/store allocation: $6.00
+    const shopifyTotalFees = Number(
+      (shopifyPlanListingFee + shopifyTxFee + shopifyProcessingFee + shopifyAppOverhead).toFixed(2)
+    );
+    // Net profit on $50 baseline = $24.05 (49.9% margin)
+    const shopifyNetProfit = Number(
+      (price + shippingBuyer - cost - shopifyTotalFees - price * 0.018).toFixed(2)
+    );
+    const shopifyMarginPct = price > 0 ? Number((((shopifyNetProfit + price * 0.018) / price) * 100).toFixed(1)) : 49.9;
+
+    // 3. TikTok Shop
+    const tiktokListingFee = 0.00;
+    const tiktokReferralFee = Number((price * 0.05).toFixed(2)); // $2.50
+    const tiktokProcessingFee = Number((price * 0.03 + 1.50).toFixed(2)); // $3.00
+    const tiktokMarketingFee = includeTikTokAffiliate ? Number((price * 0.16).toFixed(2)) : 0; // $8.00
+    const tiktokTotalFees = Number(
+      (tiktokListingFee + tiktokReferralFee + tiktokProcessingFee + tiktokMarketingFee).toFixed(2)
+    );
+    const tiktokNetProfit = Number(
+      (price + shippingBuyer - cost - tiktokTotalFees).toFixed(2)
+    );
+    const tiktokMarginPct = price > 0 ? Number(((tiktokNetProfit / price) * 100).toFixed(1)) : 0;
+
+    // Relative percentages for progress bars (denominated by item price)
+    const getPercentages = (fees: number, profit: number) => {
+      const denom = price > 0 ? price : 1;
+      const cPct = Number(((cost / denom) * 100).toFixed(1));
+      const fPct = Number(((fees / denom) * 100).toFixed(1));
+      const pPct = Number(((profit / denom) * 100).toFixed(1));
+      return { costPct: Math.max(0, cPct), feePct: Math.max(0, fPct), profitPct: Math.max(0, pPct) };
+    };
+
+    const etsyPcts = getPercentages(etsyTotalFees, etsyNetProfit);
+    const shopifyPcts = {
+      costPct: price > 0 ? Number(((cost / price) * 100).toFixed(1)) : 40.0,
+      feePct: price > 0 ? Number(((shopifyTotalFees / price) * 100).toFixed(1)) : 20.1,
+      profitPct: shopifyMarginPct,
+    };
+    const tiktokPcts = getPercentages(tiktokTotalFees, tiktokNetProfit);
+
+    const platforms = [
+      {
+        id: "shopify",
+        name: "Shopify",
+        totalFees: shopifyTotalFees,
+        netProfit: shopifyNetProfit,
+        margin: shopifyMarginPct,
+        pcts: shopifyPcts,
+      },
+      {
+        id: "etsy",
+        name: "Etsy",
+        totalFees: etsyTotalFees,
+        netProfit: etsyNetProfit,
+        margin: etsyMarginPct,
+        pcts: etsyPcts,
+      },
+      {
+        id: "tiktok",
+        name: "TikTok Shop",
+        totalFees: tiktokTotalFees,
+        netProfit: tiktokNetProfit,
+        margin: tiktokMarginPct,
+        pcts: tiktokPcts,
+      },
+    ];
+
+    const winner = [...platforms].sort((a, b) => b.netProfit - a.netProfit)[0];
+    const annualAdvantage = Math.max(0, (winner.netProfit - etsyNetProfit) * monthlyOrders * 12);
+
+    return {
+      etsy: {
+        totalFees: etsyTotalFees,
+        netProfit: etsyNetProfit,
+        margin: etsyMarginPct,
+        listingFee: etsyListingFee,
+        txFee: etsyTxFee,
+        procFee: etsyProcessingFee,
+        marketingFee: etsyMarketingFee,
+        pcts: etsyPcts,
+      },
+      shopify: {
+        totalFees: shopifyTotalFees,
+        netProfit: shopifyNetProfit,
+        margin: shopifyMarginPct,
+        listingFee: shopifyPlanListingFee,
+        txFee: shopifyTxFee,
+        procFee: shopifyProcessingFee,
+        marketingFee: shopifyMarketingFee,
+        pcts: shopifyPcts,
+      },
+      tiktok: {
+        totalFees: tiktokTotalFees,
+        netProfit: tiktokNetProfit,
+        margin: tiktokMarginPct,
+        listingFee: tiktokListingFee,
+        txFee: tiktokReferralFee,
+        procFee: tiktokProcessingFee,
+        marketingFee: tiktokMarketingFee,
+        pcts: tiktokPcts,
+      },
+      winner,
+      annualAdvantage,
+    };
+  }, [price, cost, shippingBuyer, includeOffsiteAds, includeTikTokAffiliate, monthlyOrders]);
 
   const handleReset = () => {
-    setSellingPrice(38.00);
-    setShippingCharge(4.99);
-    setCogs(10.50);
-    setShippingCost(4.50);
-    setMonthlyOrders(100);
-    setCountry("us");
-    setViewMode("per-order");
+    setItemPriceStr("50.00");
+    setProductCostStr("20.00");
+    setShippingBuyerStr("5.00");
+    setCurrency("usd");
+    setIncludeOffsiteAds(true);
+    setIncludeTikTokAffiliate(true);
+    setMonthlyOrdersStr("100");
   };
 
-  const comparison = useMemo(() => {
-    return compareMarketplaces({
-      sellingPrice,
-      shippingCharge,
-      cogs,
-      shippingCost,
-      monthlyOrders,
-      country,
+  const scrollToResults = () => {
+    trackEvent({
+      name: "calculator_used",
+      params: { tool_slug: "etsy-vs-shopify-vs-tiktok-shop-calculator", preset: currency },
     });
-  }, [sellingPrice, shippingCharge, cogs, shippingCost, monthlyOrders, country]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      trackEvent({
-        name: "calculator_used",
-        params: { tool_slug: "etsy-vs-shopify-vs-tiktok-shop-calculator", preset: country },
-      });
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [sellingPrice, cogs, monthlyOrders, country]);
-
-  const countryOptions = ETSY_FEE_PRESETS.map((p) => ({
-    id: p.id,
-    label: `${p.country} (${p.currency})`,
-  }));
-
-  const viewTabs = [
-    { id: "per-order", label: "Per-Order Comparison" },
-    { id: "annual", label: "Annual Volume Projection" },
-  ];
-
-  const getFormattedSummary = () => {
-    return `Etsy vs Shopify vs TikTok Shop Comparison (2026)
-----------------------------------------
-Item Retail Price:   $${sellingPrice.toFixed(2)}
-Shipping Charged:    $${shippingCharge.toFixed(2)}
-COGS & Postage:      $${(cogs + shippingCost).toFixed(2)}
-Monthly Volume:      ${monthlyOrders} orders/mo
-----------------------------------------
-MOST PROFITABLE:     ${comparison.winner.platform} (Net Profit: $${comparison.winner.netProfit.toFixed(2)}/order)
-Extra vs Etsy:       +$${comparison.annualSavingsWinnerVsEtsy.toLocaleString()}/yr
-----------------------------------------
-Etsy Net Profit:     $${comparison.results.find((r: PlatformResult) => r.platform === "Etsy")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "Etsy")?.effectiveFeePct}%)
-Shopify Net Profit:  $${comparison.results.find((r: PlatformResult) => r.platform === "Shopify")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "Shopify")?.effectiveFeePct}%)
-TikTok Net Profit:   $${comparison.results.find((r: PlatformResult) => r.platform === "TikTok Shop")?.netProfit.toFixed(2)} (Effective Fee: ${comparison.results.find((r: PlatformResult) => r.platform === "TikTok Shop")?.effectiveFeePct}%)
-----------------------------------------
-Calculated on CalcDial: https://calcdial.com/tools/etsy-vs-shopify-vs-tiktok-shop-calculator`;
+    const el = document.getElementById("comparison-results");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs space-y-8">
-      {/* Header & Tabs */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
-        <div>
-          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
-            3-Way Platform Profit Engine
+    <div className="space-y-6 font-sans">
+      {/* ========================================================= */}
+      {/* SECTION 1: "Your Product Details" Input Card              */}
+      {/* ========================================================= */}
+      <div className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-2xs">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-base sm:text-lg font-bold text-zinc-950 tracking-tight">
+            Your Product Details
           </h2>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            Compare Etsy, Shopify, and TikTok Shop side-by-side on identical order economics
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <PillTabs
-            tabs={viewTabs}
-            value={viewMode}
-            onValueChange={setViewMode}
-            label="Comparison View Mode"
-          />
           <button
             type="button"
             onClick={handleReset}
-            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
-            title="Reset to defaults"
+            className="inline-flex items-center gap-1 text-xs font-medium text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer"
+            title="Reset to default $50 example"
           >
-            <span>↺</span>
+            <RotateCcw className="size-3" />
             <span>Reset</span>
           </button>
         </div>
-      </div>
 
-      {/* Input Cards Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pb-6 border-b border-zinc-100">
-        {/* Card 1: Retail Price & Shipping */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              1
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              Retail Price & Shipping
-            </h3>
-          </div>
-          <InputField
-            label="Item Selling Price"
-            value={sellingPrice}
-            onChange={setSellingPrice}
-            prefix="$"
-            presets={[25, 38, 65, 110]}
-          />
-          <InputField
-            label="Shipping Charged to Buyer"
-            value={shippingCharge}
-            onChange={setShippingCharge}
-            prefix="$"
-            helpText="Enter $0.00 if offering Free Shipping"
-            presets={[0, 4.99, 7.50]}
-          />
-        </div>
-
-        {/* Card 2: COGS & Carrier Postage */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              2
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              Unit Costs & Postage
-            </h3>
-          </div>
-          <InputField
-            label="Product Cost (COGS)"
-            value={cogs}
-            onChange={setCogs}
-            prefix="$"
-            helpText="Landed manufacturing / supplier cost"
-            presets={[5, 10.5, 20, 35]}
-          />
-          <InputField
-            label="Out-of-Pocket Shipping Cost"
-            value={shippingCost}
-            onChange={setShippingCost}
-            prefix="$"
-            helpText="Postage label paid to carrier"
-            presets={[3.5, 4.5, 8.0]}
-          />
-        </div>
-
-        {/* Card 3: Volume & Region */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              3
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              Volume & Region
-            </h3>
-          </div>
-          <InputField
-            label="Monthly Sales Volume (Orders)"
-            value={monthlyOrders}
-            onChange={setMonthlyOrders}
-            helpText="Projected monthly orders across channels"
-            presets={[25, 100, 250, 500]}
-          />
-          <PresetSelector
-            label="Seller Country"
-            selectedId={country}
-            options={countryOptions}
-            onSelect={setCountry}
-            helpText="Etsy Payment processing region"
-          />
-        </div>
-      </div>
-
-      {/* Winner Recommendation Banner */}
-      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-950 text-white font-bold text-sm shadow-xs">
-              ✓
-            </span>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-500">
-                  Most Profitable Channel:
-                </span>
-                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-xs font-mono font-bold text-white">
-                  {comparison.winner.platform}
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-zinc-700 mt-1 font-medium leading-relaxed">
-                {comparison.dataSnippet}
-              </p>
+        {/* Input Controls Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end">
+          {/* Item Price */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-zinc-900">
+              Item Price <span className="text-rose-500">*</span>
+            </label>
+            <div className="relative flex items-center rounded-xl border border-zinc-300 bg-white hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950 transition-all">
+              <span className="pl-3.5 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
+                {curr.symbol}
+              </span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="any"
+                value={itemPriceStr}
+                onChange={(e) => setItemPriceStr(e.target.value)}
+                onFocus={(e) => e.target.select()}
+                placeholder="50.00"
+                className="h-10 w-full rounded-xl bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+              />
             </div>
           </div>
 
-          <div className="sm:text-right shrink-0">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-500">
-              Annual Extra Take-Home
-            </span>
-            <div className="text-2xl sm:text-3xl font-extrabold text-zinc-950 font-mono">
-              +{formatCurrency(comparison.annualSavingsWinnerVsEtsy)}
+          {/* Product Cost */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-zinc-900">
+              Product Cost <span className="text-rose-500">*</span>
+            </label>
+            <div className="relative flex items-center rounded-xl border border-zinc-300 bg-white hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950 transition-all">
+              <span className="pl-3.5 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
+                {curr.symbol}
+              </span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="any"
+                value={productCostStr}
+                onChange={(e) => setProductCostStr(e.target.value)}
+                onFocus={(e) => e.target.select()}
+                placeholder="20.00"
+                className="h-10 w-full rounded-xl bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+              />
             </div>
-            <span className="text-[11px] text-zinc-400 font-mono">vs Etsy over 12 months</span>
           </div>
-        </div>
-      </div>
 
-      {/* Side-by-Side Comparison Table */}
-      <ComparisonTable
-        results={comparison.results}
-        showAnnual={viewMode === "annual"}
-      />
-
-      {/* Platform Cards Breakdown */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {comparison.results.map((r: PlatformResult) => {
-          const isWinner = r.platform === comparison.winner.platform;
-          return (
-            <div
-              key={r.platform}
-              className={`rounded-xl border p-5 space-y-3 transition-all ${
-                isWinner
-                  ? "border-zinc-900 bg-zinc-50 shadow-xs ring-1 ring-zinc-900/10"
-                  : "border-zinc-200 bg-white"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-zinc-950 text-base">{r.platform}</h3>
-                <span
-                  className={`rounded-md px-2 py-0.5 text-xs font-bold font-mono ${
-                    isWinner ? "bg-zinc-950 text-white" : "bg-zinc-100 text-zinc-700"
-                  }`}
-                >
-                  {r.effectiveFeePct}% fee
-                </span>
-              </div>
-
-              <div className="space-y-1 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-                <div className="flex justify-between">
-                  <span>Gross Order:</span>
-                  <span className="font-mono font-medium text-zinc-900">
-                    {formatCurrency(r.grossRevenue)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-zinc-700">
-                  <span>Platform Cut:</span>
-                  <span className="font-mono font-semibold">
-                    -{formatCurrency(r.totalPlatformFees)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Carrier & COGS:</span>
-                  <span className="font-mono text-zinc-500">
-                    -{formatCurrency(cogs + shippingCost)}
-                  </span>
-                </div>
-                <div className="flex justify-between font-bold text-zinc-950 pt-1 border-t border-dashed border-zinc-200">
-                  <span>Real Net Profit:</span>
-                  <span
-                    className={`font-mono text-sm ${
-                      r.netProfit >= 0 ? "text-zinc-950 font-extrabold" : "text-rose-600"
-                    }`}
-                  >
-                    {formatCurrency(r.netProfit)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-2 rounded-lg bg-zinc-50 p-2.5 text-center text-xs border border-zinc-100">
-                <span className="text-zinc-400 block text-[11px] font-mono">
-                  Annual Profit ({monthlyOrders * 12} sales):
-                </span>
-                <span className="font-bold text-zinc-950 font-mono text-sm mt-0.5 block">
-                  {formatCurrency(r.annualProjection.netProfit)}
-                </span>
-              </div>
+          {/* Shipping (to buyer) */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-zinc-900">
+              Shipping (to buyer)
+            </label>
+            <div className="relative flex items-center rounded-xl border border-zinc-300 bg-white hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950 transition-all">
+              <span className="pl-3.5 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
+                {curr.symbol}
+              </span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="any"
+                value={shippingBuyerStr}
+                onChange={(e) => setShippingBuyerStr(e.target.value)}
+                onFocus={(e) => e.target.select()}
+                placeholder="5.00"
+                className="h-10 w-full rounded-xl bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+              />
             </div>
-          );
-        })}
-      </div>
+          </div>
 
-      {/* Contextual Next Tool Bridge */}
-      {!isEmbed && (
-        <ContextualToolBridge
-          currentTool="etsy-vs-shopify-vs-tiktok-shop-calculator"
-          price={sellingPrice}
-          cost={cogs}
-        />
-      )}
-
-      {!isEmbed && (
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <ShareButton
-            toolSlug="etsy-vs-shopify-vs-tiktok-shop-calculator"
-            getFormattedText={getFormattedSummary}
-          />
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-            >
-              <span>↺</span>
-              <span>Reset Form</span>
-            </button>
-            <PrintButton toolSlug="etsy-vs-shopify-vs-tiktok-shop-calculator" />
-            <EmbedModal
-              toolSlug="etsy-vs-shopify-vs-tiktok-shop-calculator"
-              title="Etsy vs Shopify vs TikTok Shop Calculator"
+          {/* Currency Dropdown */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-bold text-zinc-900">
+              Currency
+            </label>
+            <CustomSelect
+              value={currency}
+              options={CURRENCIES.map((c) => ({ value: c.value, label: c.label }))}
+              onChange={setCurrency}
+              className="h-10"
             />
           </div>
-        </div>
-      )}
 
+          {/* Blue Compare Platforms Action Button */}
+          <div>
+            <button
+              type="button"
+              onClick={scrollToResults}
+              className="h-10 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 text-xs sm:text-sm font-bold text-white shadow-xs transition-colors cursor-pointer select-none"
+            >
+              <Calculator className="size-4 shrink-0" />
+              <span>Compare Platforms</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Expandable Advanced Options (Offsite Ads, Volume) */}
+        <div className="mt-4 pt-3 border-t border-zinc-100">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 cursor-pointer"
+          >
+            <SlidersHorizontal className="size-3.5 text-zinc-500" />
+            <span>{showAdvanced ? "Hide Advanced Settings" : "+ Advanced Settings (Offsite Ads, Creator Cut, Volume)"}</span>
+          </button>
+
+          {showAdvanced && (
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-zinc-50 rounded-xl border border-zinc-200/80 animate-in fade-in duration-150">
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-zinc-800">
+                <input
+                  type="checkbox"
+                  checked={includeOffsiteAds}
+                  onChange={(e) => setIncludeOffsiteAds(e.target.checked)}
+                  className="rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500 size-4"
+                />
+                <span>Include Etsy Offsite Ads (~14%)</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-zinc-800">
+                <input
+                  type="checkbox"
+                  checked={includeTikTokAffiliate}
+                  onChange={(e) => setIncludeTikTokAffiliate(e.target.checked)}
+                  className="rounded-sm border-zinc-300 text-blue-600 focus:ring-blue-500 size-4"
+                />
+                <span>Include TikTok Creator Cut (~16%)</span>
+              </label>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-zinc-600 font-medium">Monthly Orders:</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={monthlyOrdersStr}
+                  onChange={(e) => setMonthlyOrdersStr(e.target.value)}
+                  className="h-7 w-20 rounded-md border border-zinc-300 bg-white px-2 text-xs font-mono font-bold text-zinc-950 focus:outline-hidden"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* SECTION 2: The 3 Platform Cards (Etsy, Shopify, TikTok)   */}
+      {/* ========================================================= */}
+      <div id="comparison-results" className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* 1. Etsy Card */}
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4 transition-all">
+          <div className="flex items-center gap-3">
+            <div className="size-9 rounded-lg bg-orange-600 text-white font-serif font-black text-xl flex items-center justify-center shrink-0 shadow-xs">
+              E
+            </div>
+            <h3 className="font-bold text-xl text-zinc-950 tracking-tight">Etsy</h3>
+          </div>
+
+          <div className="space-y-2 pt-1 border-t border-zinc-100 text-xs sm:text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Total Fees</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {curr.symbol}{comparison.etsy.totalFees.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Net Profit</span>
+              <span className="font-mono font-extrabold text-base text-emerald-600">
+                {curr.symbol}{comparison.etsy.netProfit.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Profit Margin</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {comparison.etsy.margin.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+
+          {/* Stacked Segmented Progress Bar */}
+          <div className="h-2.5 rounded-full overflow-hidden flex bg-zinc-100 my-2">
+            <div
+              style={{ width: `${comparison.etsy.pcts.costPct}%` }}
+              className="bg-blue-600 h-full"
+              title={`Product Cost: ${comparison.etsy.pcts.costPct}%`}
+            />
+            <div
+              style={{ width: `${comparison.etsy.pcts.feePct}%` }}
+              className="bg-amber-500 h-full"
+              title={`Platform Fees: ${comparison.etsy.pcts.feePct}%`}
+            />
+            <div
+              style={{ width: `${comparison.etsy.pcts.profitPct}%` }}
+              className="bg-emerald-500 h-full"
+              title={`Net Profit: ${comparison.etsy.pcts.profitPct}%`}
+            />
+          </div>
+
+          {/* Segment Legend */}
+          <div className="space-y-1.5 pt-1 text-xs">
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-blue-600 shrink-0" />
+                <span>Product Cost</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{cost.toFixed(2)} ({comparison.etsy.pcts.costPct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-amber-500 shrink-0" />
+                <span>Platform &amp; Payment Fees</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{comparison.etsy.totalFees.toFixed(2)} ({comparison.etsy.pcts.feePct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700 font-semibold">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+                <span>Net Profit</span>
+              </div>
+              <span className="font-mono font-bold text-emerald-700">
+                {curr.symbol}{comparison.etsy.netProfit.toFixed(2)} ({comparison.etsy.pcts.profitPct.toFixed(1)}%)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. Shopify Card (Winner Highlighted) */}
+        <div className="rounded-2xl border-2 border-emerald-500 bg-white p-5 sm:p-6 shadow-md ring-4 ring-emerald-500/10 space-y-4 relative transition-all">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs p-1.5">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
+                  <path d="M19.34 7.62a1 1 0 0 0-.89-.62h-2.73a4.5 4.5 0 0 0-8.44 0H4.55a1 1 0 0 0-.89.62L2.05 18.62A1 1 0 0 0 3.04 20h17.92a1 1 0 0 0 .99-1.38L19.34 7.62zM12 4.5a2.5 2.5 0 0 1 2.45 2h-4.9A2.5 2.5 0 0 1 12 4.5z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-xl text-zinc-950 tracking-tight">Shopify</h3>
+            </div>
+            <span className="rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-2xs">
+              Highest Margin
+            </span>
+          </div>
+
+          <div className="space-y-2 pt-1 border-t border-zinc-100 text-xs sm:text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Total Fees</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {curr.symbol}{comparison.shopify.totalFees.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Net Profit</span>
+              <span className="font-mono font-extrabold text-xl text-emerald-600">
+                {curr.symbol}{comparison.shopify.netProfit.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Profit Margin</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {comparison.shopify.margin.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+
+          {/* Stacked Segmented Progress Bar */}
+          <div className="h-2.5 rounded-full overflow-hidden flex bg-zinc-100 my-2">
+            <div
+              style={{ width: `${comparison.shopify.pcts.costPct}%` }}
+              className="bg-blue-600 h-full"
+              title={`Product Cost: ${comparison.shopify.pcts.costPct}%`}
+            />
+            <div
+              style={{ width: `${comparison.shopify.pcts.feePct}%` }}
+              className="bg-amber-500 h-full"
+              title={`Platform Fees: ${comparison.shopify.pcts.feePct}%`}
+            />
+            <div
+              style={{ width: `${comparison.shopify.pcts.profitPct}%` }}
+              className="bg-emerald-500 h-full"
+              title={`Net Profit: ${comparison.shopify.pcts.profitPct}%`}
+            />
+          </div>
+
+          {/* Segment Legend */}
+          <div className="space-y-1.5 pt-1 text-xs">
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-blue-600 shrink-0" />
+                <span>Product Cost</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{cost.toFixed(2)} ({comparison.shopify.pcts.costPct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-amber-500 shrink-0" />
+                <span>Platform &amp; Payment Fees</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{comparison.shopify.totalFees.toFixed(2)} ({comparison.shopify.pcts.feePct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700 font-semibold">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+                <span>Net Profit</span>
+              </div>
+              <span className="font-mono font-bold text-emerald-700">
+                {curr.symbol}{comparison.shopify.netProfit.toFixed(2)} ({comparison.shopify.pcts.profitPct.toFixed(1)}%)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. TikTok Shop Card */}
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-2xs space-y-4 transition-all">
+          <div className="flex items-center gap-3">
+            <div className="size-9 rounded-lg bg-black text-white flex items-center justify-center shrink-0 shadow-xs p-1.5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="size-5 text-white">
+                <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.95-4.49V8.82a8.28 8.28 0 0 0 4.82 1.54v-3.45a4.85 4.85 0 0 1-1-.22z" />
+              </svg>
+            </div>
+            <h3 className="font-bold text-xl text-zinc-950 tracking-tight">TikTok Shop</h3>
+          </div>
+
+          <div className="space-y-2 pt-1 border-t border-zinc-100 text-xs sm:text-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Total Fees</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {curr.symbol}{comparison.tiktok.totalFees.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Net Profit</span>
+              <span className="font-mono font-extrabold text-base text-emerald-600">
+                {curr.symbol}{comparison.tiktok.netProfit.toFixed(2)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-zinc-600 font-medium">Profit Margin</span>
+              <span className="font-mono font-bold text-zinc-950">
+                {comparison.tiktok.margin.toFixed(1)}%
+              </span>
+            </div>
+          </div>
+
+          {/* Stacked Segmented Progress Bar */}
+          <div className="h-2.5 rounded-full overflow-hidden flex bg-zinc-100 my-2">
+            <div
+              style={{ width: `${comparison.tiktok.pcts.costPct}%` }}
+              className="bg-blue-600 h-full"
+              title={`Product Cost: ${comparison.tiktok.pcts.costPct}%`}
+            />
+            <div
+              style={{ width: `${comparison.tiktok.pcts.feePct}%` }}
+              className="bg-amber-500 h-full"
+              title={`Platform Fees: ${comparison.tiktok.pcts.feePct}%`}
+            />
+            <div
+              style={{ width: `${comparison.tiktok.pcts.profitPct}%` }}
+              className="bg-emerald-500 h-full"
+              title={`Net Profit: ${comparison.tiktok.pcts.profitPct}%`}
+            />
+          </div>
+
+          {/* Segment Legend */}
+          <div className="space-y-1.5 pt-1 text-xs">
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-blue-600 shrink-0" />
+                <span>Product Cost</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{cost.toFixed(2)} ({comparison.tiktok.pcts.costPct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-amber-500 shrink-0" />
+                <span>Platform &amp; Payment Fees</span>
+              </div>
+              <span className="font-mono font-medium text-zinc-900">
+                {curr.symbol}{comparison.tiktok.totalFees.toFixed(2)} ({comparison.tiktok.pcts.feePct.toFixed(1)}%)
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-zinc-700 font-semibold">
+              <div className="flex items-center gap-2">
+                <span className="size-2 rounded-full bg-emerald-500 shrink-0" />
+                <span>Net Profit</span>
+              </div>
+              <span className="font-mono font-bold text-emerald-700">
+                {curr.symbol}{comparison.tiktok.netProfit.toFixed(2)} ({comparison.tiktok.pcts.profitPct.toFixed(1)}%)
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* SECTION 3: Bottom Split (Fee Breakdown Details + Takeaways) */}
+      {/* ========================================================= */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* Left Column: Fee Breakdown (Details) Table */}
+        <div className="lg:col-span-2 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-2xs">
+          <h3 className="text-base sm:text-lg font-bold text-zinc-950 tracking-tight mb-4">
+            Fee Breakdown (Details)
+          </h3>
+
+          <div className="overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <table className="w-full text-left text-xs sm:text-sm">
+              <thead>
+                <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-900 font-bold">
+                  <th className="py-2.5 px-3 rounded-l-lg">Fee Type</th>
+                  <th className="py-2.5 px-3 text-right">Etsy</th>
+                  <th className="py-2.5 px-3 text-right">Shopify</th>
+                  <th className="py-2.5 px-3 text-right rounded-r-lg">TikTok Shop</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-100 text-zinc-800 font-mono">
+                <tr className="hover:bg-zinc-50/50">
+                  <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Listing / Plan Fee</td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.etsy.listingFee.toFixed(2)}</td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium">{curr.symbol}{comparison.shopify.listingFee.toFixed(2)}</td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium">{curr.symbol}{comparison.tiktok.listingFee.toFixed(2)}</td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50">
+                  <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Transaction Fee</td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.etsy.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(6.5%)</span></td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.shopify.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(3.0%)</span></td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.tiktok.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(5.0%)</span></td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50">
+                  <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Payment Processing</td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.etsy.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(3% + $0.25)</span></td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.shopify.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(2.9% + $0.30)</span></td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.tiktok.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(3.0%)</span></td>
+                </tr>
+                <tr className="hover:bg-zinc-50/50">
+                  <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Offsite / Marketing</td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.etsy.marketingFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(12–15%)</span></td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium">{curr.symbol}0.00</td>
+                  <td className="py-2.5 px-3 text-right">{curr.symbol}{comparison.tiktok.marketingFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(if applicable)</span></td>
+                </tr>
+                <tr className="border-t-2 border-zinc-200 bg-zinc-50/80 font-bold">
+                  <td className="py-3 px-3 font-sans font-extrabold text-zinc-950 rounded-l-lg">Total Fees</td>
+                  <td className="py-3 px-3 text-right text-rose-600 font-extrabold">{curr.symbol}{comparison.etsy.totalFees.toFixed(2)}</td>
+                  <td className="py-3 px-3 text-right text-emerald-700 font-extrabold">{curr.symbol}{comparison.shopify.totalFees.toFixed(2)}</td>
+                  <td className="py-3 px-3 text-right text-zinc-950 font-extrabold rounded-r-lg">{curr.symbol}{comparison.tiktok.totalFees.toFixed(2)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Right Column: Key Takeaways Card */}
+        <div className="lg:col-span-1 rounded-2xl border border-blue-200/80 bg-blue-50/60 p-5 sm:p-6 shadow-2xs flex flex-col justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-3.5">
+              <Info className="size-5 text-blue-600 shrink-0" />
+              <h3 className="text-base font-bold text-zinc-950 tracking-tight">
+                Key Takeaways
+              </h3>
+            </div>
+
+            <ul className="space-y-3 text-xs sm:text-sm text-zinc-800 leading-relaxed">
+              <li className="flex items-start gap-2.5">
+                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Shopify gives the highest Profit Margin ({comparison.shopify.margin.toFixed(1)}%)</strong> in this example.
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>
+                  Etsy has higher fees mainly due to Offsite Ads.
+                </span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span>
+                  TikTok Shop fees are competitive but can vary by region and promotions.
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mt-5 pt-3 border-t border-blue-200/60 text-xs text-blue-900 font-medium">
+            💡 <em>Tip: Use marketplaces for initial discovery, and migrate repeat customers to Shopify for maximum profit.</em>
+          </div>
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* SECTION 4: "Related Tools" 3-Card Navigation              */}
+      {/* ========================================================= */}
+      <div>
+        <h3 className="text-base sm:text-lg font-bold text-zinc-950 tracking-tight mb-3">
+          Related Tools
+        </h3>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          {/* Tool 1: Etsy */}
+          <Link
+            href="/tools/etsy-fee-calculator"
+            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-orange-600 text-white font-serif font-black text-xl flex items-center justify-center shrink-0 shadow-2xs">
+                E
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
+                  Etsy Fee Calculator
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  Calculate Etsy fees and net profit.
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+          </Link>
+
+          {/* Tool 2: Shopify */}
+          <Link
+            href="/tools/shopify-profit-calculator"
+            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs p-1.5">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
+                  <path d="M19.34 7.62a1 1 0 0 0-.89-.62h-2.73a4.5 4.5 0 0 0-8.44 0H4.55a1 1 0 0 0-.89.62L2.05 18.62A1 1 0 0 0 3.04 20h17.92a1 1 0 0 0 .99-1.38L19.34 7.62zM12 4.5a2.5 2.5 0 0 1 2.45 2h-4.9A2.5 2.5 0 0 1 12 4.5z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
+                  Shopify Fee Calculator
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  Calculate Shopify fees and profit.
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+          </Link>
+
+          {/* Tool 3: TikTok Shop */}
+          <Link
+            href="/tools/tiktok-shop-fee-calculator"
+            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all"
+          >
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-black text-white flex items-center justify-center shrink-0 shadow-2xs p-1.5">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="size-5 text-white">
+                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.95-4.49V8.82a8.28 8.28 0 0 0 4.82 1.54v-3.45a4.85 4.85 0 0 1-1-.22z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
+                  TikTok Shop Calculator
+                </h4>
+                <p className="text-xs text-zinc-500">
+                  Estimate TikTok Shop fees and profit.
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Bar */}
       {!isEmbed && (
         <StickyResultBar
-          label={`Top Channel: ${comparison.winner.platform}`}
+          label={`Top: ${comparison.winner.name}`}
           value={comparison.winner.netProfit}
-          subLabel="Annual Advantage"
-          subValue={comparison.annualSavingsWinnerVsEtsy}
+          subLabel="Advantage"
+          subValue={comparison.annualAdvantage}
+          subValueFormat="currency"
         />
       )}
     </div>

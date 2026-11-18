@@ -11,7 +11,6 @@ import { AdSlot } from "@/components/layout/AdSlot";
 import { AffiliateCallout } from "@/components/layout/AffiliateCallout";
 import { EmailCapture } from "@/components/layout/EmailCapture";
 import { ShimmerText } from "@/components/motion/shimmer-text";
-import { ToolIcon } from "@/components/common/ToolIcons";
 import { ActionButtons } from "@/components/layout/ActionButtons";
 import { DesktopToolSidebar } from "@/components/layout/DesktopToolSidebar";
 import { FeeScheduleTable } from "@/components/seo/FeeScheduleTable";
@@ -136,7 +135,7 @@ export default async function ToolPage({
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-3 sm:py-5">
+    <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-8 py-3 sm:py-5">
       {/* Schemas */}
       <JsonLd data={softwareAppSchema} />
       {tool.faqs.length > 0 && <JsonLd data={faqSchema} />}
@@ -144,8 +143,8 @@ export default async function ToolPage({
 
       <Breadcrumbs
         items={[
-          { label: "Calculators", href: "/#tools" },
-          { label: tool.title },
+          { label: tool.isComparison ? "Comparisons" : "Calculators", href: "/#tools" },
+          { label: tool.isComparison ? tool.title.replace(" Fee Comparison", "") : tool.title },
         ]}
       />
 
@@ -155,18 +154,13 @@ export default async function ToolPage({
           {/* SECTION 1: H1 Title + Quick Actions */}
           <header className="mb-4">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
-                <ToolIcon slug={tool.slug} size="md" className="mt-0.5" />
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-950">
-                      {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
-                    </h1>
-                  </div>
-                  <p className="mt-1.5 text-xs sm:text-sm text-zinc-800 font-medium leading-normal max-w-2xl">
-                    {tool.shortDescription}
-                  </p>
-                </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-950">
+                  {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
+                </h1>
+                <p className="mt-1.5 text-xs sm:text-sm text-zinc-700 font-medium leading-normal max-w-2xl">
+                  {tool.shortDescription}
+                </p>
               </div>
 
               {/* Quick Actions (Desktop & Mobile) */}
@@ -219,8 +213,12 @@ export default async function ToolPage({
               formulaMarkdown={tool.formulaMarkdown}
               toolTitle={tool.title}
               toolSlug={tool.slug}
+              config={tool.formulaConfig}
             />
-            <WorkedExample examples={tool.workedExamples} />
+            <WorkedExample
+              examples={tool.workedExamples}
+              config={tool.workedExampleConfig}
+            />
           </section>
 
           {/* SECTION 5: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}

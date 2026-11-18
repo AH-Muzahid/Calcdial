@@ -21,7 +21,7 @@ export function AffiliateCallout({
   url,
 }: AffiliateCalloutProps) {
   return (
-    <aside className="my-6 rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6 shadow-2xs print:hidden">
+    <aside className="my-6 rounded-2xl border border-zinc-200 bg-white p-3.5 sm:p-5 shadow-2xs print:hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         {/* Left Side: Icon + Content */}
         <div className="flex items-start gap-3.5">

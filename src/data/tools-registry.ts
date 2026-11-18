@@ -25,6 +25,28 @@ export interface GuideMeta {
   estimatedReadMinutes: number;
 }
 
+export interface FormulaItem {
+  title: string;
+  desc: string;
+}
+
+export interface FormulaBreakdownConfig {
+  primaryFormula: string;
+  secondaryFormula?: string;
+  items: FormulaItem[];
+}
+
+export interface WorkedExampleColumn {
+  header: string;
+  key: string;
+  align?: "left" | "right";
+  isProfit?: boolean;
+}
+
+export interface WorkedExampleConfig {
+  columns: WorkedExampleColumn[];
+}
+
 export interface ToolConfig {
   slug: string;
   title: string;
@@ -34,6 +56,8 @@ export interface ToolConfig {
   targetKeywords: string[];
   formulaMarkdown: string;
   formulaFn: string;
+  formulaConfig?: FormulaBreakdownConfig;
+  workedExampleConfig?: WorkedExampleConfig;
   pSEOPresets: string[]; // exactly 10 preset IDs for Phase 1
   workedExamples: WorkedExample[];
   howToSteps: HowToStep[];
@@ -104,6 +128,24 @@ export const TOOLS: ToolConfig[] = [
     targetKeywords: ["etsy fee calculator 2026", "etsy offsite ads profit calculator", "etsy seller fee breakdown"],
     formulaMarkdown: "`Net Profit = (Item Price + Shipping Charge) − (Listing Fee ($0.20) + 6.5% Transaction Fee + Payment Processing Fee (3% + $0.25 US) + Regulatory Operating Fee + Offsite Ads (12–15%))`",
     formulaFn: "calculateEtsyFees",
+    formulaConfig: {
+      primaryFormula: "Net Profit = (Item Price + Buyer Shipping) − (Product Cost + Shipping + Etsy Fees)",
+      items: [
+        { title: "Listing Fee:", desc: "$0.20 per item (valid for 4 months or until sold, auto-renews upon multi-quantity sale)." },
+        { title: "Transaction Fee:", desc: "6.5% assessed on entire buyer order total (including retail price and buyer shipping)." },
+        { title: "Payment Processing:", desc: "3% + $0.25 (US base rate; varies by seller bank country, e.g. 4% + £0.20 in UK)." },
+        { title: "Offsite Ads Fee:", desc: "12% to 15% deducted only when an order originates from Etsy-funded advertising within 30 days." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Retail Price", key: "Item Price", align: "right" },
+        { header: "Etsy Fees", key: "Etsy Fees", align: "right" },
+        { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
+        { header: "Effective Fee %", key: "Effective Fee %", align: "right" },
+      ],
+    },
     pSEOPresets: ["us", "uk", "ca", "au", "de", "fr", "nl", "it", "es", "in"],
     lastUpdated: "2026-11-01",
     isComparison: false,
@@ -153,6 +195,24 @@ export const TOOLS: ToolConfig[] = [
     targetKeywords: ["print on demand profit calculator", "pod pricing calculator etsy", "pod margin calculator"],
     formulaMarkdown: "`Net Profit = Retail Price − (Base Print Cost + Shipping + Marketplace Fee + Ad Spend)`",
     formulaFn: "calculatePodProfit",
+    formulaConfig: {
+      primaryFormula: "Net Profit = Retail Price − (Base Item Cost + Provider Shipping + Platform Fee + Ad Spend)",
+      items: [
+        { title: "Base Item Cost:", desc: "Blank apparel/merchandise cost plus DTG printing charges from Printify or Printful." },
+        { title: "Fulfillment Shipping:", desc: "Flat carrier postage rate charged by your print-on-demand supplier." },
+        { title: "Marketplace Commission:", desc: "Channel selling fee (Etsy 6.5%, Shopify ~2.9%, or TikTok Shop 6.0%)." },
+        { title: "Target Gross Margin:", desc: "Maintain 35%+ gross margin before advertising to protect scalable unit economics." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Retail Price", key: "Retail Price", align: "right" },
+        { header: "Base Cost", key: "Base Cost", align: "right" },
+        { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
+        { header: "Net Margin", key: "Net Margin", align: "right" },
+      ],
+    },
     pSEOPresets: ["t-shirts", "hoodies", "mugs", "totes", "posters", "phone-cases", "stickers", "canvas", "pillows", "ornaments"],
     lastUpdated: "2026-11-01",
     isComparison: false,
@@ -195,6 +255,24 @@ export const TOOLS: ToolConfig[] = [
     targetKeywords: ["tiktok shop fee calculator", "tiktok shop profit margin", "tiktok seller fees 2026"],
     formulaMarkdown: "`Net Profit = Sale Price − (Category Referral Fee + Affiliate Commission + Shipping + COGS)`",
     formulaFn: "calculateTikTokFees",
+    formulaConfig: {
+      primaryFormula: "Net Payout = Order Total − (Referral Fee + Merchant Payment Fee + Affiliate Commission)",
+      items: [
+        { title: "Category Referral Fee:", desc: "Standard 6.0% referral commission assessed across most consumer product categories." },
+        { title: "Payment Processing:", desc: "1.8% + $0.30 merchant fee deducted on the buyer's gross checkout total." },
+        { title: "Creator Affiliate Cut:", desc: "Optional 10%–20% commission paid to creators generating viral affiliate video sales." },
+        { title: "Shipping Subsidies:", desc: "Platform shipping promotions or seller-funded logistics co-pay discounts." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Sale Price", key: "Sale Price", align: "right" },
+        { header: "Platform Fee", key: "Platform Fee", align: "right" },
+        { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
+        { header: "Net Margin", key: "Net Margin", align: "right" },
+      ],
+    },
     pSEOPresets: ["beauty", "apparel", "electronics", "home-garden", "health", "toys", "sports", "food", "pets", "accessories"],
     lastUpdated: "2026-11-01",
     isComparison: false,
@@ -232,6 +310,25 @@ export const TOOLS: ToolConfig[] = [
     targetKeywords: ["shopify profit calculator", "shopify break even roas", "shopify gateway fee calculator"],
     formulaMarkdown: "`Net Profit = Revenue − (COGS + Payment Fee + Shipping + Ad Spend); Break-Even ROAS = 1 / Gross Margin %`",
     formulaFn: "calculateShopifyProfit",
+    formulaConfig: {
+      primaryFormula: "Net Profit = (Retail Price + Shipping) − (COGS + Carrier Postage + Gateway Fee + Surcharges + Ad Spend)",
+      secondaryFormula: "Break-Even ROAS = Gross Revenue ÷ (Gross Revenue − Total Direct Costs)",
+      items: [
+        { title: "Payment Processing Fee:", desc: "2.9% + 30¢ (Basic), 2.7% + 30¢ (Shopify), or 2.5% + 30¢ (Advanced) charged on gross order total via Shopify Payments." },
+        { title: "3rd-Party Gateway Surcharge:", desc: "Extra 2.0% (Basic), 1.0% (Shopify), or 0.6% (Advanced) platform penalty when using Stripe, PayPal, or external gateways." },
+        { title: "Landed Cost (COGS) & Postage:", desc: "Unit production/wholesale cost plus actual carrier shipping paid to fulfill the order." },
+        { title: "Customer Acquisition (CAC):", desc: "Paid ad spend per order on Meta, Google, or TikTok required to generate the sale." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Retail Price", key: "Retail Price", align: "right" },
+        { header: "Fees", key: "Total Fees", align: "right" },
+        { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
+        { header: "Margin", key: "Net Margin %", align: "right" },
+      ],
+    },
     pSEOPresets: ["shopify-payments", "stripe", "paypal", "square", "authorize-net", "2checkout", "klarna", "afterpay", "worldpay", "adyen"],
     lastUpdated: "2026-11-01",
     isComparison: false,
@@ -298,13 +395,31 @@ export const TOOLS: ToolConfig[] = [
   },
   {
     slug: "etsy-vs-shopify-vs-tiktok-shop-calculator",
-    title: "Etsy vs. Shopify vs. TikTok Shop Profit Comparison Calculator",
-    shortDescription: "Compare side-by-side net seller profits, effective fee percentages, and break-even pricing across Etsy, Shopify, and TikTok Shop in real time.",
+    title: "Etsy vs. Shopify vs. TikTok Shop Fee Comparison",
+    shortDescription: "Compare fees, net profit and profit margin across the top e-commerce platforms and find which one gives you the highest profit.",
     cluster: "A",
     phase: 1,
     targetKeywords: ["etsy vs shopify fees", "etsy vs tiktok shop profit comparison", "marketplace seller fee comparison"],
     formulaMarkdown: "`Net Payout = Item Price − Total Platform Specific Fees. Compares Etsy (listing + 6.5% + payment), Shopify (2.9% + $0.30), and TikTok Shop (6% referral + creator commission).`",
     formulaFn: "compareMarketplaces",
+    formulaConfig: {
+      primaryFormula: "Comparative Payout = Item Price − Channel Specific Take Rates & Commissions",
+      secondaryFormula: "Shopify Advantage = Shopify Net Payout − Marketplace Net Payout",
+      items: [
+        { title: "Shopify Payout:", desc: "Deducts 2.9% + 30¢ (Shopify Payments) — leaves highest take-home per sale (~96%)." },
+        { title: "TikTok Shop Payout:", desc: "Deducts 6.0% referral + 1.8% + 30¢ processing — leaves ~92% payout before creator cuts." },
+        { title: "Etsy Payout:", desc: "Deducts 20¢ listing + 6.5% transaction + 3% + 25¢ processing — leaves ~88–90% payout." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Price", key: "Price", align: "right" },
+        { header: "Shopify Net", key: "Shopify Net", align: "right", isProfit: true },
+        { header: "TikTok Net", key: "TikTok Net", align: "right" },
+        { header: "Etsy Net", key: "Etsy Net", align: "right" },
+      ],
+    },
     pSEOPresets: ["us", "uk", "ca", "au", "de", "fr", "nl", "it", "es", "in"],
     lastUpdated: "2026-11-01",
     isComparison: true,
@@ -319,13 +434,42 @@ export const TOOLS: ToolConfig[] = [
     ],
     workedExamples: [
       {
-        label: "$30 Item Comparison",
-        inputs: { "Price": "$30.00", "COGS": "$8.00", "Shipping": "$4.00" },
-        result: { "Shopify Net": "$20.83", "TikTok Net": "$18.20", "Etsy Net": "$17.48" },
+        label: "Handmade Enamel Pins ($18.00 Price, $3.50 COGS, $3.00 Shipping)",
+        inputs: { "Price": "$18.00", "COGS": "$3.50", "Shipping": "$3.00" },
+        result: { "Price": "$18.00", "Shopify Net": "$10.68", "TikTok Net": "$9.42", "Etsy Net": "$8.65" },
+      },
+      {
+        label: "Graphic Hoodie ($38.00 Price, $10.50 COGS, $4.50 Shipping)",
+        inputs: { "Price": "$38.00", "COGS": "$10.50", "Shipping": "$4.50" },
+        result: { "Price": "$38.00", "Shopify Net": "$21.60", "TikTok Net": "$20.22", "Etsy Net": "$18.47" },
+      },
+      {
+        label: "Artisan Leather Tote ($95.00 Price, $24.00 COGS, $8.00 Shipping)",
+        inputs: { "Price": "$95.00", "COGS": "$24.00", "Shipping": "$8.00" },
+        result: { "Price": "$95.00", "Shopify Net": "$59.94", "TikTok Net": "$57.29", "Etsy Net": "$52.93" },
       },
     ],
     faqs: [
-      { question: "Which platform has the lowest seller fees?", answer: "Shopify has significantly lower per-transaction fees (around 2.9% + $0.30) compared to Etsy (around 12-20% blended) and TikTok Shop (6-20% including affiliate commissions). However, Shopify requires you to generate your own traffic." },
+      {
+        question: "Which platform has the lowest seller fees in 2026: Etsy, Shopify, or TikTok Shop?",
+        answer: "Shopify has the lowest per-transaction platform fees by a substantial margin. When using Shopify Payments, you only pay standard credit card processing of 2.9% + $0.30 (Basic plan) with 0% platform transaction commission. In contrast, TikTok Shop takes an effective ~7.8% (6.0% category referral fee + 1.8% + $0.30 payment processing), while Etsy takes 10.5% to 12% in standard fees (6.5% transaction + 3% + $0.25 payment + $0.20 listing), rising to over 25% if a sale triggers an Etsy Offsite Ad.",
+      },
+      {
+        question: "How do customer acquisition costs (CAC) change the real profit equation between Shopify and Etsy?",
+        answer: "While Shopify charges much lower transaction fees, it does not come with a built-in search engine or organic marketplace traffic. On Shopify, the seller is 100% responsible for driving visitors via Meta, Google, TikTok Ads, or SEO. Etsy and TikTok Shop charge higher commission fees because they provide active buyer discovery and algorithmic distribution. If your customer acquisition cost (CAC) on Shopify exceeds the ~8% to 15% fee difference of Etsy, selling on marketplaces may yield higher immediate bottom-line profit until you establish organic brand equity or repeat buyers.",
+      },
+      {
+        question: "Why does TikTok Shop charge both a referral fee and a payment fee?",
+        answer: "Following updates in 2024–2026, TikTok Shop restructured its fee model to mirror modern e-commerce standards. The platform charges a category referral fee (5.0% to 6.0% for most consumer goods like apparel, beauty, and home) plus a payment processing fee (1.8% + $0.30) to cover interchange and checkout gateway expenses. Additionally, if you enroll creators in your TikTok Shop Affiliate program to promote your products in viral videos or live streams, their creator commission (typically 10% to 20%) is deducted on top of platform fees.",
+      },
+      {
+        question: "At what monthly sales revenue should an Etsy seller launch an independent Shopify store?",
+        answer: "The financial break-even point typically occurs around $1,500 to $2,500 in monthly sales volume (approximately 50 to 100 orders per month). At $3,000/month on Etsy, you surrender approximately $350 to $450 in marketplace fees. On Shopify, identical volume incurs ~$115 in credit card fees plus the $39/month Basic subscription ($154 total), saving over $200 every month in fees alone while allowing you to build an owned customer email list and eliminate competitor ads on your product listings.",
+      },
+      {
+        question: "Can I sell the same products simultaneously on Etsy, Shopify, and TikTok Shop?",
+        answer: "Yes, multi-channel selling is the industry standard for high-margin e-commerce brands. Many sellers use Shopify as their central inventory management hub and sync listings automatically to Etsy and TikTok Shop using apps like CedCommerce or Marketplace Connect. A common strategy is to charge 10% to 15% higher prices on Etsy and TikTok Shop to absorb higher platform take rates while offering the lowest retail price and exclusive bundles on your direct Shopify storefront.",
+      },
     ],
     relatedTools: ["etsy-fee-calculator", "shopify-profit-calculator", "tiktok-shop-fee-calculator"],
     relatedGuides: ["etsy-vs-shopify-vs-tiktok-shop-comparison", "how-to-calculate-etsy-fees-2026"],
@@ -339,6 +483,23 @@ export const TOOLS: ToolConfig[] = [
     targetKeywords: ["stripe vs paypal fees", "paypal vs stripe fee calculator", "invoice gross up calculator"],
     formulaMarkdown: "`Gross-up Amount = (Target Payout + Fixed Fee) / (1 − Percentage Rate)`",
     formulaFn: "comparePaymentProcessors",
+    formulaConfig: {
+      primaryFormula: "Invoice Gross-Up = (Target Payout + Fixed Fee) ÷ (1 − Processing Rate)",
+      items: [
+        { title: "Stripe Standard Rate:", desc: "2.9% + $0.30 per successful card charge (US domestic cards)." },
+        { title: "PayPal Commercial Rate:", desc: "3.49% + $0.49 per standard PayPal checkout transaction." },
+        { title: "International Surcharges:", desc: "Extra 1.0% to 1.5% cross-border fee plus 1.0% currency conversion markup." },
+      ],
+    },
+    workedExampleConfig: {
+      columns: [
+        { header: "Scenario", key: "scenario", align: "left" },
+        { header: "Target Payout", key: "Target Payout", align: "right" },
+        { header: "Invoice Stripe", key: "Invoice Stripe", align: "right", isProfit: true },
+        { header: "Invoice PayPal", key: "Invoice PayPal", align: "right" },
+        { header: "Stripe Fee", key: "Stripe Fee", align: "right" },
+      ],
+    },
     pSEOPresets: ["usd", "gbp", "eur", "cad", "aud", "jpy", "chf", "sgd", "hkd", "mxn"],
     lastUpdated: "2026-11-01",
     isComparison: true,

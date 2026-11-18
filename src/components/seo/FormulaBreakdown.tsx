@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { Calculator, ChevronUp, ChevronDown } from "lucide-react";
+import { FormulaBreakdownConfig } from "@/data/tools-registry";
+import { cn } from "@/lib/utils";
 
 interface FormulaBreakdownProps {
   formulaMarkdown?: string;
   toolTitle?: string;
   toolSlug?: string;
+  config?: FormulaBreakdownConfig;
 }
 
 interface ToolMethodology {
@@ -165,31 +168,49 @@ const TOOL_METHODOLOGIES: Record<string, ToolMethodology> = {
   },
 };
 
+function formatFormula(formula: string, colorClass: string) {
+  const parts = formula.split("=");
+  if (parts.length === 2) {
+    return (
+      <span>
+        <span className={cn(colorClass, "font-extrabold")}>{parts[0].trim()}</span> = {parts[1].trim()}
+      </span>
+    );
+  }
+  return <span>{formula}</span>;
+}
+
 export function FormulaBreakdown({
   formulaMarkdown,
   toolTitle = "Fee Calculator",
   toolSlug = "etsy-fee-calculator",
+  config,
 }: FormulaBreakdownProps) {
   const [isOpen, setIsOpen] = useState(true);
 
-  // Match methodology or fall back cleanly
-  const methodology = TOOL_METHODOLOGIES[toolSlug] || {
-    formulaHtml: (
-      <span>
-        <span className="text-emerald-700 font-extrabold">Net Profit</span> = Revenue − (Direct Costs + Platform Fees)
-      </span>
-    ),
-    points: [
-      {
-        title: "Platform Fees:",
-        desc: "Standard merchant processing and marketplace commission charges.",
-      },
-      {
-        title: "Direct Costs:",
-        desc: "Item landed manufacturing, packaging, and carrier postage expenses.",
-      },
-    ],
-  };
+  // If data-driven config is provided, render directly from it
+  const formulaHtml = config?.primaryFormula
+    ? formatFormula(config.primaryFormula, "text-emerald-700")
+    : TOOL_METHODOLOGIES[toolSlug]?.formulaHtml || (
+        <span>
+          <span className="text-emerald-700 font-extrabold">Net Profit</span> = Revenue − (Direct Costs + Platform Fees)
+        </span>
+      );
+
+  const secondaryFormulaHtml = config?.secondaryFormula
+    ? formatFormula(config.secondaryFormula, "text-blue-700")
+    : TOOL_METHODOLOGIES[toolSlug]?.secondaryFormula;
+
+  const points = config?.items || TOOL_METHODOLOGIES[toolSlug]?.points || [
+    {
+      title: "Platform Fees:",
+      desc: "Standard merchant processing and marketplace commission charges.",
+    },
+    {
+      title: "Direct Costs:",
+      desc: "Item landed manufacturing, packaging, and carrier postage expenses.",
+    },
+  ];
 
   return (
     <div className="rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white shadow-2xs overflow-hidden h-full font-sans">
@@ -197,7 +218,7 @@ export function FormulaBreakdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left hover:bg-zinc-50 transition-colors cursor-pointer"
+        className="w-full flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 text-left hover:bg-zinc-50 transition-colors cursor-pointer"
       >
         <div className="flex items-center gap-2">
           <Calculator className="size-4 text-zinc-800" />
@@ -212,19 +233,19 @@ export function FormulaBreakdown({
 
       {/* Accordion Content — Streamlined Single Layer */}
       {isOpen && (
-        <div className="px-3.5 sm:px-4.5 pb-4 pt-2.5 border-t border-zinc-100 space-y-3">
+        <div className="px-3 sm:px-4 pb-3.5 pt-2 border-t border-zinc-100 space-y-3">
           {/* Clean Formula Lines — No nested background boxes */}
-          <div className="pb-3 border-b border-zinc-100 space-y-1.5 text-xs sm:text-sm font-mono font-bold text-zinc-950 leading-relaxed">
-            <div>{methodology.formulaHtml}</div>
-            {methodology.secondaryFormula && (
-              <div className="text-xs text-blue-700">{methodology.secondaryFormula}</div>
+          <div className="pb-2.5 border-b border-zinc-100 space-y-1 text-xs sm:text-sm font-mono font-bold text-zinc-950 leading-relaxed">
+            <div>{formulaHtml}</div>
+            {secondaryFormulaHtml && (
+              <div className="text-xs text-blue-700">{secondaryFormulaHtml}</div>
             )}
           </div>
 
           {/* Bulleted Fee Explanation */}
-          <ul className="space-y-2 text-xs text-zinc-850 leading-relaxed pt-1">
-            {methodology.points.map((pt, idx) => (
-              <li key={idx} className="flex items-start gap-2">
+          <ul className="space-y-1.5 text-xs text-zinc-850 leading-relaxed pt-0.5">
+            {points.map((pt, idx) => (
+              <li key={idx} className="flex items-start gap-1.5">
                 <span className="text-zinc-400 font-bold">•</span>
                 <span>
                   <strong className="text-zinc-950 font-bold">{pt.title}</strong> {pt.desc}

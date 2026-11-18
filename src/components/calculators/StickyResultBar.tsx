@@ -14,6 +14,7 @@ interface StickyResultBarProps {
   value: number;
   subLabel?: string;
   subValue?: number;
+  subValueFormat?: "percent" | "currency";
   productCost?: number;
   totalFees?: number;
   payout?: number;
@@ -27,6 +28,7 @@ export function StickyResultBar({
   value,
   subLabel,
   subValue,
+  subValueFormat = "percent",
   productCost = 0,
   totalFees = 0,
   payout = 0,
@@ -42,8 +44,14 @@ export function StickyResultBar({
   const feesPct = (totalFees / totalSum) * 100;
   const profitPct = (Math.max(0, value) / totalSum) * 100;
 
+  const formattedSubValue = subValue !== undefined
+    ? subValueFormat === "currency"
+      ? `+${currencySymbol}${subValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+      : formatPercent(subValue)
+    : "";
+
   const handleCopy = () => {
-    const text = `${label}: ${currencySymbol}${value.toFixed(2)}${subLabel && subValue !== undefined ? ` (${subLabel}: ${subValue.toFixed(1)}%)` : ""}\nTotal Fees: ${currencySymbol}${totalFees.toFixed(2)}\nProduct Cost: ${currencySymbol}${productCost.toFixed(2)}\nEstimated Payout: ${currencySymbol}${payout.toFixed(2)}\nBreak-Even: ${currencySymbol}${breakEven.toFixed(2)}`;
+    const text = `${label}: ${currencySymbol}${value.toFixed(2)}${subLabel && subValue !== undefined ? ` (${subLabel}: ${formattedSubValue})` : ""}\nTotal Fees: ${currencySymbol}${totalFees.toFixed(2)}\nProduct Cost: ${currencySymbol}${productCost.toFixed(2)}\nEstimated Payout: ${currencySymbol}${payout.toFixed(2)}\nBreak-Even: ${currencySymbol}${breakEven.toFixed(2)}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -110,7 +118,7 @@ export function StickyResultBar({
                   {subLabel}
                 </span>
                 <span className="text-2xl font-extrabold font-mono text-zinc-950">
-                  {formatPercent(subValue)}
+                  {formattedSubValue}
                 </span>
               </div>
             )}
@@ -196,7 +204,7 @@ export function StickyResultBar({
                   {subLabel}
                 </span>
                 <span className="text-base font-bold font-mono text-zinc-950">
-                  {formatPercent(subValue)}
+                  {formattedSubValue}
                 </span>
               </div>
             )}
