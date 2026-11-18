@@ -108,6 +108,30 @@ describe("Shopify Profit & ROAS Formula", () => {
     });
     expect(Math.abs(beResult.netProfit)).toBeLessThanOrEqual(0.05);
 
+    // Verify target dollar profit
+    const dollarTarget = calculateShopifyProfit({
+      shippingCharged: 5.00,
+      cogs: 15.00,
+      shippingCost: 5.00,
+      adSpend: 5.00,
+      shopifyPlan: "basic",
+      gateway: "shopify-payments",
+      targetProfitDollar: 20.00,
+    });
+    expect(dollarTarget.targetPriceForDollar).toBeDefined();
+
+    // If priced at targetPriceForDollar, net profit should equal $20
+    const verifiedTarget = calculateShopifyProfit({
+      itemPrice: dollarTarget.targetPriceForDollar!,
+      shippingCharged: 5.00,
+      cogs: 15.00,
+      shippingCost: 5.00,
+      adSpend: 5.00,
+      shopifyPlan: "basic",
+      gateway: "shopify-payments",
+    });
+    expect(Math.abs(verifiedTarget.netProfit - 20.00)).toBeLessThanOrEqual(0.05);
+
     // Edge case: unreachable target margin (e.g. 100% margin when fees exist)
     const impossible = calculateShopifyProfit({
       itemPrice: 50.00,

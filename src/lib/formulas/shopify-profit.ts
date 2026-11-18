@@ -15,6 +15,7 @@ export interface ShopifyInput {
   customFixedFee?: number;
   shopifyPlanTransactionPct?: number; // 0 for Shopify Payments, 0.5-2.0% for external
   targetMarginPct?: number; // Desired net margin %
+  targetProfitDollar?: number; // Desired net dollar profit
 }
 
 export interface ShopifyResult {
@@ -37,6 +38,8 @@ export interface ShopifyResult {
   breakEvenRoas: number;
   breakEvenPrice: number;
   targetPriceForMargin?: number;
+  targetPriceForDollar?: number;
+  recommendedPrice?: number;
   breakdown: { label: string; amount: number; rate?: string }[];
   dataSnippet: string;
 }
@@ -143,6 +146,17 @@ export function calculateShopifyProfit(input: ShopifyInput): ShopifyResult {
     }
   }
 
+  // Target Price for Desired Dollar Net Profit
+  let targetPriceForDollar: number | undefined;
+  if (input.targetProfitDollar !== undefined && input.targetProfitDollar > 0) {
+    if (feeRateDecimal < 1) {
+      const requiredGross = (input.targetProfitDollar + totalDirectCosts + fixedFee) / (1 - feeRateDecimal);
+      targetPriceForDollar = Number(Math.max(0, requiredGross - shippingCharged).toFixed(2));
+    }
+  }
+
+  const recommendedPrice = targetPriceForDollar ?? targetPriceForMargin ?? breakEvenPrice;
+
   const breakdown = [
     { label: "Cost of Goods (COGS)", amount: cogs },
     { label: "Payment Gateway Fee", amount: paymentFee, rate: `${ratePct}% + $${fixedFee.toFixed(2)}` },
@@ -181,6 +195,8 @@ export function calculateShopifyProfit(input: ShopifyInput): ShopifyResult {
     breakEvenRoas,
     breakEvenPrice,
     targetPriceForMargin,
+    targetPriceForDollar,
+    recommendedPrice,
     breakdown,
     dataSnippet,
   };
