@@ -271,6 +271,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <select
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
+                    style={{ WebkitAppearance: "none", MozAppearance: "none", appearance: "none" }}
                     className="h-9 w-full appearance-none rounded-lg border border-zinc-300 bg-white px-3 pr-9 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer"
                   >
                     {Object.entries(CURRENCY_MAP).map(([id, item]) => (

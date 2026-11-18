@@ -21,6 +21,21 @@ body {
 }
 
 /* ========================================================
+   Native Select Dropdown Reset
+   Completely removes native browser arrows (▲/▼) in Chromium,
+   WebKit, Firefox, and Windows Edge/IE
+   ======================================================== */
+select {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: none !important;
+}
+select::-ms-expand {
+  display: none !important;
+}
+
+/* ========================================================
    Ultra-Clean Premium Scrollbar (Mac / Linear Style)
    Completely removes Windows native arrow buttons (▲/▼)
    ======================================================== */
