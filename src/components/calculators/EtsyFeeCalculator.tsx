@@ -450,17 +450,17 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               </div>
 
               {/* Toggle 1: Include Etsy Offsite Ads */}
-              <div className="pt-1">
+              <div className="pt-2 border-t border-zinc-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <label
                       htmlFor="toggle-offsite-ads"
-                      className="text-xs font-bold text-zinc-950 block cursor-pointer"
+                      className="text-xs font-semibold text-zinc-950 block cursor-pointer"
                     >
-                      Include Etsy Offsite Ads
+                      Etsy Offsite Ads
                     </label>
-                    <p className="text-[11px] text-zinc-600 font-sans font-medium">
-                      ~ 12–15% on sale (if applicable)
+                    <p className="text-[11px] text-zinc-500 font-sans">
+                      Fee applied only when a sale comes from Etsy advertising
                     </p>
                   </div>
 
@@ -483,45 +483,49 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   </button>
                 </div>
 
-                {/* Offsite Ads Rate Tier Selection */}
+                {/* Offsite Ads Rate Tier Selection (Sleek Segmented Pill) */}
                 {offsiteAds && (
-                  <div className="mt-1.5 flex flex-wrap gap-3 text-[11px] font-sans text-zinc-700">
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="adsTierOption"
-                        checked={adsTier === 0.15}
-                        onChange={() => setAdsTier(0.15)}
-                        className="accent-blue-600"
-                      />
-                      <span>15% (&lt;$10k/yr shop sales)</span>
-                    </label>
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="adsTierOption"
-                        checked={adsTier === 0.12}
-                        onChange={() => setAdsTier(0.12)}
-                        className="accent-blue-600"
-                      />
-                      <span>12% ($10k+ mandatory)</span>
-                    </label>
+                  <div className="mt-2.5 inline-flex rounded-lg bg-zinc-100 p-0.5 text-xs font-sans">
+                    <button
+                      type="button"
+                      onClick={() => setAdsTier(0.15)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
+                        adsTier === 0.15
+                          ? "bg-white font-bold text-zinc-950 shadow-2xs"
+                          : "text-zinc-600 hover:text-zinc-950 font-medium"
+                      )}
+                    >
+                      15% Standard (Under $10k/yr)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAdsTier(0.12)}
+                      className={cn(
+                        "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
+                        adsTier === 0.12
+                          ? "bg-white font-bold text-zinc-950 shadow-2xs"
+                          : "text-zinc-600 hover:text-zinc-950 font-medium"
+                      )}
+                    >
+                      12% High Volume ($10k+)
+                    </button>
                   </div>
                 )}
               </div>
 
-              {/* Toggle 2: Apply Sales Tax (if applicable) */}
-              <div className="pt-1">
+              {/* Toggle 2: Buyer Sales Tax */}
+              <div className="pt-2 border-t border-zinc-100">
                 <div className="flex items-center justify-between">
                   <div>
                     <label
                       htmlFor="toggle-sales-tax"
-                      className="text-xs font-semibold text-zinc-900 block cursor-pointer"
+                      className="text-xs font-semibold text-zinc-950 block cursor-pointer"
                     >
-                      Apply Sales Tax (if applicable)
+                      Buyer Sales Tax
                     </label>
-                    <p className="text-[10px] text-zinc-400 font-sans">
-                      State/provincial sales tax calculation
+                    <p className="text-[11px] text-zinc-500 font-sans">
+                      Add estimated tax to buyer total
                     </p>
                   </div>
 
@@ -545,30 +549,30 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 </div>
 
                 {applySalesTax && (
-                  <div className="mt-1.5 flex items-center justify-between gap-3 text-[11px]">
-                    <span className="text-zinc-600">Buyer Estimated Sales Tax %:</span>
-                    <div className="flex items-center gap-1 max-w-[100px]">
+                  <div className="mt-2 flex items-center justify-between gap-3 text-xs">
+                    <span className="text-zinc-600">Estimated Tax Rate:</span>
+                    <div className="flex items-center gap-1">
                       <input
                         type="number"
                         value={salesTaxPct}
                         onChange={(e) => setSalesTaxPct(Math.max(0, parseFloat(e.target.value) || 0))}
-                        className="h-7 w-16 rounded-md border border-zinc-200 px-1.5 text-right font-mono text-xs font-semibold focus:border-zinc-950 focus:outline-hidden"
+                        className="h-7 w-16 rounded-md border border-zinc-300 px-2 text-right font-mono text-xs font-bold text-zinc-950 focus:border-zinc-950 focus:outline-hidden"
                       />
-                      <span className="text-xs font-mono text-zinc-400">%</span>
+                      <span className="text-xs font-mono font-bold text-zinc-500">%</span>
                     </div>
                   </div>
                 )}
               </div>
 
               {/* Advanced Options Accordion */}
-              <div className="pt-0.5">
+              <div className="pt-2 border-t border-zinc-100">
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="flex items-center gap-1 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer"
                 >
-                  <span>{showAdvanced ? "Hide Advanced Options" : "+ More Options (Postage, International, Quantity)"}</span>
-                  {showAdvanced ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                  <span>{showAdvanced ? "Hide Advanced Options" : "More Options (Postage, International, Quantity)"}</span>
+                  {showAdvanced ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
                 </button>
 
                 {showAdvanced && (
@@ -639,7 +643,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         {/* ========================================================= */}
         {/* RIGHT CARD: Results (Standalone Hero Card)                */}
         {/* ========================================================= */}
-        <div className="lg:col-span-5 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-5 shadow-xs lg:sticky lg:top-24">
+        <div className="hidden lg:block lg:col-span-5 rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs lg:sticky lg:top-24">
           {/* Header */}
           <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
             <h3 className="text-sm sm:text-base font-bold tracking-tight text-zinc-950">
