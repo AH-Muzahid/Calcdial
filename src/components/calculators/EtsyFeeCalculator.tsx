@@ -2,12 +2,12 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { calculateEtsyFees, calculateReverseEtsyPrice } from "@/lib/formulas/etsy-fees";
-import { ETSY_FEE_PRESETS } from "@/data/fee-presets";
 import { formatCurrency, formatPercent, cn } from "@/lib/utils";
 import { StickyResultBar } from "./StickyResultBar";
 import { CustomSelect } from "@/components/common/CustomSelect";
-import { ChevronDown, ChevronUp, Copy, Check, Info, ArrowRight } from "lucide-react";
+import { ChevronDown, ChevronUp, Copy, Check, RotateCcw, ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
+import { PixelButton } from "@/components/ui/PixelButton";
 
 interface EtsyFeeCalculatorProps {
   initialCountry?: string;
@@ -22,9 +22,6 @@ const CURRENCY_MAP: Record<string, { symbol: string; label: string }> = {
   ca: { symbol: "C$", label: "CAD (C$) - Canada" },
   au: { symbol: "A$", label: "AUD (A$) - Australia" },
   in: { symbol: "₹", label: "INR (₹) - India" },
-  nl: { symbol: "€", label: "EUR (€) - Netherlands" },
-  it: { symbol: "€", label: "EUR (€) - Italy" },
-  es: { symbol: "€", label: "EUR (€) - Spain" },
 };
 
 const CURRENCY_OPTIONS = [
@@ -37,8 +34,9 @@ const CURRENCY_OPTIONS = [
   { value: "in", label: "INR (₹) - India" },
 ];
 
+const PRESETS = [15, 25, 35, 50, 75, 100];
+
 export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: EtsyFeeCalculatorProps) {
-  // Input states matching user reference
   const [country, setCountry] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const c = new URLSearchParams(window.location.search).get("country");
@@ -69,49 +67,40 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
     return "0.00";
   });
 
-  const price = Math.max(0, parseFloat(priceStr) || 0);
-  const itemCost = Math.max(0, parseFloat(costStr) || 0);
-  const shippingCharged = Math.max(0, parseFloat(shippingStr) || 0);
-
-  const formatAmount = (num: number) =>
-    num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
+  const [shippingCostStr, setShippingCostStr] = useState<string>("0.00");
   const [offsiteAds, setOffsiteAds] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const ads = new URLSearchParams(window.location.search).get("ads");
       if (ads === "true" || ads === "1") return true;
       if (ads === "false" || ads === "0") return false;
     }
-    return false; // Default OFF per CRITIQUE-12
+    return false;
   });
 
   const [adsTier, setAdsTier] = useState<0.15 | 0.12>(0.15);
   const [applySalesTax, setApplySalesTax] = useState<boolean>(false);
   const [salesTaxPct, setSalesTaxPct] = useState<number>(7.5);
-
-  // Mobile accordion toggle for inputs
-  const [inputsOpen, setInputsOpen] = useState<boolean>(true);
-
-  // Advanced options toggle
-  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
-  const [shippingCost, setShippingCost] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
   const [isInternational, setIsInternational] = useState<boolean>(false);
 
-  // Results toggle for itemized drawer
+  // Advanced options toggle
+  const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
   const [showItemized, setShowItemized] = useState<boolean>(false);
   const [copiedSummary, setCopiedSummary] = useState<boolean>(false);
 
-  // Mode switcher: Standard Profit vs Reverse Target Pricing
+  // Calculation mode: standard vs reverse
   const [calcMode, setCalcMode] = useState<"standard" | "reverse">("standard");
   const [targetType, setTargetType] = useState<"dollar" | "margin">("dollar");
   const [targetValStr, setTargetValStr] = useState<string>("15.00");
+
+  const price = Math.max(0, parseFloat(priceStr) || 0);
+  const itemCost = Math.max(0, parseFloat(costStr) || 0);
+  const shippingCharged = Math.max(0, parseFloat(shippingStr) || 0);
+  const shippingCost = Math.max(0, parseFloat(shippingCostStr) || 0);
   const targetVal = Math.max(0, parseFloat(targetValStr) || 0);
 
-  // Active currency info
   const curr = CURRENCY_MAP[country] || CURRENCY_MAP.us;
 
-  // Calculation using pure math engine
   const isZeroInput = price === 0 && shippingCharged === 0 && itemCost === 0 && shippingCost === 0;
 
   const result = useMemo(() => {
@@ -121,18 +110,17 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
         listingFee: 0,
         transactionFee: 0,
         paymentProcessingFee: 0,
-        regulatoryFee: 0,
         offsiteAdsFee: 0,
+        regulatoryFee: 0,
         totalFees: 0,
         effectiveFeePct: 0,
-        totalProductCosts: 0,
         etsyPayout: 0,
+        totalProductCosts: 0,
+        totalShippingCosts: 0,
         netProfit: 0,
         netMarginPct: 0,
         roiPct: 0,
         breakEvenPrice: 0,
-        breakdown: [],
-        dataSnippet: "Enter price and costs to calculate net earnings.",
       };
     }
     return calculateEtsyFees({
@@ -142,512 +130,528 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
       shippingCost,
       quantity,
       country,
-      isInternationalBuyer: isInternational,
       offsiteAdsOptIn: offsiteAds,
       offsiteAdsRate: adsTier,
+      isInternationalBuyer: isInternational,
     });
-  }, [price, shippingCharged, itemCost, shippingCost, quantity, country, isInternational, offsiteAds, adsTier, isZeroInput]);
+  }, [
+    price,
+    shippingCharged,
+    itemCost,
+    shippingCost,
+    quantity,
+    country,
+    offsiteAds,
+    adsTier,
+    isInternational,
+    applySalesTax,
+    salesTaxPct,
+    isZeroInput,
+  ]);
 
-  // Reverse price finder calculation
   const reverseResult = useMemo(() => {
     return calculateReverseEtsyPrice({
       targetProfitType: targetType,
       targetValue: targetVal,
       itemCost,
-      shippingCost,
       shippingCharge: shippingCharged,
+      shippingCost,
       quantity,
       country,
-      isInternationalBuyer: isInternational,
       offsiteAdsOptIn: offsiteAds,
       offsiteAdsRate: adsTier,
+      isInternationalBuyer: isInternational,
     });
-  }, [targetType, targetVal, itemCost, shippingCost, shippingCharged, quantity, country, isInternational, offsiteAds, adsTier]);
+  }, [
+    targetType,
+    targetVal,
+    itemCost,
+    shippingCharged,
+    shippingCost,
+    quantity,
+    country,
+    offsiteAds,
+    adsTier,
+    isInternational,
+  ]);
 
-  // Track calculator usage
+  // Synchronize URL parameters
   useEffect(() => {
-    const timer = setTimeout(() => {
-      trackEvent({
-        name: "calculator_used",
-        params: { tool_slug: "etsy-fee-calculator", preset: country },
-      });
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [price, country, offsiteAds, itemCost]);
+    if (typeof window === "undefined" || isEmbed) return;
+    const params = new URLSearchParams(window.location.search);
+    if (price > 0) params.set("price", price.toString());
+    else params.delete("price");
+    if (itemCost > 0) params.set("cost", itemCost.toString());
+    else params.delete("cost");
+    if (shippingCharged > 0) params.set("shipping", shippingCharged.toString());
+    else params.delete("shipping");
+    if (offsiteAds) params.set("ads", "true");
+    else params.delete("ads");
+    if (country !== "us") params.set("country", country);
+    else params.delete("country");
 
-  // Relative percentages for progress breakdown bar (based on total gross revenue)
-  const totalRevenue = Math.max(0.01, result.grossRevenue);
-  const costTotal = Math.max(0, result.totalProductCosts);
-  const feesTotal = Math.max(0, result.totalFees);
-  const profitTotal = Math.max(0, result.netProfit);
-  
-  // Percentages are relative to total gross revenue so they sum to 100% and align with net margin
-  const costPct = (costTotal / totalRevenue) * 100;
-  const feesPct = (feesTotal / totalRevenue) * 100;
-  const profitPct = (profitTotal / totalRevenue) * 100;
-
-  // Normalized percentages for the bar itself
-  const barSum = (costTotal + feesTotal + profitTotal) > 0 ? (costTotal + feesTotal + profitTotal) : 1;
-  const barCostShare = (costTotal / barSum) * 100;
-  const barFeesShare = (feesTotal / barSum) * 100;
-  const barProfitShare = (profitTotal / barSum) * 100;
+    const newQuery = params.toString();
+    const newUrl = `${window.location.pathname}${newQuery ? `?${newQuery}` : ""}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [price, itemCost, shippingCharged, offsiteAds, country, isEmbed]);
 
   const handleCopySummary = () => {
-    const summary = `Etsy Calculation Summary
+    trackEvent({
+      name: "result_copied",
+      params: { tool_slug: "etsy-fee-calculator", method: "clipboard" },
+    });
+
+    const summary = `Etsy Calculation Summary (${country.toUpperCase()}):
 ---------------------------------
 Item Price:      ${curr.symbol}${price.toFixed(2)}
-Product Cost:    ${curr.symbol}${itemCost.toFixed(2)}
-Shipping (Buyer): ${curr.symbol}${shippingCharged.toFixed(2)}
-Offsite Ads:     ${offsiteAds ? (adsTier * 100) + "%" : "Off"}
+Item Cost:       ${curr.symbol}${itemCost.toFixed(2)}
+Buyer Shipping:  ${curr.symbol}${shippingCharged.toFixed(2)}
+Offsite Ads:     ${offsiteAds ? adsTier * 100 + "%" : "Off"}
 ---------------------------------
-Total Fees:      ${curr.symbol}${result.totalFees.toFixed(2)} (${result.effectiveFeePct}%)
+Total Fees:      ${curr.symbol}${result.totalFees.toFixed(2)} (${result.effectiveFeePct.toFixed(1)}%)
 Etsy Payout:     ${curr.symbol}${result.etsyPayout.toFixed(2)}
-NET PROFIT:      ${curr.symbol}${result.netProfit.toFixed(2)} (${result.netMarginPct}% margin)
+NET PROFIT:      ${curr.symbol}${result.netProfit.toFixed(2)} (${result.netMarginPct.toFixed(1)}% margin)
 Break-Even:      ${curr.symbol}${result.breakEvenPrice.toFixed(2)}
 ---------------------------------
-Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.com"}`;
+Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
 
     navigator.clipboard.writeText(summary);
     setCopiedSummary(true);
     setTimeout(() => setCopiedSummary(false), 2000);
   };
 
-  return (
-    <div>
-      <div className="grid grid-cols-1 gap-4 lg:gap-5 lg:grid-cols-12 items-start">
-        {/* ========================================================= */}
-        {/* LEFT CARD: Input Details                                  */}
-        {/* ========================================================= */}
-        <div className="lg:col-span-7 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-3.5 sm:p-5 shadow-xs space-y-3">
-          <div className="flex flex-wrap items-center justify-between pb-2 border-b border-zinc-150 gap-2">
-            <div className="inline-flex items-center gap-1 bg-zinc-100 p-1 rounded-lg border border-zinc-200">
-              <button
-                type="button"
-                onClick={() => setCalcMode("standard")}
-                className={cn(
-                  "px-3 py-2 min-h-11 text-xs font-semibold rounded-md transition-all cursor-pointer inline-flex items-center justify-center",
-                  calcMode === "standard"
-                    ? "bg-white text-zinc-950 shadow-2xs font-bold"
-                    : "text-zinc-600 hover:text-zinc-950"
-                )}
-              >
-                Standard Profit
-              </button>
-              <button
-                type="button"
-                onClick={() => setCalcMode("reverse")}
-                className={cn(
-                  "px-3 py-2 min-h-11 text-xs font-semibold rounded-md transition-all cursor-pointer inline-flex items-center justify-center",
-                  calcMode === "reverse"
-                    ? "bg-white text-zinc-950 shadow-2xs font-bold"
-                    : "text-zinc-600 hover:text-zinc-950"
-                )}
-              >
-                Reverse Pricing
-              </button>
-            </div>
+  const handleReset = () => {
+    setPriceStr("25.00");
+    setCostStr("8.00");
+    setShippingStr("0.00");
+    setShippingCostStr("0.00");
+    setTargetValStr("15.00");
+    setOffsiteAds(false);
+    setAdsTier(0.15);
+    setApplySalesTax(false);
+    setQuantity(1);
+    setIsInternational(false);
+  };
 
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => {
-                  setPriceStr("25.00");
-                  setCostStr("8.00");
-                  setShippingStr("0.00");
-                  setTargetValStr("15.00");
-                  setOffsiteAds(false);
-                  setAdsTier(0.15);
-                  setApplySalesTax(false);
-                  setCountry("us");
-                }}
-                className="inline-flex items-center justify-center min-h-11 px-2.5 text-xs font-sans font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
-                title="Reset values to defaults"
-                aria-label="Reset values to defaults"
-              >
-                Reset
-              </button>
-              <button
-                type="button"
-                onClick={() => setInputsOpen(!inputsOpen)}
-                className="p-2 min-h-11 min-w-11 inline-flex items-center justify-center text-zinc-400 hover:text-zinc-700 sm:hidden"
-                aria-label="Toggle inputs"
-              >
-                {inputsOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
-              </button>
-            </div>
+  // Bar proportions
+  const totalBar = Math.max(0.01, result.grossRevenue);
+  const profitWidth = Math.min(100, Math.max(0, (result.netProfit / totalBar) * 100));
+  const feesWidth = Math.min(100, Math.max(0, (result.totalFees / totalBar) * 100));
+  const costWidth = Math.min(100, Math.max(0, (result.totalProductCosts / totalBar) * 100));
+
+  return (
+    <div className="w-full">
+      {/* Outer Calculator Shell — Flat, Clean, Zero Gradients */}
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-6 shadow-sm">
+        {/* Top Control Bar: Calculation Modes & Reset */}
+        <div className="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-zinc-100 gap-2">
+          <div className="inline-flex rounded-lg bg-zinc-100 p-1 text-xs font-sans font-semibold">
+            <button
+              type="button"
+              onClick={() => setCalcMode("standard")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                calcMode === "standard"
+                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  : "text-zinc-600 hover:text-zinc-950"
+              )}
+            >
+              Standard Profit
+            </button>
+            <button
+              type="button"
+              onClick={() => setCalcMode("reverse")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                calcMode === "reverse"
+                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  : "text-zinc-600 hover:text-zinc-950"
+              )}
+            >
+              Reverse Target Price
+            </button>
           </div>
 
-          {inputsOpen && (
-            <div className="space-y-3 pt-1">
-              {/* Currency Dropdown */}
-              <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-zinc-950">
-                  Currency
-                </label>
-                <CustomSelect
-                  value={country}
-                  options={CURRENCY_OPTIONS}
-                  onChange={(val) => setCountry(val)}
-                />
+          <div className="w-40 sm:w-48">
+            <CustomSelect
+              value={country}
+              options={CURRENCY_OPTIONS}
+              onChange={(val) => setCountry(val)}
+            />
+          </div>
+        </div>
+
+        {/* 2-Column Responsive Layout: Inputs Card (Left) & Results Card (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+          {/* ========================================================= */}
+          {/* LEFT CARD: Pricing & Cost Inputs                          */}
+          {/* ========================================================= */}
+          <div className="flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/50 p-4 sm:p-5">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                  {calcMode === "standard" ? "Pricing & Cost Inputs" : "Target Goal Inputs"}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleReset}
+                  className="size-7 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
+                  title="Reset to defaults"
+                  aria-label="Reset to defaults"
+                >
+                  <RotateCcw className="size-3.5" />
+                </button>
               </div>
 
-              {/* Standard: Item Price Input */}
               {calcMode === "standard" ? (
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="etsy-item-price" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                    Item Price <span className="text-rose-600">*</span>
-                  </label>
-                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                    <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                      {curr.symbol}
-                    </span>
-                    <input
-                      id="etsy-item-price"
-                      name="itemPrice"
-                      aria-label="Item Retail Price"
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="any"
-                      value={priceStr}
-                      onChange={(e) => setPriceStr(e.target.value)}
-                      onFocus={(e) => {
-                        if (e.target.value === "0.00" || e.target.value === "0") {
-                          e.target.select();
-                        }
-                      }}
-                      onBlur={() => {
-                        const num = parseFloat(priceStr);
-                        if (!isNaN(num) && num >= 0) setPriceStr(num.toFixed(2));
-                        else if (!priceStr) setPriceStr("0.00");
-                      }}
-                      placeholder="0.00"
-                      className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                    />
-                  </div>
-                </div>
-              ) : (
-                /* Reverse: Desired Profit / Margin Input */
-                <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-zinc-950">
-                      Target Profit Goal <span className="text-rose-600">*</span>
-                    </span>
-                    <div className="inline-flex rounded-lg border border-zinc-200 bg-white p-0.5 text-[11px] font-semibold">
-                      <button
-                        type="button"
-                        onClick={() => setTargetType("dollar")}
-                        className={cn(
-                          "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
-                          targetType === "dollar"
-                            ? "bg-blue-600 text-white font-bold"
-                            : "text-zinc-600 hover:text-zinc-950"
-                        )}
-                      >
-                        Net Profit ({curr.symbol})
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setTargetType("margin")}
-                        className={cn(
-                          "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
-                          targetType === "margin"
-                            ? "bg-blue-600 text-white font-bold"
-                            : "text-zinc-600 hover:text-zinc-950"
-                        )}
-                      >
-                        Margin (%)
-                      </button>
+                <>
+                  {/* 2-Column Row: Sale Price & Item Cost (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="etsy-sale-price" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Sale Price
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                          {curr.symbol}
+                        </span>
+                        <input
+                          id="etsy-sale-price"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={priceStr}
+                          onChange={(e) => setPriceStr(e.target.value)}
+                          onFocus={(e) => {
+                            if (e.target.value === "0.00" || e.target.value === "0") e.target.select();
+                          }}
+                          onBlur={() => {
+                            const num = parseFloat(priceStr);
+                            if (!isNaN(num) && num >= 0) setPriceStr(num.toFixed(2));
+                            else if (!priceStr) setPriceStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="etsy-item-cost" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Item Cost (COGS)
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                          {curr.symbol}
+                        </span>
+                        <input
+                          id="etsy-item-cost"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={costStr}
+                          onChange={(e) => setCostStr(e.target.value)}
+                          onFocus={(e) => {
+                            if (e.target.value === "0.00" || e.target.value === "0") e.target.select();
+                          }}
+                          onBlur={() => {
+                            const num = parseFloat(costStr);
+                            if (!isNaN(num) && num >= 0) setCostStr(num.toFixed(2));
+                            else if (!costStr) setCostStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                    <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                      {targetType === "dollar" ? curr.symbol : "%"}
-                    </span>
-                    <input
-                      id="etsy-target-val"
-                      name="targetVal"
-                      aria-label="Target Profit Goal"
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="any"
-                      value={targetValStr}
-                      onChange={(e) => setTargetValStr(e.target.value)}
-                      onFocus={(e) => {
-                        if (e.target.value === "0.00" || e.target.value === "0") {
-                          e.target.select();
-                        }
-                      }}
-                      onBlur={() => {
-                        const num = parseFloat(targetValStr);
-                        if (!isNaN(num) && num >= 0) setTargetValStr(num.toFixed(2));
-                        else if (!targetValStr) setTargetValStr("0.00");
-                      }}
-                      placeholder={targetType === "dollar" ? "15.00" : "35.00"}
-                      className="h-9 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                    />
+                  {/* Quick Preset Buttons — Single line horizontal row without wrapping, NO redundant "Presets:" label */}
+                  <div className="overflow-x-auto no-scrollbar py-0.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
+                      {PRESETS.map((p) => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPriceStr(p.toFixed(2))}
+                          className={cn(
+                            "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer shrink-0",
+                            price === p
+                              ? "bg-[#2b5cfd] text-white shadow-xs font-bold"
+                              : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                          )}
+                        >
+                          {curr.symbol}{p}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-[11px] text-zinc-600 leading-normal">
-                    {targetType === "dollar"
-                      ? `Desired take-home profit after all Etsy fees and product costs are paid.`
-                      : `Desired net profit margin percentage on total gross revenue.`}
-                  </p>
+
+                  {/* 2-Column Row: Shipping Charged & Actual Postage (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label htmlFor="etsy-shipping-charged" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Buyer Shipping Fee
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                          {curr.symbol}
+                        </span>
+                        <input
+                          id="etsy-shipping-charged"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={shippingStr}
+                          onChange={(e) => setShippingStr(e.target.value)}
+                          onBlur={() => {
+                            const num = parseFloat(shippingStr);
+                            if (!isNaN(num) && num >= 0) setShippingStr(num.toFixed(2));
+                            else if (!shippingStr) setShippingStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="etsy-shipping-cost" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Carrier Cost Paid
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                          {curr.symbol}
+                        </span>
+                        <input
+                          id="etsy-shipping-cost"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={shippingCostStr}
+                          onChange={(e) => setShippingCostStr(e.target.value)}
+                          onBlur={() => {
+                            const num = parseFloat(shippingCostStr);
+                            if (!isNaN(num) && num >= 0) setShippingCostStr(num.toFixed(2));
+                            else if (!shippingCostStr) setShippingCostStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Reverse Pricing Inputs */
+                <div className="space-y-3">
+                  <div className="rounded-lg border border-zinc-200/80 bg-white p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-zinc-900">Target Profit Metric</span>
+                      <div className="inline-flex rounded-md bg-zinc-100 p-0.5 text-xs font-semibold">
+                        <button
+                          type="button"
+                          onClick={() => setTargetType("dollar")}
+                          className={cn(
+                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            targetType === "dollar" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                          )}
+                        >
+                          Net Profit ({curr.symbol})
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTargetType("margin")}
+                          className={cn(
+                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            targetType === "margin" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                          )}
+                        >
+                          Margin (%)
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                        {targetType === "dollar" ? curr.symbol : "%"}
+                      </span>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="any"
+                        value={targetValStr}
+                        onChange={(e) => setTargetValStr(e.target.value)}
+                        placeholder={targetType === "dollar" ? "15.00" : "30.00"}
+                        className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 2-Column Cost Inputs for Reverse Mode (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-zinc-900 block mb-1">Item Cost</label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          type="number"
+                          value={costStr}
+                          onChange={(e) => setCostStr(e.target.value)}
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-zinc-900 block mb-1">Carrier Cost</label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          type="number"
+                          value={shippingCostStr}
+                          onChange={(e) => setShippingCostStr(e.target.value)}
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
-              {/* Product Cost Input */}
-              <div className="flex flex-col gap-1">
-                <label htmlFor="etsy-product-cost" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                  Product Cost
-                </label>
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="etsy-product-cost"
-                    name="productCost"
-                    aria-label="Product Cost"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={costStr}
-                    onChange={(e) => setCostStr(e.target.value)}
-                    onFocus={(e) => {
-                      if (e.target.value === "0.00" || e.target.value === "0") {
-                        e.target.select();
-                      }
-                    }}
-                    onBlur={() => {
-                      const num = parseFloat(costStr);
-                      if (!isNaN(num) && num >= 0) setCostStr(num.toFixed(2));
-                      else if (!costStr) setCostStr("0.00");
-                    }}
-                    placeholder="0.00"
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Shipping Charge (to buyer) */}
-              <div className="flex flex-col gap-1">
-                <label htmlFor="etsy-shipping-charge" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                  Shipping Charge (to buyer)
-                </label>
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="etsy-shipping-charge"
-                    name="shippingCharge"
-                    aria-label="Shipping Charge to Buyer"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={shippingStr}
-                    onChange={(e) => setShippingStr(e.target.value)}
-                    onFocus={(e) => {
-                      if (e.target.value === "0.00" || e.target.value === "0") {
-                        e.target.select();
-                      }
-                    }}
-                    onBlur={() => {
-                      const num = parseFloat(shippingStr);
-                      if (!isNaN(num) && num >= 0) setShippingStr(num.toFixed(2));
-                      else if (!shippingStr) setShippingStr("0.00");
-                    }}
-                    placeholder="0.00"
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Toggle 1: Include Etsy Offsite Ads */}
-              <div className="pt-2 border-t border-zinc-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label
-                      htmlFor="toggle-offsite-ads"
-                      className="text-xs font-semibold text-zinc-950 block cursor-pointer"
-                    >
-                      Etsy Offsite Ads
-                    </label>
-                    <p className="text-[11px] text-zinc-500 font-sans">
-                      Only applies if Etsy drives the sale via Offsite Ads (12–15%). Most sellers leave this off.
-                    </p>
+              {/* Toggles: Flat, Clean, No Clutter */}
+              <div className="space-y-2 pt-1">
+                {/* Toggle 1: Offsite Ads */}
+                <div className="rounded-lg border border-zinc-200/80 bg-white p-2.5 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <span className="text-xs font-bold text-zinc-900 block truncate">
+                      Include 15% Offsite Ads
+                    </span>
+                    <span className="text-[10px] text-zinc-500 font-sans block truncate">
+                      Mandatory for shops over $10k/yr
+                    </span>
                   </div>
 
-                  {/* iOS-Style Toggle Switch */}
                   <button
                     type="button"
-                    id="toggle-offsite-ads"
                     role="switch"
                     aria-checked={offsiteAds}
                     onClick={() => setOffsiteAds(!offsiteAds)}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                    className={cn(
+                      "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
                       offsiteAds ? "bg-blue-600" : "bg-zinc-200"
-                    }`}
+                    )}
                   >
                     <span
-                      className={`pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                      className={cn(
+                        "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out",
                         offsiteAds ? "translate-x-4" : "translate-x-0"
-                      }`}
+                      )}
                     />
                   </button>
                 </div>
 
-                {/* Offsite Ads Rate Tier Selection (Sleek Segmented Pill) */}
+                {/* If Offsite Ads ON, select tier */}
                 {offsiteAds && (
-                  <div className="mt-2.5 inline-flex rounded-lg bg-zinc-100 p-0.5 text-xs font-sans">
-                    <button
-                      type="button"
-                      onClick={() => setAdsTier(0.15)}
-                      className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
-                        adsTier === 0.15
-                          ? "bg-blue-600 font-bold text-white shadow-2xs"
-                          : "text-zinc-600 hover:text-zinc-950 font-medium"
-                      )}
-                    >
-                      15% Standard (Under $10k/yr)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setAdsTier(0.12)}
-                      className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
-                        adsTier === 0.12
-                          ? "bg-blue-600 font-bold text-white shadow-2xs"
-                          : "text-zinc-600 hover:text-zinc-950 font-medium"
-                      )}
-                    >
-                      12% High Volume ($10k+)
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Toggle 2: Buyer Sales Tax */}
-              <div className="pt-2 border-t border-zinc-100">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <label
-                      htmlFor="toggle-sales-tax"
-                      className="text-xs font-semibold text-zinc-950 block cursor-pointer"
-                    >
-                      Buyer Sales Tax
-                    </label>
-                    <p className="text-[11px] text-zinc-500 font-sans">
-                      Add estimated tax to buyer total
-                    </p>
-                  </div>
-
-                  {/* iOS-Style Toggle Switch */}
-                  <button
-                    type="button"
-                    id="toggle-sales-tax"
-                    role="switch"
-                    aria-checked={applySalesTax}
-                    onClick={() => setApplySalesTax(!applySalesTax)}
-                    className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
-                      applySalesTax ? "bg-blue-600" : "bg-zinc-200"
-                    }`}
-                  >
-                    <span
-                      className={`pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
-                        applySalesTax ? "translate-x-4" : "translate-x-0"
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {applySalesTax && (
-                  <div className="mt-2 flex items-center justify-between gap-3 text-xs">
-                    <span className="text-zinc-600">Estimated Tax Rate:</span>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        value={salesTaxPct}
-                        onChange={(e) => setSalesTaxPct(Math.max(0, parseFloat(e.target.value) || 0))}
-                        className="h-7 w-16 rounded-md border border-zinc-300 px-2 text-right font-mono text-xs font-bold text-zinc-950 focus:border-zinc-950 focus:outline-hidden"
-                      />
-                      <span className="text-xs font-mono font-bold text-zinc-500">%</span>
+                  <div className="flex items-center justify-between text-xs px-2.5 py-1 bg-white rounded-lg border border-zinc-200/60">
+                    <span className="text-zinc-600 font-medium">Offsite Ad Fee Tier:</span>
+                    <div className="inline-flex rounded-md bg-zinc-100 p-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setAdsTier(0.15)}
+                        className={cn(
+                          "px-2 py-0.5 text-[10px] font-bold rounded",
+                          adsTier === 0.15 ? "bg-white text-zinc-950 shadow-2xs" : "text-zinc-500"
+                        )}
+                      >
+                        15% (Under $10k)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAdsTier(0.12)}
+                        className={cn(
+                          "px-2 py-0.5 text-[10px] font-bold rounded",
+                          adsTier === 0.12 ? "bg-white text-zinc-950 shadow-2xs" : "text-zinc-500"
+                        )}
+                      >
+                        12% (Over $10k)
+                      </button>
                     </div>
                   </div>
                 )}
-              </div>
 
-              {/* Advanced Options Accordion */}
-              <div className="pt-2 border-t border-zinc-100">
+                {/* Advanced Options Accordion */}
                 <button
                   type="button"
                   onClick={() => setShowAdvanced(!showAdvanced)}
-                  className="flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between py-1.5 px-1 text-xs font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer"
                 >
-                  <span>{showAdvanced ? "Hide Advanced Options" : "More Options (Postage, International, Quantity)"}</span>
+                  <span>{showAdvanced ? "Hide Advanced Options" : "More Options (Tax, Quantity, International)"}</span>
                   {showAdvanced ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
                 </button>
 
                 {showAdvanced && (
-                  <div className="mt-2 pt-2 border-t border-zinc-100 space-y-3 animate-in fade-in duration-150">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {/* Actual Postage Paid */}
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[11px] font-bold text-zinc-950">
-                          Actual Postage Paid to Carrier
-                        </label>
-                        <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                          <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">{curr.symbol}</span>
-                          <input
-                            type="number"
-                            min={0}
-                            step="any"
-                            value={shippingCost === 0 ? "" : shippingCost}
-                            onChange={(e) => setShippingCost(Math.max(0, parseFloat(e.target.value) || 0))}
-                            placeholder="0.00"
-                            className="h-9 w-full bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Quantity */}
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[11px] font-bold text-zinc-950">
-                          Order Quantity
-                        </label>
-                        <input
-                          type="number"
-                          min={1}
-                          max={100}
-                          value={quantity}
-                          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                          className="h-9 w-full rounded-lg border border-zinc-300 bg-white px-3 text-xs sm:text-sm font-mono font-bold text-zinc-950 hover:border-zinc-400 focus:outline-hidden focus:border-zinc-950 focus:ring-1 focus:ring-zinc-950"
-                        />
-                      </div>
+                  <div className="rounded-lg border border-zinc-200/80 bg-white p-3 space-y-2.5">
+                    {/* Order Quantity */}
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-semibold text-zinc-900">Order Quantity</span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={quantity}
+                        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                        className="w-16 h-8 text-center rounded-md border border-zinc-300 font-mono font-bold text-xs"
+                      />
                     </div>
 
-                    {/* International Toggle */}
-                    <div className="flex items-center justify-between pt-1">
+                    {/* Sales Tax */}
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-zinc-100">
+                      <span className="font-semibold text-zinc-900">Sales Tax Calculation</span>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={applySalesTax}
+                        onClick={() => setApplySalesTax(!applySalesTax)}
+                        className={cn(
+                          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                          applySalesTax ? "bg-blue-600" : "bg-zinc-200"
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out",
+                            applySalesTax ? "translate-x-4" : "translate-x-0"
+                          )}
+                        />
+                      </button>
+                    </div>
+
+                    {/* International */}
+                    <div className="flex items-center justify-between text-xs pt-1 border-t border-zinc-100">
                       <div>
-                        <span className="text-xs font-semibold text-zinc-950">International Buyer</span>
-                        <p className="text-[11px] text-zinc-500">Adds 1% cross-border processing fee</p>
+                        <span className="font-semibold text-zinc-900 block">International Buyer</span>
+                        <span className="text-[10px] text-zinc-500">+1% cross-border processing</span>
                       </div>
                       <button
                         type="button"
+                        role="switch"
+                        aria-checked={isInternational}
                         onClick={() => setIsInternational(!isInternational)}
-                        className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                        className={cn(
+                          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
                           isInternational ? "bg-blue-600" : "bg-zinc-200"
-                        }`}
+                        )}
                       >
                         <span
-                          className={`pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out ${
+                          className={cn(
+                            "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out",
                             isInternational ? "translate-x-4" : "translate-x-0"
-                          }`}
+                          )}
                         />
                       </button>
                     </div>
@@ -655,333 +659,245 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 )}
               </div>
             </div>
-          )}
-        </div>
-
-        {/* ========================================================= */}
-        {/* RIGHT CARD: Results (Standalone Hero Card)                */}
-        {/* ========================================================= */}
-        <div className="hidden lg:block lg:col-span-5 rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs lg:sticky lg:top-24">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
-            <h3 className="text-sm sm:text-base font-bold tracking-tight text-zinc-950">
-              {calcMode === "standard" ? "Results" : "Target Pricing Results"}
-            </h3>
-            <button
-              type="button"
-              onClick={handleCopySummary}
-              className="inline-flex items-center gap-1 text-[11px] font-sans font-bold text-zinc-700 hover:text-zinc-950 transition-colors cursor-pointer"
-              title="Copy Summary"
-            >
-              {copiedSummary ? (
-                <>
-                  <Check className="size-3 text-emerald-600" />
-                  <span className="text-emerald-700 font-semibold">Copied</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="size-3" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
           </div>
 
-          {calcMode === "standard" ? (
-            /* ========================================================= */
-            /* STANDARD RESULTS VIEW                                     */
-            /* ========================================================= */
-            <div>
-              {/* Top Metrics Row - Clear Hero Focal Point */}
-              <div className="py-3 border-b border-zinc-100">
-                <div className="flex items-baseline justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span
-                        className={`block text-xs font-bold tracking-tight ${
-                          result.netProfit > 0
-                            ? "text-emerald-700"
-                            : result.netProfit < 0
-                            ? "text-rose-700"
-                            : "text-zinc-600"
-                        }`}
-                      >
-                        Net Profit
-                      </span>
-                      {result.netProfit < 0 && (
-                        <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-700 uppercase tracking-wider">
-                          Loss
-                        </span>
+          {/* ========================================================= */}
+          {/* RIGHT CARD: Live Results Card                             */}
+          {/* ========================================================= */}
+          <div className="flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/70 p-4 sm:p-5">
+            {calcMode === "standard" ? (
+              <div>
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                    Net Take-Home
+                  </span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono border",
+                      result.netProfit >= 0
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200/70"
+                        : "bg-rose-50 text-rose-700 border-rose-200/70"
+                    )}
+                  >
+                    {result.netMarginPct.toFixed(1)}% margin
+                  </span>
+                </div>
+
+                {/* Big Profit Hero Metric */}
+                <div>
+                  <div
+                    className={cn(
+                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight",
+                      result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
+                    )}
+                  >
+                    {curr.symbol}{result.netProfit.toFixed(2)}
+                  </div>
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
+                    Est. Etsy payout after cuts: {curr.symbol}{result.etsyPayout.toFixed(2)}
+                  </span>
+                </div>
+
+                {/* 3-Color Segmented Ratio Bar */}
+                <div className="mt-3.5 mb-3">
+                  <div className="h-2 w-full rounded-full bg-zinc-200/80 overflow-hidden flex">
+                    <div
+                      style={{ width: `${profitWidth}%` }}
+                      className="bg-emerald-500 h-full transition-all duration-300"
+                      title="Net Profit"
+                    />
+                    <div
+                      style={{ width: `${feesWidth}%` }}
+                      className="bg-rose-500 h-full transition-all duration-300"
+                      title="Etsy Fees"
+                    />
+                    <div
+                      style={{ width: `${costWidth}%` }}
+                      className="bg-zinc-400 h-full transition-all duration-300"
+                      title="Product & Shipping Costs"
+                    />
+                  </div>
+
+                  {/* Micro Legend */}
+                  <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1.5 font-sans">
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-emerald-500" />
+                      Profit ({result.netMarginPct.toFixed(0)}%)
+                    </span>
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-rose-500" />
+                      Fees ({result.effectiveFeePct.toFixed(0)}%)
+                    </span>
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Cost
+                    </span>
+                  </div>
+                </div>
+
+                {/* Clean Tabular Line Item Breakdown */}
+                <div className="space-y-1.5 text-xs font-sans py-2.5 border-t border-zinc-200/70">
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Gross Revenue:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      {curr.symbol}{result.grossRevenue.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-rose-500" />
+                      Total Etsy Fees:
+                    </span>
+                    <span className="font-mono font-semibold text-rose-600">
+                      -{curr.symbol}{result.totalFees.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Product Costs:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-700">
+                      -{curr.symbol}{result.totalProductCosts.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Break-Even Floor:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      {curr.symbol}{result.breakEvenPrice.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Collapsible Itemized Fee Drawer */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowItemized(!showItemized)}
+                    className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
+                  >
+                    <span>Itemized Fee Details</span>
+                    {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                  </button>
+
+                  {showItemized && (
+                    <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Listing Fee ($0.20)</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.listingFee.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Transaction Fee (6.5%)</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.transactionFee.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Payment Processing</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.paymentProcessingFee.toFixed(2)}</span>
+                      </div>
+                      {offsiteAds && result.offsiteAdsFee > 0 && (
+                        <div className="flex justify-between py-1 text-zinc-600">
+                          <span>Offsite Ads ({(adsTier * 100).toFixed(0)}%)</span>
+                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.offsiteAdsFee.toFixed(2)}</span>
+                        </div>
+                      )}
+                      {result.regulatoryFee > 0 && (
+                        <div className="flex justify-between py-1 text-zinc-600">
+                          <span>Regulatory Fee</span>
+                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.regulatoryFee.toFixed(2)}</span>
+                        </div>
                       )}
                     </div>
-                    <div
-                      className={`text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-extrabold font-mono tracking-tight truncate ${
-                        result.netProfit > 0
-                          ? "text-emerald-600"
-                          : result.netProfit < 0
-                          ? "text-rose-600 font-extrabold"
-                          : "text-zinc-950"
-                      }`}
-                      title={`${curr.symbol}${formatAmount(result.netProfit)}`}
-                    >
-                      {curr.symbol}{formatAmount(result.netProfit)}
-                    </div>
-                  </div>
-
-                  <div className="text-right shrink-0">
-                    <span className="block text-xs font-semibold text-zinc-600 mb-0.5 tracking-tight">
-                      Profit Margin
-                    </span>
-                    <div className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold font-mono tracking-tight text-zinc-950">
-                      {result.netMarginPct.toFixed(1)}%
-                    </div>
-                  </div>
-                </div>
-
-                {/* Total Fees Row */}
-                <div className="mt-2.5 flex items-center justify-between text-xs sm:text-sm pt-1">
-                  <span className="font-sans font-semibold text-zinc-700">Total Fees</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(result.totalFees)}
-                  </span>
-                </div>
-              </div>
-
-              {/* 3-Segment Horizontal Progress Breakdown Bar */}
-              <div className="py-3 border-b border-zinc-200">
-                <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-200 flex gap-0.5 shadow-inner">
-                  {barCostShare > 0 && (
-                    <div
-                      style={{ width: `${barCostShare}%` }}
-                      className="bg-blue-600 rounded-l-full transition-all duration-300"
-                      title={`Product Cost: ${costPct.toFixed(1)}%`}
-                    />
-                  )}
-                  {barFeesShare > 0 && (
-                    <div
-                      style={{ width: `${barFeesShare}%` }}
-                      className="bg-amber-600 transition-all duration-300"
-                      title={`Etsy Fees: ${feesPct.toFixed(1)}%`}
-                    />
-                  )}
-                  {barProfitShare > 0 && (
-                    <div
-                      style={{ width: `${barProfitShare}%` }}
-                      className="bg-emerald-600 rounded-r-full transition-all duration-300"
-                      title={`Net Profit: ${profitPct.toFixed(1)}%`}
-                    />
                   )}
                 </div>
-
-                {/* Itemized Legend Rows with Color Dots */}
-                <div className="mt-2.5 space-y-1.5 text-xs font-sans">
-                  {/* 1. Product Cost */}
-                  <div className="flex items-center justify-between py-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-blue-600 shrink-0" />
-                      <span className="text-zinc-900 font-semibold">Product Cost</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{formatAmount(costTotal)}
-                      </span>
-                      <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
-                        {costPct.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* 2. Etsy Fees (Total) */}
-                  <div className="flex items-center justify-between py-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-amber-600 shrink-0" />
-                      <span className="text-zinc-900 font-semibold">Etsy Fees (Total)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{formatAmount(feesTotal)}
-                      </span>
-                      <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
-                        {feesPct.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* 3. Net Profit */}
-                  <div className="flex items-center justify-between py-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-emerald-600 shrink-0" />
-                      <span className="text-zinc-900 font-semibold">Net Profit</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{formatAmount(profitTotal)}
-                      </span>
-                      <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
-                        {profitPct.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              {/* Payout & Break-even Summary */}
-              <div className="py-2.5 space-y-1.5 text-xs font-sans">
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Estimated Etsy Bank Deposit:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(result.etsyPayout)}
+            ) : (
+              /* Reverse Pricing Result */
+              <div>
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                    Recommended Listing Price
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200/70">
+                    Target {reverseResult.estimatedMarginPct.toFixed(1)}% margin
                   </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Break-Even Floor Price:</span>
-                  <span className="font-mono font-bold text-zinc-950 truncate" title={`${curr.symbol}${formatAmount(result.breakEvenPrice)}`}>
-                    {curr.symbol}{formatAmount(result.breakEvenPrice)}
+
+                <div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
+                    {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)}
+                  </div>
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
+                    Est. net profit: {curr.symbol}{reverseResult.estimatedNetProfit.toFixed(2)}
                   </span>
                 </div>
-              </div>
 
-              {/* Detailed Itemized Fee Breakdown Accordion */}
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={() => setShowItemized(!showItemized)}
-                  className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-100"
-                >
-                  <span>Itemized Fee Breakdown</span>
-                  {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
-                </button>
-
-                {showItemized && (
-                  <div className="mt-1 divide-y divide-zinc-100 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                    <div className="flex justify-between py-1 text-zinc-600">
-                      <span>Listing Fee ($0.20)</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.listingFee)}</span>
-                    </div>
-                    <div className="flex justify-between py-1 text-zinc-600">
-                      <span>Transaction Fee (6.5%)</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.transactionFee)}</span>
-                    </div>
-                    <div className="flex justify-between py-1 text-zinc-600">
-                      <span>Payment Processing</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.paymentProcessingFee)}</span>
-                    </div>
-                    {offsiteAds && result.offsiteAdsFee > 0 && (
-                      <div className="flex justify-between py-1 text-zinc-600">
-                        <span>Offsite Ads ({(adsTier * 100).toFixed(0)}%)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.offsiteAdsFee)}</span>
-                      </div>
-                    )}
-                    {result.regulatoryFee > 0 && (
-                      <div className="flex justify-between py-1 text-zinc-600">
-                        <span>Regulatory Operating Fee</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.regulatoryFee)}</span>
-                      </div>
-                    )}
+                <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Total Etsy Fees:</span>
+                    <span className="font-mono font-semibold text-rose-600">-{curr.symbol}{reverseResult.totalFees.toFixed(2)}</span>
                   </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* ========================================================= */
-            /* REVERSE PRICING RESULTS VIEW                              */
-            /* ========================================================= */
-            <div>
-              {/* Hero Metric: Recommended Listing Price */}
-              <div className="py-3 border-b border-zinc-100">
-                <span className="block text-xs font-bold text-blue-700 mb-0.5 tracking-tight">
-                  Recommended Listing Price
-                </span>
-                <div className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-blue-600 truncate" title={`${curr.symbol}${formatAmount(reverseResult.recommendedPrice)}`}>
-                  {curr.symbol}{formatAmount(reverseResult.recommendedPrice)}
-                </div>
-
-                <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 border border-zinc-200/80 p-2.5 text-xs font-sans">
-                  <div>
-                    <span className="block text-[11px] text-zinc-500 font-medium">Target Profit</span>
-                    <span className="font-mono font-bold text-emerald-600">
-                      {curr.symbol}{formatAmount(reverseResult.estimatedNetProfit)}
-                    </span>
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Etsy Deposit:</span>
+                    <span className="font-mono font-semibold text-zinc-900">{curr.symbol}{reverseResult.etsyPayout.toFixed(2)}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="block text-[11px] text-zinc-500 font-medium">Profit Margin</span>
-                    <span className="font-mono font-bold text-zinc-950">
-                      {reverseResult.estimatedMarginPct.toFixed(1)}%
-                    </span>
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Total Direct Costs:</span>
+                    <span className="font-mono font-semibold text-zinc-700">-{curr.symbol}{(itemCost + shippingCost).toFixed(2)}</span>
                   </div>
                 </div>
 
-                {/* Apply Button */}
                 <button
                   type="button"
                   onClick={() => {
                     setPriceStr(reverseResult.recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full mt-3 py-2 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2 px-3 min-h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {curr.symbol}{formatAmount(reverseResult.recommendedPrice)} to Standard View</span>
+                  <span>Apply {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
+            )}
 
-              {/* Deductions at Recommended Price */}
-              <div className="py-2.5 space-y-1.5 text-xs font-sans">
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Total Etsy Fees:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(reverseResult.totalFees)}
+            {/* Pixel Button Action for Copy / Export */}
+            <div className="mt-4 pt-3 border-t border-zinc-200/70">
+              <PixelButton
+                type="button"
+                onClick={handleCopySummary}
+                className="w-full h-10 px-4 text-xs font-semibold font-sans justify-center"
+              >
+                {copiedSummary ? (
+                  <span className="flex items-center gap-1.5 text-emerald-200">
+                    <Check className="size-4 text-emerald-300" />
+                    Summary Copied to Clipboard!
                   </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Estimated Bank Deposit:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(reverseResult.etsyPayout)}
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <Copy className="size-3.5" />
+                    Copy Calculation Breakdown
                   </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Product & Shipping Costs:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(itemCost + shippingCost)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Detailed Breakdown for Reverse Calculation */}
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={() => setShowItemized(!showItemized)}
-                  className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-100"
-                >
-                  <span>Fee Deductions Breakdown</span>
-                  {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
-                </button>
-
-                {showItemized && (
-                  <div className="mt-1 divide-y divide-zinc-100 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                    {reverseResult.breakdown.map((item, idx) => (
-                      <div key={idx} className="flex justify-between py-1 text-zinc-600">
-                        <span>{item.label}</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{item.amount.toFixed(2)}</span>
-                      </div>
-                    ))}
-                  </div>
                 )}
-              </div>
+              </PixelButton>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
-      {/* Mobile Sticky Bar */}
+      {/* Persistent Mobile Bottom Bar */}
       {!isEmbed && (
         <StickyResultBar
           label={calcMode === "standard" ? "Net Profit" : "Target Price"}
           value={calcMode === "standard" ? result.netProfit : reverseResult.recommendedPrice}
           subLabel={calcMode === "standard" ? "Margin" : "Est. Profit"}
           subValue={calcMode === "standard" ? result.netMarginPct : undefined}
-          productCost={calcMode === "standard" ? result.totalProductCosts : (itemCost + shippingCost)}
+          productCost={calcMode === "standard" ? result.totalProductCosts : itemCost + shippingCost}
           totalFees={calcMode === "standard" ? result.totalFees : reverseResult.totalFees}
         />
       )}

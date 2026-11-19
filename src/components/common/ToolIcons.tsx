@@ -29,7 +29,7 @@ export function ToolIcon({ slug, className = "", size = "md" }: ToolIconProps) {
     case "shopify":
       return (
         <div
-          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-gradient-to-br from-emerald-600 to-teal-800 ${sizeClasses} ${className}`}
+          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-[#008060] ${sizeClasses} ${className}`}
           aria-label="Shopify"
         >
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
@@ -43,7 +43,7 @@ export function ToolIcon({ slug, className = "", size = "md" }: ToolIconProps) {
     case "tiktok":
       return (
         <div
-          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 ${sizeClasses} ${className}`}
+          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-zinc-950 border border-zinc-800 ${sizeClasses} ${className}`}
           aria-label="TikTok Shop"
         >
           <svg className="size-5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
@@ -56,7 +56,7 @@ export function ToolIcon({ slug, className = "", size = "md" }: ToolIconProps) {
     case "pod":
       return (
         <div
-          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-gradient-to-br from-indigo-600 to-violet-800 ${sizeClasses} ${className}`}
+          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-[#4f46e5] ${sizeClasses} ${className}`}
           aria-label="Print on Demand"
         >
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
@@ -69,7 +69,7 @@ export function ToolIcon({ slug, className = "", size = "md" }: ToolIconProps) {
     case "comparison":
       return (
         <div
-          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-gradient-to-br from-purple-600 to-pink-700 ${sizeClasses} ${className}`}
+          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-[#7c3aed] ${sizeClasses} ${className}`}
           aria-label="Marketplace Comparison"
         >
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">
@@ -87,7 +87,7 @@ export function ToolIcon({ slug, className = "", size = "md" }: ToolIconProps) {
     default:
       return (
         <div
-          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-gradient-to-br from-sky-600 to-blue-800 ${sizeClasses} ${className}`}
+          className={`flex items-center justify-center font-bold text-white shadow-xs shrink-0 bg-[#2563eb] ${sizeClasses} ${className}`}
           aria-label="Payment Processor"
         >
           <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">

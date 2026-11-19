@@ -341,7 +341,7 @@ export function HeroShowcaseCard() {
               {/* Action Link to Full Calculator with Exact vibrant.design Pixel Matrix & Shadow */}
               <PixelLink
                 href={platform.toolHref}
-                className="mt-3 w-full h-10 pl-4 pr-3 text-xs font-semibold font-sans"
+                className="mt-3 w-full h-10 px-4 text-xs font-semibold font-sans justify-between"
               >
                 <span className="truncate">Open Full {platform.name} Calculator</span>
                 <div className="flex size-6 items-center justify-center rounded-lg bg-white/20 border border-white/30 text-white shrink-0 group-hover/pixel:translate-x-0.5 transition-transform">

@@ -6,7 +6,6 @@ import {
   ShopifyPlan,
   SHOPIFY_PLAN_RATES,
 } from "@/lib/formulas/shopify-profit";
-import { SHOPIFY_GATEWAY_PRESETS } from "@/data/fee-presets";
 import { StickyResultBar } from "./StickyResultBar";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { trackEvent } from "@/lib/analytics";
@@ -18,19 +17,15 @@ import {
   ChevronUp,
   RotateCcw,
   ArrowRight,
-  TrendingUp,
-  ShieldAlert,
-  Percent,
-  DollarSign,
-  Info,
 } from "lucide-react";
+import { PixelButton } from "@/components/ui/PixelButton";
 
 const CURRENCY_MAP: Record<string, { label: string; symbol: string }> = {
-  usd: { label: "USD ($)", symbol: "$" },
-  cad: { label: "CAD (CA$)", symbol: "CA$" },
-  gbp: { label: "GBP (£)", symbol: "£" },
-  eur: { label: "EUR (€)", symbol: "€" },
-  aud: { label: "AUD (A$)", symbol: "A$" },
+  usd: { label: "USD ($) - United States", symbol: "$" },
+  cad: { label: "CAD (CA$) - Canada", symbol: "CA$" },
+  gbp: { label: "GBP (£) - United Kingdom", symbol: "£" },
+  eur: { label: "EUR (€) - Eurozone", symbol: "€" },
+  aud: { label: "AUD (A$) - Australia", symbol: "A$" },
 };
 
 const PLAN_OPTIONS: CustomSelectOption[] = [
@@ -41,15 +36,16 @@ const PLAN_OPTIONS: CustomSelectOption[] = [
 ];
 
 const GATEWAY_OPTIONS: CustomSelectOption[] = [
-  { value: "shopify-payments", label: "Shopify Payments (0% fee)" },
-  { value: "stripe", label: "Stripe" },
-  { value: "paypal", label: "PayPal" },
-  { value: "square", label: "Square" },
-  { value: "authorize-net", label: "Authorize.Net" },
-  { value: "klarna", label: "Klarna" },
-  { value: "afterpay", label: "Afterpay" },
-  { value: "2checkout", label: "2Checkout" },
+  { value: "shopify-payments", label: "Shopify Payments (0% extra)" },
+  { value: "stripe", label: "Stripe (+2% surcharge)" },
+  { value: "paypal", label: "PayPal (+2% surcharge)" },
+  { value: "square", label: "Square (+2% surcharge)" },
+  { value: "authorize-net", label: "Authorize.Net (+2% surcharge)" },
+  { value: "klarna", label: "Klarna (+2% surcharge)" },
+  { value: "afterpay", label: "Afterpay (+2% surcharge)" },
 ];
+
+const PRESETS = [25, 35, 48, 65, 90, 120];
 
 export function ShopifyProfitCalculator({
   initialGateway = "shopify-payments",
@@ -58,14 +54,10 @@ export function ShopifyProfitCalculator({
   initialGateway?: string;
   isEmbed?: boolean;
 }) {
-  // Mode switcher: standard vs reverse
   const [calcMode, setCalcMode] = useState<"standard" | "reverse">("standard");
-
-  // Currency
   const [currency, setCurrency] = useState<string>("usd");
   const curr = CURRENCY_MAP[currency] || CURRENCY_MAP.usd;
 
-  // Form State (Strings for clean input handling)
   const [priceStr, setPriceStr] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const p = new URLSearchParams(window.location.search).get("price");
@@ -85,19 +77,15 @@ export function ShopifyProfitCalculator({
   const [adSpendStr, setAdSpendStr] = useState<string>("14.00");
   const [includeAds, setIncludeAds] = useState<boolean>(true);
 
-  // Shopify Plan & Gateway
   const [shopifyPlan, setShopifyPlan] = useState<ShopifyPlan>("basic");
   const [gateway, setGateway] = useState<string>(initialGateway.toLowerCase());
 
-  // Reverse Target Pricing Mode State
   const [targetType, setTargetType] = useState<"margin" | "dollar">("margin");
   const [targetValStr, setTargetValStr] = useState<string>("30");
 
-  // UI Accordions & Copy state
   const [showItemized, setShowItemized] = useState<boolean>(false);
   const [copiedSummary, setCopiedSummary] = useState<boolean>(false);
 
-  // Parse numeric values safely
   const itemPrice = Math.max(0, parseFloat(priceStr) || 0);
   const shippingCharged = Math.max(0, parseFloat(shippingChargedStr) || 0);
   const cogs = Math.max(0, parseFloat(cogsStr) || 0);
@@ -105,7 +93,6 @@ export function ShopifyProfitCalculator({
   const adSpend = includeAds ? Math.max(0, parseFloat(adSpendStr) || 0) : 0;
   const targetVal = Math.max(0, parseFloat(targetValStr) || 0);
 
-  // Calculations
   const result = useMemo(() => {
     return calculateShopifyProfit({
       itemPrice,
@@ -120,10 +107,8 @@ export function ShopifyProfitCalculator({
     });
   }, [itemPrice, shippingCharged, cogs, shippingCost, adSpend, shopifyPlan, gateway, targetType, targetVal]);
 
-  // Reverse price recommendation
   const recommendedPrice = result.recommendedPrice ?? result.breakEvenPrice;
 
-  // Reverse view result when priced at recommendedPrice
   const reverseAnalysis = useMemo(() => {
     return calculateShopifyProfit({
       itemPrice: recommendedPrice,
@@ -135,20 +120,6 @@ export function ShopifyProfitCalculator({
       gateway,
     });
   }, [recommendedPrice, shippingCharged, cogs, shippingCost, adSpend, shopifyPlan, gateway]);
-
-  // Analytics event
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      trackEvent({
-        name: "calculator_used",
-        params: {
-          tool_slug: "shopify-profit-calculator",
-          preset: `${shopifyPlan}-${gateway}`,
-        },
-      });
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, [itemPrice, gateway, shopifyPlan, adSpend]);
 
   const handleReset = () => {
     setPriceStr("48.00");
@@ -163,61 +134,50 @@ export function ShopifyProfitCalculator({
   };
 
   const activePlanConfig = SHOPIFY_PLAN_RATES[shopifyPlan] || SHOPIFY_PLAN_RATES.basic;
-  const isShopifyPayments = gateway === "shopify-payments";
 
-  // Visual Breakdown Progress Bar Percentages
+  // Segment bar calculations
   const grossRev = result.revenue > 0 ? result.revenue : Math.max(0.01, itemPrice + shippingCharged);
-  const isLoss = result.netProfit < 0;
-  // If in loss, total expenses exceed gross revenue. Denominate shares by total expenses so they sum to 100% cleanly without overflow!
-  const progressDenom = isLoss ? Math.max(0.01, result.totalExpenses) : grossRev;
-  const costShare = Math.min(100, Math.max(0, (cogs / progressDenom) * 100));
-  const shippingShare = Math.min(100, Math.max(0, (shippingCost / progressDenom) * 100));
-  const feesShare = Math.min(100, Math.max(0, (result.totalPlatformFees / progressDenom) * 100));
-  const adsShare = Math.min(100, Math.max(0, (adSpend / progressDenom) * 100));
-  const profitShare = isLoss ? 0 : Math.max(0, Math.min(100, (result.netProfit / grossRev) * 100));
-
-  const formatAmount = (num: number): string => {
-    const isNegative = num < 0;
-    const abs = Math.abs(num);
-    const formatted = abs.toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-    return isNegative ? `-${curr.symbol}${formatted}` : `${curr.symbol}${formatted}`;
-  };
+  const profitWidth = Math.min(100, Math.max(0, (result.netProfit / grossRev) * 100));
+  const feesWidth = Math.min(100, Math.max(0, (result.totalPlatformFees / grossRev) * 100));
+  const costWidth = Math.min(100, Math.max(0, ((cogs + shippingCost + adSpend) / grossRev) * 100));
 
   const handleCopySummary = () => {
+    trackEvent({
+      name: "result_copied",
+      params: { tool_slug: "shopify-profit-calculator", method: "clipboard" },
+    });
+
     const isStandard = calcMode === "standard";
     const text = isStandard
-      ? `Shopify Profit & ROAS Analysis (2026)
+      ? `Shopify Profit & ROAS Analysis (2026):
 ----------------------------------------
-Retail Price:           ${formatAmount(itemPrice)}
-Shipping Charged:       ${formatAmount(shippingCharged)}
-Gross Revenue:          ${formatAmount(result.revenue)}
+Retail Price:           ${curr.symbol}${itemPrice.toFixed(2)}
+Buyer Shipping:         ${curr.symbol}${shippingCharged.toFixed(2)}
+Gross Revenue:          ${curr.symbol}${result.revenue.toFixed(2)}
 ----------------------------------------
 Shopify Plan:           ${activePlanConfig.name}
-Payment Gateway:        ${gateway.toUpperCase()}
-Platform & Gateway Fee: ${formatAmount(result.totalPlatformFees)}
-Product Landed Cost:    ${formatAmount(cogs)}
-Carrier Postage:        ${formatAmount(shippingCost)}
-Ad Spend (CAC):         ${formatAmount(adSpend)}
+Gateway:                ${gateway.toUpperCase()}
+Platform & Gateway Fee: ${curr.symbol}${result.totalPlatformFees.toFixed(2)}
+Product Landed Cost:    ${curr.symbol}${cogs.toFixed(2)}
+Carrier Postage:        ${curr.symbol}${shippingCost.toFixed(2)}
+Ad Spend (CAC):         ${curr.symbol}${adSpend.toFixed(2)}
 ----------------------------------------
-Shopify Bank Deposit:   ${formatAmount(result.netPayout)}
-REAL NET PROFIT:        ${formatAmount(result.netProfit)} (${result.netMarginPct}% margin)
+Shopify Bank Deposit:   ${curr.symbol}${result.netPayout.toFixed(2)}
+REAL NET PROFIT:        ${curr.symbol}${result.netProfit.toFixed(2)} (${result.netMarginPct.toFixed(1)}% margin)
 Break-Even ROAS:        ${result.breakEvenRoas}x
-Break-Even Price:       ${formatAmount(result.breakEvenPrice)}
+Break-Even Price:       ${curr.symbol}${result.breakEvenPrice.toFixed(2)}
 ----------------------------------------
-Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/shopify-profit-calculator"}`
-      : `Shopify Target Price Finder (2026)
+Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calculator)`
+      : `Shopify Target Price Finder (2026):
 ----------------------------------------
-Target Goal:            ${targetType === "margin" ? `${targetVal}% Margin` : `${formatAmount(targetVal)} Net Profit`}
-Recommended Price:      ${formatAmount(recommendedPrice)}
-Estimated Net Profit:   ${formatAmount(reverseAnalysis.netProfit)} (${reverseAnalysis.netMarginPct}% margin)
-Shopify Bank Deposit:   ${formatAmount(reverseAnalysis.netPayout)}
-Total Platform Fees:    ${formatAmount(reverseAnalysis.totalPlatformFees)}
-Total Direct Costs:     ${formatAmount(cogs + shippingCost + adSpend)}
+Target Goal:            ${targetType === "margin" ? `${targetVal}% Margin` : `${curr.symbol}${targetVal.toFixed(2)} Profit`}
+Recommended Price:      ${curr.symbol}${recommendedPrice.toFixed(2)}
+Estimated Net Profit:   ${curr.symbol}${reverseAnalysis.netProfit.toFixed(2)} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
+Shopify Bank Deposit:   ${curr.symbol}${reverseAnalysis.netPayout.toFixed(2)}
+Total Platform Fees:    ${curr.symbol}${reverseAnalysis.totalPlatformFees.toFixed(2)}
+Total Direct Costs:     ${curr.symbol}${(cogs + shippingCost + adSpend).toFixed(2)}
 ----------------------------------------
-Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/shopify-profit-calculator"}`;
+Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calculator)`;
 
     navigator.clipboard.writeText(text);
     setCopiedSummary(true);
@@ -225,876 +185,575 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
   };
 
   return (
-    <div>
-      {/* 2-Column Responsive Layout: Left Input Card, Right Results Card */}
-      <div className="grid grid-cols-1 gap-4 lg:gap-5 lg:grid-cols-12 items-start">
-        {/* ========================================================= */}
-        {/* LEFT CARD: Interactive Input Controls                     */}
-        {/* ========================================================= */}
-        <div className="lg:col-span-7 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-3.5 sm:p-5 shadow-xs space-y-4">
-          {/* Header & Mode Switcher */}
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-100 gap-2">
-            {/* Segmented Pill Tab Switcher */}
-            <div className="inline-flex rounded-lg bg-zinc-100 p-1 text-xs font-sans">
-              <button
-                type="button"
-                onClick={() => setCalcMode("standard")}
-                className={cn(
-                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
-                  calcMode === "standard"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
-                    : "text-zinc-600 hover:text-zinc-950"
-                )}
-              >
-                Standard Profit
-              </button>
-              <button
-                type="button"
-                onClick={() => setCalcMode("reverse")}
-                className={cn(
-                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
-                  calcMode === "reverse"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
-                    : "text-zinc-600 hover:text-zinc-950"
-                )}
-              >
-                Target Price
-              </button>
-            </div>
-
-            {/* Reset Button */}
+    <div className="w-full">
+      {/* Outer Calculator Shell — Flat, Clean, Zero Gradients */}
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-6 shadow-sm">
+        {/* Top Control Bar: Mode Switcher & Reset */}
+        <div className="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-zinc-100 gap-2">
+          <div className="inline-flex rounded-lg bg-zinc-100 p-1 text-xs font-sans font-semibold">
             <button
               type="button"
-              onClick={handleReset}
-              className="inline-flex items-center justify-center min-h-11 min-w-11 px-2.5 gap-1.5 text-xs font-sans font-medium text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
-              title="Reset values to defaults"
-              aria-label="Reset values to defaults"
+              onClick={() => setCalcMode("standard")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                calcMode === "standard"
+                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  : "text-zinc-600 hover:text-zinc-950"
+              )}
             >
-              <RotateCcw className="size-3.5" />
-              <span>Reset</span>
+              Standard Profit
+            </button>
+            <button
+              type="button"
+              onClick={() => setCalcMode("reverse")}
+              className={cn(
+                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                calcMode === "reverse"
+                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  : "text-zinc-600 hover:text-zinc-950"
+              )}
+            >
+              Target Price &amp; ROAS
             </button>
           </div>
 
-          {/* Currency Selector */}
-          <div className="flex flex-col gap-1">
-            <label className="text-[11px] font-bold text-zinc-950">
-              Currency
-            </label>
+          <div className="w-36 sm:w-44">
             <CustomSelect
               value={currency}
               options={Object.entries(CURRENCY_MAP).map(([id, item]) => ({
                 value: id,
-                label: item.label,
+                label: item.label.split("-")[0].trim(),
               }))}
               onChange={(val) => setCurrency(val)}
             />
           </div>
-
-          {/* ========================================================= */}
-          {/* SECTION 1: Retail Price & Customer Shipping               */}
-          {/* ========================================================= */}
-          {calcMode === "standard" ? (
-            <div className="space-y-3 pt-1">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Retail Price */}
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="shopify-retail-price" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                    Retail Price <span className="text-rose-600">*</span>
-                  </label>
-                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                    <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                      {curr.symbol}
-                    </span>
-                    <input
-                      id="shopify-retail-price"
-                      name="retailPrice"
-                      aria-label="Retail Price"
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="any"
-                      value={priceStr}
-                      onChange={(e) => setPriceStr(e.target.value)}
-                      onFocus={(e) => {
-                        if (e.target.value === "0.00" || e.target.value === "0") {
-                          e.target.select();
-                        }
-                      }}
-                      onBlur={() => {
-                        const num = parseFloat(priceStr);
-                        if (!isNaN(num) && num >= 0) setPriceStr(num.toFixed(2));
-                        else if (!priceStr) setPriceStr("0.00");
-                      }}
-                      placeholder="0.00"
-                      className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                    />
-                  </div>
-                </div>
-
-                {/* Shipping Charged to Buyer */}
-                <div className="flex flex-col gap-1">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="shopify-shipping-charged" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                      Shipping Charged
-                    </label>
-                    <span className="text-[10px] text-zinc-400 font-sans">
-                      Leave 0 for Free Shipping
-                    </span>
-                  </div>
-                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                    <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                      {curr.symbol}
-                    </span>
-                    <input
-                      id="shopify-shipping-charged"
-                      name="shippingCharged"
-                      aria-label="Shipping Charged to Buyer"
-                      type="number"
-                      inputMode="decimal"
-                      min={0}
-                      step="any"
-                      value={shippingChargedStr}
-                      onChange={(e) => setShippingChargedStr(e.target.value)}
-                      onFocus={(e) => {
-                        if (e.target.value === "0.00" || e.target.value === "0") {
-                          e.target.select();
-                        }
-                      }}
-                      onBlur={() => {
-                        const num = parseFloat(shippingChargedStr);
-                        if (!isNaN(num) && num >= 0) setShippingChargedStr(num.toFixed(2));
-                        else if (!shippingChargedStr) setShippingChargedStr("0.00");
-                      }}
-                      placeholder="0.00"
-                      className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* REVERSE TARGET PRICING INPUTS */
-            <div className="space-y-3 pt-1">
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[11px] font-bold text-zinc-950 block">
-                      Target Goal <span className="text-rose-600">*</span>
-                    </span>
-                    <span className="text-[10px] text-zinc-400 font-sans block">
-                      Minimum required to achieve your target
-                    </span>
-                  </div>
-
-                  {/* Segmented Pill Toggle - whitespace-nowrap prevents 2-line break */}
-                  <div className="inline-flex shrink-0 rounded-lg bg-zinc-100 p-0.5 text-xs font-semibold">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTargetType("margin");
-                        setTargetValStr("30");
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
-                        targetType === "margin"
-                          ? "bg-blue-600 text-white font-bold shadow-2xs"
-                          : "text-zinc-600 hover:text-zinc-950"
-                      )}
-                    >
-                      Margin %
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setTargetType("dollar");
-                        setTargetValStr("15.00");
-                      }}
-                      className={cn(
-                        "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
-                        targetType === "dollar"
-                          ? "bg-blue-600 text-white font-bold shadow-2xs"
-                          : "text-zinc-600 hover:text-zinc-950"
-                      )}
-                    >
-                      Net Profit ({curr.symbol})
-                    </button>
-                  </div>
-                </div>
-
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {targetType === "dollar" ? curr.symbol : "%"}
-                  </span>
-                  <input
-                    id="shopify-target-val"
-                    name="targetValue"
-                    aria-label="Target Goal Value"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={targetValStr}
-                    onChange={(e) => setTargetValStr(e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                    placeholder={targetType === "dollar" ? "15.00" : "30"}
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Shipping Charged to Buyer (Reverse mode) */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="shopify-reverse-shipping-charged" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                    Shipping Charged
-                  </label>
-                  <span className="text-[10px] text-zinc-400 font-sans">
-                    Leave 0 if Free Shipping
-                  </span>
-                </div>
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="shopify-reverse-shipping-charged"
-                    name="reverseShippingCharged"
-                    aria-label="Shipping Charged to Buyer"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={shippingChargedStr}
-                    onChange={(e) => setShippingChargedStr(e.target.value)}
-                    placeholder="0.00"
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================= */}
-          {/* SECTION 2: Landed Unit Costs (COGS & Postage)             */}
-          {/* ========================================================= */}
-          <div className="pt-2 border-t border-zinc-100">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Product Cost / COGS */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="shopify-cogs" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                    Item Cost (COGS)
-                  </label>
-                  <span className="text-[10px] text-zinc-400 font-sans">
-                    Landed cost
-                  </span>
-                </div>
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="shopify-cogs"
-                    name="cogs"
-                    aria-label="Item Cost (COGS)"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={cogsStr}
-                    onChange={(e) => setCogsStr(e.target.value)}
-                    onFocus={(e) => {
-                      if (e.target.value === "0.00" || e.target.value === "0") {
-                        e.target.select();
-                      }
-                    }}
-                    onBlur={() => {
-                      const num = parseFloat(cogsStr);
-                      if (!isNaN(num) && num >= 0) setCogsStr(num.toFixed(2));
-                      else if (!cogsStr) setCogsStr("0.00");
-                    }}
-                    placeholder="0.00"
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-
-              {/* Shipping Cost */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="shopify-shipping-cost" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
-                    Shipping Cost
-                  </label>
-                  <span className="text-[10px] text-zinc-400 font-sans">
-                    Postage paid to carrier
-                  </span>
-                </div>
-                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
-                  <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="shopify-shipping-cost"
-                    name="shippingCost"
-                    aria-label="Postage Shipping Cost"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={shippingCostStr}
-                    onChange={(e) => setShippingCostStr(e.target.value)}
-                    onFocus={(e) => {
-                      if (e.target.value === "0.00" || e.target.value === "0") {
-                        e.target.select();
-                      }
-                    }}
-                    onBlur={() => {
-                      const num = parseFloat(shippingCostStr);
-                      if (!isNaN(num) && num >= 0) setShippingCostStr(num.toFixed(2));
-                      else if (!shippingCostStr) setShippingCostStr("0.00");
-                    }}
-                    placeholder="0.00"
-                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* ========================================================= */}
-          {/* SECTION 3: Shopify Plan & Payment Gateway Selector        */}
-          {/* ========================================================= */}
-          <div className="pt-2 border-t border-zinc-100 space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Shopify Plan */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-bold text-zinc-950">
-                    Shopify Plan
-                  </label>
-                  <span className="text-[10px] text-zinc-500 font-medium font-mono">
-                    {activePlanConfig.ratePct}% + 30¢
-                  </span>
-                </div>
-                <CustomSelect
-                  value={shopifyPlan}
-                  options={PLAN_OPTIONS}
-                  onChange={(val) => setShopifyPlan(val as ShopifyPlan)}
-                />
-              </div>
-
-              {/* Payment Gateway */}
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-bold text-zinc-950">
-                    Payment Gateway
-                  </label>
-                  <span className="text-[10px] text-zinc-500 font-medium">
-                    {isShopifyPayments ? "0% 3rd-party fee" : `+${activePlanConfig.thirdPartyPct}% fee`}
-                  </span>
-                </div>
-                <CustomSelect
-                  value={gateway}
-                  options={GATEWAY_OPTIONS}
-                  onChange={(val) => setGateway(val)}
-                />
-              </div>
-            </div>
-
-            {/* 3rd-Party Gateway Fee Alert */}
-            {!isShopifyPayments && (
-              <div className="rounded-lg bg-amber-50/80 border border-amber-200/70 p-2.5 text-xs text-amber-900 flex items-start gap-2">
-                <ShieldAlert className="size-4 text-amber-600 shrink-0 mt-0.5" />
-                <div className="leading-snug">
-                  <span className="font-bold">Third-Party Gateway Fee: </span>
-                  Shopify adds a{" "}
-                  <span className="font-mono font-bold">{activePlanConfig.thirdPartyPct}%</span> fee on
-                  external gateways on the <span className="font-semibold">{activePlanConfig.name.split(" ")[0]}</span> plan. Switch to Shopify Payments to avoid this fee.
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ========================================================= */}
-          {/* SECTION 4: Customer Acquisition Cost & ROAS (CAC)         */}
-          {/* ========================================================= */}
-          <div className="pt-2 border-t border-zinc-100">
-            <div className="flex items-center justify-between">
-              <div>
-                <label
-                  htmlFor="toggle-ad-spend"
-                  className="text-xs font-semibold text-zinc-950 block cursor-pointer"
-                >
-                  Include Ad Spend (CAC)
-                </label>
-                <p className="text-[11px] text-zinc-500 font-sans">
-                  Calculate real net profit and minimum Break-Even ROAS
-                </p>
-              </div>
-
-              {/* iOS style toggle switch */}
-              <button
-                type="button"
-                id="toggle-ad-spend"
-                role="switch"
-                aria-checked={includeAds}
-                onClick={() => setIncludeAds(!includeAds)}
-                className={cn(
-                  "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  includeAds ? "bg-blue-600" : "bg-zinc-200"
-                )}
-              >
-                <span
-                  className={cn(
-                    "pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out",
-                    includeAds ? "translate-x-5" : "translate-x-0"
-                  )}
-                />
-              </button>
-            </div>
-
-            {includeAds && (
-              <div className="mt-2.5 flex items-center justify-between gap-3 text-xs">
-                <label htmlFor="shopify-ad-spend" className="text-zinc-600 font-medium cursor-pointer">
-                  Ad Spend per Order:
-                </label>
-                <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white max-w-[130px] min-h-10 transition-all hover:border-zinc-400 focus-within:border-zinc-950">
-                  <span className="pl-2 pr-1 text-xs font-mono font-bold text-zinc-500 select-none">
-                    {curr.symbol}
-                  </span>
-                  <input
-                    id="shopify-ad-spend"
-                    name="adSpend"
-                    aria-label="Ad Spend per Order"
-                    type="number"
-                    inputMode="decimal"
-                    min={0}
-                    step="any"
-                    value={adSpendStr}
-                    onChange={(e) => setAdSpendStr(e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                    onBlur={() => {
-                      const num = parseFloat(adSpendStr);
-                      if (!isNaN(num) && num >= 0) setAdSpendStr(num.toFixed(2));
-                      else if (!adSpendStr) setAdSpendStr("0.00");
-                    }}
-                    placeholder="0.00"
-                    className="h-10 min-h-10 w-full rounded-lg bg-transparent px-2 text-right font-mono text-xs font-bold text-zinc-950 focus:outline-hidden"
-                  />
-                </div>
-              </div>
-            )}
-          </div>
         </div>
 
-        {/* ========================================================= */}
-        {/* RIGHT CARD: Results (Standalone Hero Card, sticky desktop)*/}
-        {/* ========================================================= */}
-        <div className="hidden lg:block lg:col-span-5 rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-xs lg:sticky lg:top-24">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
-            <h3 className="text-sm sm:text-base font-bold tracking-tight text-zinc-950">
-              {calcMode === "standard" ? "Results" : "Target Results"}
-            </h3>
-            <button
-              type="button"
-              onClick={handleCopySummary}
-              className="inline-flex items-center gap-1 text-[11px] font-sans font-bold text-zinc-700 hover:text-zinc-950 transition-colors cursor-pointer"
-              title="Copy Summary"
-            >
-              {copiedSummary ? (
-                <>
-                  <Check className="size-3 text-emerald-600" />
-                  <span className="text-emerald-700 font-semibold">Copied</span>
-                </>
-              ) : (
-                <>
-                  <Copy className="size-3" />
-                  <span>Copy</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {calcMode === "standard" ? (
-            /* ========================================================= */
-            /* STANDARD RESULTS VIEW                                     */
-            /* ========================================================= */
-            <div>
-              {/* Primary Hero: Net Profit */}
-              <div className="py-3 border-b border-zinc-100">
-                <div className="flex items-baseline justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <span
-                        className={`block text-xs font-bold tracking-tight ${
-                          result.netProfit > 0
-                            ? "text-emerald-700"
-                            : result.netProfit < 0
-                            ? "text-rose-700"
-                            : "text-zinc-600"
-                        }`}
-                      >
-                        Net Profit
-                      </span>
-                      {result.netProfit < 0 && (
-                        <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-700 uppercase tracking-wider">
-                          Loss
-                        </span>
-                      )}
-                    </div>
-                    <div
-                      className={`text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-extrabold font-mono tracking-tight truncate ${
-                        result.netProfit > 0
-                          ? "text-emerald-600"
-                          : result.netProfit < 0
-                          ? "text-rose-600 font-extrabold"
-                          : "text-zinc-950"
-                      }`}
-                      title={`${curr.symbol}${formatAmount(result.netProfit)}`}
-                    >
-                      {curr.symbol}{formatAmount(result.netProfit)}
-                    </div>
-                  </div>
-
-                  <div className="text-right shrink-0">
-                    <span className="block text-xs font-semibold text-zinc-600 mb-0.5 tracking-tight">
-                      Profit Margin
-                    </span>
-                    <div className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold font-mono tracking-tight text-zinc-950">
-                      {result.netMarginPct.toFixed(1)}%
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sub-row: Bank Deposit vs Direct Costs */}
-                <div className="mt-3 flex items-center justify-between text-xs pt-1 border-t border-zinc-100/70 font-sans">
-                  <div>
-                    <span className="text-zinc-500 font-medium">Bank Deposit: </span>
-                    <span className="font-mono font-bold text-zinc-950">
-                      {curr.symbol}{formatAmount(result.netPayout)}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-zinc-500 font-medium">Total Costs: </span>
-                    <span className="font-mono font-bold text-zinc-950">
-                      {curr.symbol}{formatAmount(result.totalExpenses)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* 2x2 Key Financial Metrics Grid */}
-              <div className="grid grid-cols-2 gap-2 py-3 border-b border-zinc-100">
-                {/* Break-Even ROAS */}
-                <div className="rounded-lg bg-zinc-50/80 border border-zinc-200/70 p-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-zinc-600 block">
-                      Break-Even ROAS
-                    </span>
-                    <TrendingUp className="size-3 text-blue-600" />
-                  </div>
-                  <div className="mt-1 flex items-baseline gap-1">
-                    <span className="text-xl font-mono font-extrabold text-blue-600">
-                      {result.breakEvenRoas > 0 ? `${result.breakEvenRoas}x` : "N/A"}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-zinc-400 font-sans leading-none block mt-0.5">
-                    Target ad return
-                  </span>
-                </div>
-
-                {/* Break-Even Price */}
-                <div className="rounded-lg bg-zinc-50/80 border border-zinc-200/70 p-2.5">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-zinc-600 block">
-                      Break-Even Price
-                    </span>
-                    <DollarSign className="size-3 text-amber-600" />
-                  </div>
-                  <div className="mt-1 flex items-baseline gap-1">
-                    <span className="text-xl font-mono font-extrabold text-zinc-950 truncate" title={`${curr.symbol}${formatAmount(result.breakEvenPrice)}`}>
-                      {curr.symbol}{formatAmount(result.breakEvenPrice)}
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-zinc-400 font-sans leading-none block mt-0.5">
-                    Floor price
-                  </span>
-                </div>
-              </div>
-
-              {/* Progress Breakdown Bar */}
-              <div className="py-3 border-b border-zinc-200">
-                <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-200 flex gap-0.5 shadow-inner">
-                  {costShare > 0 && (
-                    <div
-                      style={{ width: `${costShare}%` }}
-                      className="bg-blue-600 rounded-l-full transition-all duration-300"
-                      title={`Product COGS: ${costShare.toFixed(1)}%`}
-                    />
-                  )}
-                  {shippingShare > 0 && (
-                    <div
-                      style={{ width: `${shippingShare}%` }}
-                      className="bg-indigo-500 transition-all duration-300"
-                      title={`Carrier Shipping: ${shippingShare.toFixed(1)}%`}
-                    />
-                  )}
-                  {feesShare > 0 && (
-                    <div
-                      style={{ width: `${feesShare}%` }}
-                      className="bg-amber-500 transition-all duration-300"
-                      title={`Shopify & Payment Fees: ${feesShare.toFixed(1)}%`}
-                    />
-                  )}
-                  {adsShare > 0 && (
-                    <div
-                      style={{ width: `${adsShare}%` }}
-                      className="bg-rose-500 transition-all duration-300"
-                      title={`Ad Spend: ${adsShare.toFixed(1)}%`}
-                    />
-                  )}
-                  {profitShare > 0 && (
-                    <div
-                      style={{ width: `${profitShare}%` }}
-                      className="bg-emerald-600 rounded-r-full transition-all duration-300"
-                      title={`Net Profit: ${profitShare.toFixed(1)}%`}
-                    />
-                  )}
-                </div>
-
-                {/* Legend Rows with Percentages */}
-                <div className="mt-2.5 space-y-1.5 text-xs font-sans">
-                  {/* COGS */}
-                  <div className="flex items-center justify-between py-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-blue-600 shrink-0" />
-                      <span className="text-zinc-800 font-medium">Cost of Goods (COGS)</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{formatAmount(cogs)}
-                      </span>
-                      <span className="font-mono text-zinc-500 font-semibold w-11 text-right text-[11px]">
-                        {costShare.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Carrier Shipping */}
-                  {shippingCost > 0 && (
-                    <div className="flex items-center justify-between py-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="size-2 rounded-full bg-indigo-500 shrink-0" />
-                        <span className="text-zinc-800 font-medium">Carrier Postage</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold text-zinc-950">
-                          {curr.symbol}{formatAmount(shippingCost)}
-                        </span>
-                        <span className="font-mono text-zinc-500 font-semibold w-11 text-right text-[11px]">
-                          {shippingShare.toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Shopify & Gateway Fees */}
-                  <div className="flex items-center justify-between py-0.5">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-amber-500 shrink-0" />
-                      <span className="text-zinc-800 font-medium">Shopify & Payment Fees</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{formatAmount(result.totalPlatformFees)}
-                      </span>
-                      <span className="font-mono text-zinc-500 font-semibold w-11 text-right text-[11px]">
-                        {feesShare.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Ad Spend */}
-                  {adSpend > 0 && (
-                    <div className="flex items-center justify-between py-0.5">
-                      <div className="flex items-center gap-1.5">
-                        <span className="size-2 rounded-full bg-rose-500 shrink-0" />
-                        <span className="text-zinc-800 font-medium">Ad Spend (CAC)</span>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold text-zinc-950">
-                          {curr.symbol}{formatAmount(adSpend)}
-                        </span>
-                        <span className="font-mono text-zinc-500 font-semibold w-11 text-right text-[11px]">
-                          {adsShare.toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Net Profit */}
-                  <div className="flex items-center justify-between py-0.5 pt-1.5 border-t border-zinc-100">
-                    <div className="flex items-center gap-1.5">
-                      <span className="size-2 rounded-full bg-emerald-600 shrink-0" />
-                      <span className="text-zinc-950 font-bold">Real Net Profit</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-emerald-600">
-                        {curr.symbol}{formatAmount(result.netProfit)}
-                      </span>
-                      <span className="font-mono text-emerald-600 font-bold w-11 text-right text-[11px]">
-                        {profitShare.toFixed(1)}%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Itemized Fee Breakdown Accordion */}
-              <div className="pt-1">
+        {/* 2-Column Responsive Layout: Equal 50/50 Matching Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
+          {/* ========================================================= */}
+          {/* LEFT CARD: Pricing & Direct Costs Inputs                  */}
+          {/* ========================================================= */}
+          <div className="flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/50 p-4 sm:p-5">
+            <div className="space-y-3.5">
+              <div className="flex items-center justify-between pb-2 border-b border-zinc-200/70">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                  {calcMode === "standard" ? "Pricing & Direct Costs" : "Target Profit Goal"}
+                </span>
                 <button
                   type="button"
-                  onClick={() => setShowItemized(!showItemized)}
-                  className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-100"
+                  onClick={handleReset}
+                  className="size-7 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
+                  title="Reset to defaults"
+                  aria-label="Reset to defaults"
                 >
-                  <span>Itemized Fee Breakdown</span>
-                  {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                  <RotateCcw className="size-3.5" />
                 </button>
-
-                {showItemized && (
-                  <div className="mt-1 divide-y divide-zinc-100 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                    <div className="flex justify-between py-1 text-zinc-600">
-                      <span>Gateway Processing Fee</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.paymentFee)}</span>
-                    </div>
-                    {result.thirdPartyTransactionFee > 0 && (
-                      <div className="flex justify-between py-1 text-zinc-600">
-                        <span>Shopify 3rd-Party Fee ({activePlanConfig.thirdPartyPct}%)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.thirdPartyTransactionFee)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between py-1 text-zinc-600">
-                      <span>Total Platform Deductions</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.totalPlatformFees)}</span>
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {calcMode === "standard" ? (
+                <>
+                  {/* 2-Column Row: Retail Price & Landed Cost (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label htmlFor="shopify-price" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Retail Price
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          id="shopify-price"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={priceStr}
+                          onChange={(e) => setPriceStr(e.target.value)}
+                          onBlur={() => {
+                            const num = parseFloat(priceStr);
+                            if (!isNaN(num) && num >= 0) setPriceStr(num.toFixed(2));
+                            else if (!priceStr) setPriceStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="shopify-cogs" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Item Cost (COGS)
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          id="shopify-cogs"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={cogsStr}
+                          onChange={(e) => setCogsStr(e.target.value)}
+                          onBlur={() => {
+                            const num = parseFloat(cogsStr);
+                            if (!isNaN(num) && num >= 0) setCogsStr(num.toFixed(2));
+                            else if (!cogsStr) setCogsStr("0.00");
+                          }}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Presets — Single line horizontal row without wrapping, NO redundant "Presets:" label */}
+                  <div className="overflow-x-auto no-scrollbar py-0.5">
+                    <div className="flex items-center gap-1.5 whitespace-nowrap">
+                      {PRESETS.map((p) => (
+                        <button
+                          key={p}
+                          type="button"
+                          onClick={() => setPriceStr(p.toFixed(2))}
+                          className={cn(
+                            "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer shrink-0",
+                            itemPrice === p
+                              ? "bg-[#2b5cfd] text-white shadow-xs font-bold"
+                              : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                          )}
+                        >
+                          {curr.symbol}{p}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 2-Column Row: Shipping Charged & Carrier Postage (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    <div>
+                      <label htmlFor="shopify-shipping-charged" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Buyer Shipping Fee
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          id="shopify-shipping-charged"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={shippingChargedStr}
+                          onChange={(e) => setShippingChargedStr(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="shopify-shipping-cost" className="text-xs font-bold text-zinc-900 block mb-1">
+                        Carrier Cost Paid
+                      </label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          id="shopify-shipping-cost"
+                          type="number"
+                          inputMode="decimal"
+                          min={0}
+                          step="any"
+                          value={shippingCostStr}
+                          onChange={(e) => setShippingCostStr(e.target.value)}
+                          placeholder="0.00"
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Target Price Mode */
+                <div className="space-y-3">
+                  <div className="rounded-lg border border-zinc-200/80 bg-white p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-zinc-900">Target Profit Metric</span>
+                      <div className="inline-flex rounded-md bg-zinc-100 p-0.5 text-xs font-semibold">
+                        <button
+                          type="button"
+                          onClick={() => setTargetType("margin")}
+                          className={cn(
+                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            targetType === "margin" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                          )}
+                        >
+                          Margin (%)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setTargetType("dollar")}
+                          className={cn(
+                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            targetType === "dollar" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                          )}
+                        >
+                          Net Profit ({curr.symbol})
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">
+                        {targetType === "margin" ? "%" : curr.symbol}
+                      </span>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min={0}
+                        step="any"
+                        value={targetValStr}
+                        onChange={(e) => setTargetValStr(e.target.value)}
+                        placeholder={targetType === "margin" ? "30" : "15.00"}
+                        className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  {/* 2-Column Row: Cost Inputs (1 col on mobile, 2 cols on sm+) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-xs font-bold text-zinc-900 block mb-1">Item Cost (COGS)</label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          type="number"
+                          value={cogsStr}
+                          onChange={(e) => setCogsStr(e.target.value)}
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-zinc-900 block mb-1">Carrier Shipping</label>
+                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                        <input
+                          type="number"
+                          value={shippingCostStr}
+                          onChange={(e) => setShippingCostStr(e.target.value)}
+                          className="w-full bg-transparent font-mono font-bold text-sm text-zinc-950 focus:outline-hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* 2-Column Row: Shopify Plan & Payment Gateway Selectors */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-bold text-zinc-900">Shopify Plan</label>
+                  <CustomSelect
+                    value={shopifyPlan}
+                    options={PLAN_OPTIONS}
+                    onChange={(val) => setShopifyPlan(val as ShopifyPlan)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-bold text-zinc-900">Payment Gateway</label>
+                  <CustomSelect
+                    value={gateway}
+                    options={GATEWAY_OPTIONS}
+                    onChange={(val) => setGateway(val)}
+                  />
+                </div>
+              </div>
+
+              {/* Marketing Ad Spend (CAC) Toggle Card */}
+              <div className="rounded-lg border border-zinc-200/80 bg-white p-2.5 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <span className="text-xs font-bold text-zinc-900 block truncate">
+                    Include Ad Spend per Order (CAC)
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-sans block truncate">
+                    Meta, Google &amp; TikTok customer acquisition
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={includeAds}
+                  onClick={() => setIncludeAds(!includeAds)}
+                  className={cn(
+                    "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                    includeAds ? "bg-blue-600" : "bg-zinc-200"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-xs ring-0 transition duration-200 ease-in-out",
+                      includeAds ? "translate-x-4" : "translate-x-0"
+                    )}
+                  />
+                </button>
+              </div>
+
+              {/* CAC input if active */}
+              {includeAds && (
+                <div className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-white rounded-lg border border-zinc-200/70">
+                  <span className="text-zinc-700 font-semibold">Ad Spend per Order:</span>
+                  <div className="relative flex items-center w-28 h-8 rounded-md border border-zinc-300 bg-white px-2">
+                    <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
+                    <input
+                      type="number"
+                      value={adSpendStr}
+                      onChange={(e) => setAdSpendStr(e.target.value)}
+                      className="w-full bg-transparent font-mono font-bold text-xs text-zinc-950 focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
-          ) : (
-            /* ========================================================= */
-            /* REVERSE TARGET PRICING RESULTS VIEW                       */
-            /* ========================================================= */
-            <div>
-              {/* Hero: Recommended Retail Price */}
-              <div className="py-3 border-b border-zinc-100">
-                <span className="block text-xs font-bold text-blue-700 mb-0.5 tracking-tight">
-                  Recommended Selling Price
-                </span>
-                <div className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-blue-600 truncate" title={`${curr.symbol}${formatAmount(recommendedPrice)}`}>
-                  {curr.symbol}{formatAmount(recommendedPrice)}
+          </div>
+
+          {/* ========================================================= */}
+          {/* RIGHT CARD: Live Results Card                             */}
+          {/* ========================================================= */}
+          <div className="flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/70 p-4 sm:p-5">
+            {calcMode === "standard" ? (
+              <div>
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                    Net Take-Home
+                  </span>
+                  <span
+                    className={cn(
+                      "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono border",
+                      result.netProfit >= 0
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200/70"
+                        : "bg-rose-50 text-rose-700 border-rose-200/70"
+                    )}
+                  >
+                    {result.netMarginPct.toFixed(1)}% margin
+                  </span>
                 </div>
 
-                <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 border border-zinc-200/80 p-2.5 text-xs font-sans">
-                  <div>
-                    <span className="block text-[11px] text-zinc-500 font-medium">Estimated Profit</span>
-                    <span className="font-mono font-bold text-emerald-600">
-                      {curr.symbol}{formatAmount(reverseAnalysis.netProfit)}
-                    </span>
+                {/* Big Profit Hero Metric */}
+                <div>
+                  <div
+                    className={cn(
+                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight",
+                      result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
+                    )}
+                  >
+                    {curr.symbol}{result.netProfit.toFixed(2)}
                   </div>
-                  <div className="text-right">
-                    <span className="block text-[11px] text-zinc-500 font-medium">Profit Margin</span>
-                    <span className="font-mono font-bold text-zinc-950">
-                      {reverseAnalysis.netMarginPct.toFixed(1)}%
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
+                    Est. bank payout after gateway: {curr.symbol}{result.netPayout.toFixed(2)}
+                  </span>
+                </div>
+
+                {/* 3-Color Segmented Ratio Bar */}
+                <div className="mt-3.5 mb-3">
+                  <div className="h-2 w-full rounded-full bg-zinc-200/80 overflow-hidden flex">
+                    <div
+                      style={{ width: `${profitWidth}%` }}
+                      className="bg-emerald-500 h-full transition-all duration-300"
+                      title="Net Profit"
+                    />
+                    <div
+                      style={{ width: `${feesWidth}%` }}
+                      className="bg-rose-500 h-full transition-all duration-300"
+                      title="Platform & Gateway Fees"
+                    />
+                    <div
+                      style={{ width: `${costWidth}%` }}
+                      className="bg-zinc-400 h-full transition-all duration-300"
+                      title="Landed Cost, Shipping & Ads"
+                    />
+                  </div>
+
+                  {/* Micro Legend */}
+                  <div className="flex items-center justify-between text-[10px] text-zinc-500 mt-1.5 font-sans">
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-emerald-500" />
+                      Profit ({result.netMarginPct.toFixed(0)}%)
+                    </span>
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-rose-500" />
+                      Fees ({((result.totalPlatformFees / grossRev) * 100).toFixed(0)}%)
+                    </span>
+                    <span className="flex items-center gap-1 font-medium">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Direct Costs
                     </span>
                   </div>
                 </div>
 
-                {/* Apply Button */}
+                {/* Clean Tabular Line Item Breakdown */}
+                <div className="space-y-1.5 text-xs font-sans py-2.5 border-t border-zinc-200/70">
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Gross Revenue:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      {curr.symbol}{result.revenue.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-rose-500" />
+                      Gateway &amp; Platform Fees:
+                    </span>
+                    <span className="font-mono font-semibold text-rose-600">
+                      -{curr.symbol}{result.totalPlatformFees.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Break-Even ROAS Target:
+                    </span>
+                    <span className="font-mono font-bold text-blue-700">
+                      {result.breakEvenRoas}x
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Break-Even Floor Price:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      {curr.symbol}{result.breakEvenPrice.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Collapsible Itemized Fee Details */}
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowItemized(!showItemized)}
+                    className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
+                  >
+                    <span>Itemized Fee Breakdown</span>
+                    {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                  </button>
+
+                  {showItemized && (
+                    <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Payment Processing Fee</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.paymentFee.toFixed(2)}</span>
+                      </div>
+                      {result.thirdPartyTransactionFee > 0 && (
+                        <div className="flex justify-between py-1 text-zinc-600">
+                          <span>3rd-Party Gateway Surcharge</span>
+                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.thirdPartyTransactionFee.toFixed(2)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Product Landed Cost (COGS)</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{cogs.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between py-1 text-zinc-600">
+                        <span>Postage Paid to Carrier</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{shippingCost.toFixed(2)}</span>
+                      </div>
+                      {includeAds && adSpend > 0 && (
+                        <div className="flex justify-between py-1 text-zinc-600">
+                          <span>Ad Acquisition (CAC)</span>
+                          <span className="font-semibold text-zinc-900">{curr.symbol}{adSpend.toFixed(2)}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* Reverse Pricing Result */
+              <div>
+                <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                    Recommended Retail Price
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200/70">
+                    Target {reverseAnalysis.netMarginPct.toFixed(1)}% margin
+                  </span>
+                </div>
+
+                <div>
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
+                    {curr.symbol}{recommendedPrice.toFixed(2)}
+                  </div>
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
+                    Est. net profit: {curr.symbol}{reverseAnalysis.netProfit.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Shopify &amp; Gateway Fees:</span>
+                    <span className="font-mono font-semibold text-rose-600">-{curr.symbol}{reverseAnalysis.totalPlatformFees.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Shopify Bank Deposit:</span>
+                    <span className="font-mono font-semibold text-zinc-900">{curr.symbol}{reverseAnalysis.netPayout.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span>Total Direct Expenses:</span>
+                    <span className="font-mono font-semibold text-zinc-700">-{curr.symbol}{(cogs + shippingCost + adSpend).toFixed(2)}</span>
+                  </div>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {
                     setPriceStr(recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full mt-3 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer min-h-11"
+                  className="w-full py-2 px-3 min-h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {curr.symbol}{formatAmount(recommendedPrice)} to Standard View</span>
+                  <span>Apply {curr.symbol}{recommendedPrice.toFixed(2)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
+            )}
 
-              {/* Deductions at Recommended Price */}
-              <div className="py-2.5 space-y-1.5 text-xs font-sans">
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Estimated Shopify Payout:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(reverseAnalysis.netPayout)}
+            {/* Pixel Button Action for Copy Summary */}
+            <div className="mt-4 pt-3 border-t border-zinc-200/70">
+              <PixelButton
+                type="button"
+                onClick={handleCopySummary}
+                className="w-full h-10 px-4 text-xs font-semibold font-sans justify-center"
+              >
+                {copiedSummary ? (
+                  <span className="flex items-center gap-1.5 text-emerald-200">
+                    <Check className="size-4 text-emerald-300" />
+                    Summary Copied to Clipboard!
                   </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">Total Platform Fees:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(reverseAnalysis.totalPlatformFees)}
+                ) : (
+                  <span className="flex items-center gap-1.5">
+                    <Copy className="size-3.5" />
+                    Copy Calculation Breakdown
                   </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-zinc-700 font-semibold">COGS + Shipping + Ads:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{formatAmount(cogs + shippingCost + adSpend)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Itemized Breakdown Accordion */}
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={() => setShowItemized(!showItemized)}
-                  className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-100"
-                >
-                  <span>Fee Deductions Breakdown</span>
-                  {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
-                </button>
-
-                {showItemized && (
-                  <div className="mt-1 divide-y divide-zinc-100 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                    {reverseAnalysis.breakdown.map((item, idx) => (
-                      <div key={idx} className="flex justify-between py-1 text-zinc-600">
-                        <span>{item.label}</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{item.amount.toFixed(2)}</span>
-                      </div>
-                    ))}
-                  </div>
                 )}
-              </div>
+              </PixelButton>
             </div>
-          )}
+          </div>
         </div>
       </div>
 
-      {/* Mobile Sticky Result Bar */}
+      {/* Persistent Mobile Bottom Bar */}
       {!isEmbed && (
         <StickyResultBar
-          label={calcMode === "standard" ? "Shopify Profit" : "Target Price"}
+          label={calcMode === "standard" ? "Net Profit" : "Target Price"}
           value={calcMode === "standard" ? result.netProfit : recommendedPrice}
           subLabel={calcMode === "standard" ? "Margin" : "Est. Profit"}
           subValue={calcMode === "standard" ? result.netMarginPct : undefined}
-          productCost={cogs + shippingCost}
-          totalFees={calcMode === "standard" ? (result.totalPlatformFees + adSpend) : reverseAnalysis.totalPlatformFees}
-          payout={calcMode === "standard" ? result.netPayout : reverseAnalysis.netPayout}
-          breakEven={calcMode === "standard" ? result.breakEvenPrice : result.breakEvenPrice}
-          currencySymbol={curr.symbol}
-          itemizedFees={[
-            { label: "Cost of Goods (COGS)", amount: cogs },
-            ...(shippingCost > 0 ? [{ label: "Carrier Shipping", amount: shippingCost }] : []),
-            { label: "Payment Gateway Fee", amount: result.paymentFee },
-            ...(result.thirdPartyTransactionFee > 0
-              ? [{ label: `Shopify 3rd-Party Fee (${activePlanConfig.thirdPartyPct}%)`, amount: result.thirdPartyTransactionFee }]
-              : []),
-            ...(adSpend > 0 ? [{ label: "Ad Spend (CAC)", amount: adSpend }] : []),
-          ]}
+          productCost={cogs + shippingCost + adSpend}
+          totalFees={calcMode === "standard" ? result.totalPlatformFees : reverseAnalysis.totalPlatformFees}
         />
       )}
     </div>

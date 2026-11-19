@@ -189,12 +189,11 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center justify-center min-h-11 min-w-11 px-2.5 gap-1.5 text-xs font-sans font-medium text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
+              className="inline-flex items-center justify-center size-8 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
               title="Reset values to defaults"
               aria-label="Reset values to defaults"
             >
               <RotateCcw className="size-3.5" />
-              <span>Reset</span>
             </button>
           </div>
 
@@ -253,25 +252,26 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               />
             </div>
 
-            {/* Quick Presets */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[10px] text-zinc-400 font-sans mr-0.5">Quick set:</span>
-              {amountPresets.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  onClick={() => setAmountStr(preset.toFixed(2))}
-                  className={cn(
-                    "px-2 py-0.5 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
-                    Math.abs(amount - preset) < 0.01
-                      ? "border-blue-600 bg-blue-600 text-white font-bold"
-                      : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
-                  )}
-                >
-                  {result.currencySymbol}
-                  {preset >= 1000 ? `${preset / 1000}k` : preset}
-                </button>
-              ))}
+            {/* Quick Presets — Single line horizontal row without wrapping */}
+            <div className="overflow-x-auto no-scrollbar py-0.5">
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
+                {amountPresets.map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setAmountStr(preset.toFixed(2))}
+                    className={cn(
+                      "px-2.5 py-1 min-h-7 rounded-lg border text-[11px] font-mono transition-all cursor-pointer shrink-0",
+                      Math.abs(amount - preset) < 0.01
+                        ? "border-[#2b5cfd] bg-[#2b5cfd] text-white font-bold shadow-xs"
+                        : "border-zinc-200/90 bg-white text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                    )}
+                  >
+                    {result.currencySymbol}
+                    {preset >= 1000 ? `${preset / 1000}k` : preset}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -429,25 +429,26 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               />
             </div>
 
-            {/* Quick Volume Presets */}
-            <div className="flex flex-wrap items-center gap-1.5 pt-1">
-              <span className="text-[10px] text-zinc-400 font-sans mr-0.5">Turnover:</span>
-              {volumePresets.map((preset) => (
-                <button
-                  key={preset}
-                  type="button"
-                  onClick={() => setMonthlyVolumeStr(preset.toString())}
-                  className={cn(
-                    "px-2.5 py-1.5 min-h-9 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
-                    Math.abs(monthlyVolume - preset) < 0.01
-                      ? "border-blue-600 bg-blue-600 text-white font-bold"
-                      : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
-                  )}
-                >
-                  {result.currencySymbol}
-                  {preset / 1000}k/mo
-                </button>
-              ))}
+            {/* Quick Volume Presets — Single line horizontal row without wrapping */}
+            <div className="overflow-x-auto no-scrollbar py-0.5">
+              <div className="flex items-center gap-1.5 whitespace-nowrap">
+                {volumePresets.map((preset) => (
+                  <button
+                    key={preset}
+                    type="button"
+                    onClick={() => setMonthlyVolumeStr(preset.toString())}
+                    className={cn(
+                      "px-2.5 py-1 min-h-7 rounded-lg border text-[11px] font-mono transition-all cursor-pointer shrink-0",
+                      Math.abs(monthlyVolume - preset) < 0.01
+                        ? "border-[#2b5cfd] bg-[#2b5cfd] text-white font-bold shadow-xs"
+                        : "border-zinc-200/90 bg-white text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                    )}
+                  >
+                    {result.currencySymbol}
+                    {preset / 1000}k/mo
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

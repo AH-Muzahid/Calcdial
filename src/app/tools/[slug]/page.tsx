@@ -205,14 +205,30 @@ export default async function ToolPage({
           {/* SECTION 3: Ad Slot 1 (Below Calculator Output - CLS-Safe 728 x 250) */}
           <AdSlot position="below-calculator" />
 
-          {/* Contextual Affiliate Recommendation Slot (Shopify Partner) */}
+          {/* Contextual Affiliate Recommendation Slot */}
           {tool.affiliatePartner && tool.affiliateUrl && (
             <AffiliateCallout
               partner={tool.affiliatePartner}
               toolSlug={tool.slug}
               headline={tool.affiliateCta || `Recommended Partner: ${tool.affiliatePartner}`}
-              description={`Sell online, manage orders, and grow your business with Shopify's all-in-one platform.`}
-              ctaText={tool.slug.includes("etsy") ? "Try Shopify" : "Visit Partner Website"}
+              description={
+                tool.affiliatePartner.toLowerCase() === "shopify"
+                  ? "Sell online, manage orders, and scale your brand with Shopify's 3-day free trial and $1/month promo."
+                  : tool.affiliatePartner.toLowerCase() === "printify"
+                  ? "Access 900+ high-quality print-on-demand products with global automated fulfillment."
+                  : tool.affiliatePartner.toLowerCase() === "wise"
+                  ? "Receive and convert international payments with transparent mid-market exchange rates."
+                  : `Explore official tools and integrations from ${tool.affiliatePartner}.`
+              }
+              ctaText={
+                tool.affiliatePartner.toLowerCase() === "shopify"
+                  ? "Try Shopify"
+                  : tool.affiliatePartner.toLowerCase() === "printify"
+                  ? "Explore Printify"
+                  : tool.affiliatePartner.toLowerCase() === "wise"
+                  ? "Get Wise Business"
+                  : `Visit ${tool.affiliatePartner}`
+              }
               url={tool.affiliateUrl}
             />
           )}
@@ -237,9 +253,6 @@ export default async function ToolPage({
           {/* SECTION 6: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
           <InDepthGuide toolSlug={tool.slug} />
 
-          {/* Email Capture for Fee Alerts */}
-          <EmailCapture source="calculator-result" toolSlug={tool.slug} />
-
           {/* SECTION 7: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
           <AdSlot position="in-content" />
 
@@ -256,6 +269,11 @@ export default async function ToolPage({
         {/* Right Desktop Sticky Sidebar (Visible on lg and above) */}
         <DesktopToolSidebar currentSlug={slug} />
       </div>
+
+      {/* SECTION 10: Weekly Fee Alerts Newsletter — Direct Above Footer */}
+      <section className="mt-8 sm:mt-12">
+        <EmailCapture source="calculator-result" toolSlug={tool.slug} />
+      </section>
     </div>
   );
 }

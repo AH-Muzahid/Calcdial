@@ -329,7 +329,7 @@ export function PixelButton({
       ref={containerRef as React.RefObject<HTMLButtonElement>}
       type="button"
       className={cn(
-        "group/pixel relative isolate inline-flex cursor-pointer items-center justify-between overflow-hidden rounded-xl bg-[#2b5cfd] hover:bg-[#2554f6] font-bold text-white outline-none select-none border border-[#1b3cb5] hover:border-[#1635a8] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.4),inset_0_-1px_0_0_rgb(10_30_120/0.4),0_6px_16px_-6px_rgb(43_92_253/0.55),0_1px_2px_rgb(27_60_181/0.3)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.5),inset_0_-1px_0_0_rgb(10_30_120/0.45),0_8px_22px_-4px_rgb(43_92_253/0.7),0_2px_4px_rgb(27_60_181/0.35)] transition-all duration-150 ease-out active:scale-[0.985] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:ring-3 focus-visible:ring-[#2b5cfd]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-default [text-shadow:0_1px_2px_rgb(10_30_120/0.75)]",
+        "group/pixel relative isolate inline-flex cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-[#2b5cfd] hover:bg-[#2554f6] font-bold text-white outline-none select-none border border-[#1b3cb5] hover:border-[#1635a8] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.4),inset_0_-1px_0_0_rgb(10_30_120/0.4),0_6px_16px_-6px_rgb(43_92_253/0.55),0_1px_2px_rgb(27_60_181/0.3)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.5),inset_0_-1px_0_0_rgb(10_30_120/0.45),0_8px_22px_-4px_rgb(43_92_253/0.7),0_2px_4px_rgb(27_60_181/0.35)] transition-all duration-150 ease-out active:scale-[0.985] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:ring-3 focus-visible:ring-[#2b5cfd]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-default [text-shadow:0_1px_2px_rgb(10_30_120/0.75)]",
         className
       )}
       onPointerEnter={(e) => {
@@ -368,14 +368,14 @@ export function PixelButton({
   );
 }
 
-interface PixelLinkProps {
+interface PixelLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children: React.ReactNode;
   className?: string;
   prefetch?: boolean;
 }
 
-export function PixelLink({ href, children, className, prefetch = false }: PixelLinkProps) {
+export function PixelLink({ href, children, className, prefetch = false, ...props }: PixelLinkProps) {
   const { containerRef, canvasRef, handlers } = usePixelEngine();
 
   return (
@@ -384,14 +384,18 @@ export function PixelLink({ href, children, className, prefetch = false }: Pixel
       href={href}
       prefetch={prefetch}
       className={cn(
-        "group/pixel relative isolate inline-flex cursor-pointer items-center justify-between overflow-hidden rounded-xl bg-[#2b5cfd] hover:bg-[#2554f6] font-bold text-white outline-none select-none border border-[#1b3cb5] hover:border-[#1635a8] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.4),inset_0_-1px_0_0_rgb(10_30_120/0.4),0_6px_16px_-6px_rgb(43_92_253/0.55),0_1px_2px_rgb(27_60_181/0.3)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.5),inset_0_-1px_0_0_rgb(10_30_120/0.45),0_8px_22px_-4px_rgb(43_92_253/0.7),0_2px_4px_rgb(27_60_181/0.35)] transition-all duration-150 ease-out active:scale-[0.985] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:ring-3 focus-visible:ring-[#2b5cfd]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-default [text-shadow:0_1px_2px_rgb(10_30_120/0.75)]",
+        "group/pixel relative isolate inline-flex cursor-pointer items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-[#2b5cfd] hover:bg-[#2554f6] font-bold text-white outline-none select-none border border-[#1b3cb5] hover:border-[#1635a8] shadow-[inset_0_1px_0_0_rgb(255_255_255/0.4),inset_0_-1px_0_0_rgb(10_30_120/0.4),0_6px_16px_-6px_rgb(43_92_253/0.55),0_1px_2px_rgb(27_60_181/0.3)] hover:shadow-[inset_0_1px_0_0_rgb(255_255_255/0.5),inset_0_-1px_0_0_rgb(10_30_120/0.45),0_8px_22px_-4px_rgb(43_92_253/0.7),0_2px_4px_rgb(27_60_181/0.35)] transition-all duration-150 ease-out active:scale-[0.985] motion-reduce:transition-none motion-reduce:active:scale-100 focus-visible:ring-3 focus-visible:ring-[#2b5cfd]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-default [text-shadow:0_1px_2px_rgb(10_30_120/0.75)]",
         className
       )}
       onPointerEnter={handlers.onPointerEnter}
       onPointerMove={handlers.onPointerMove}
       onPointerLeave={handlers.onPointerLeave}
       onPointerDown={handlers.onPointerDown}
-      onClick={handlers.onClick}
+      onClick={(e) => {
+        handlers.onClick(e as unknown as React.MouseEvent<HTMLElement>);
+        props.onClick?.(e);
+      }}
+      {...props}
     >
       <canvas
         ref={canvasRef}

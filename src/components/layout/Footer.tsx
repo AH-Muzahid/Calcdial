@@ -4,7 +4,7 @@ import { CalcDialLogo } from "./CalcDialLogo";
 
 export function Footer() {
   return (
-    <footer className="border-t border-zinc-200/80 bg-gradient-to-b from-white via-zinc-50/40 to-zinc-100/30 text-zinc-600 print:hidden mt-auto overflow-hidden font-sans">
+    <footer className="border-t border-zinc-200/80 bg-white text-zinc-600 print:hidden mt-auto overflow-hidden font-sans">
       <div className="mx-auto max-w-7xl px-4 pt-16 sm:px-6 lg:px-8">
         {/* Top Section: 4 Link Columns + Brand Column */}
         <div className="grid grid-cols-2 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 lg:gap-8">

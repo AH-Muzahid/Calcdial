@@ -82,7 +82,7 @@ export function ContextualToolBridge({
 
   return (
     <div className="mt-4 pt-4 border-t border-zinc-100">
-      <div className="rounded-xl border border-zinc-200/80 bg-gradient-to-br from-zinc-50/80 to-white p-3.5 shadow-2xs transition-all hover:border-zinc-300">
+      <div className="rounded-xl border border-zinc-200/90 bg-zinc-50/60 p-3.5 shadow-2xs transition-all hover:border-zinc-300">
         <div className="flex items-center justify-between gap-2 mb-1.5">
           <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-900">
             <Icon className="size-3.5 text-emerald-600 shrink-0" />
