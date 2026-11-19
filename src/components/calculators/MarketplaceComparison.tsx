@@ -8,7 +8,6 @@ import {
   Calculator,
   RotateCcw,
   SlidersHorizontal,
-  Sparkles,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -640,14 +639,9 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
         <div className="lg:col-span-1 rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-zinc-100">
-              <div className="flex items-center gap-2">
-                <div className="flex size-7 items-center justify-center rounded-lg bg-blue-50 text-[#2b5cfd]">
-                  <Sparkles className="size-4" />
-                </div>
-                <h3 className="text-base font-bold text-zinc-950 tracking-tight">
-                  Key Takeaways
-                </h3>
-              </div>
+              <h3 className="text-base font-bold text-zinc-950 tracking-tight">
+                Key Takeaways
+              </h3>
               <span className="text-[11px] font-medium text-zinc-400">Analysis</span>
             </div>
 
