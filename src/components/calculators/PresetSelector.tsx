@@ -25,7 +25,7 @@ export function PresetSelector({
         <select
           value={selectedId}
           onChange={(e) => onSelect(e.target.value)}
-          className="h-11 min-h-[44px] w-full cursor-pointer appearance-none rounded-xl border border-zinc-200 bg-white px-3.5 pr-8 text-base sm:text-sm font-medium text-zinc-950 shadow-2xs transition-all focus:border-zinc-900 focus:outline-hidden focus:ring-2 focus:ring-zinc-900/5"
+          className="h-11 min-h-[44px] w-full cursor-pointer appearance-none rounded-xl border border-zinc-200 bg-white px-3.5 pr-8 text-base sm:text-sm font-medium text-zinc-950 shadow-2xs transition-all focus:border-blue-600 focus:outline-hidden focus:ring-2 focus:ring-blue-600/10"
         >
           {options.map((opt) => (
             <option key={opt.id} value={opt.id}>

@@ -264,7 +264,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   className={cn(
                     "px-2 py-0.5 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
                     Math.abs(amount - preset) < 0.01
-                      ? "border-zinc-950 bg-zinc-950 text-white font-bold"
+                      ? "border-blue-600 bg-blue-600 text-white font-bold"
                       : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
                   )}
                 >
@@ -346,7 +346,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 onClick={() => setIsInternational(!isInternational)}
                 className={cn(
                   "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  isInternational ? "bg-zinc-950" : "bg-zinc-200"
+                  isInternational ? "bg-blue-600" : "bg-zinc-200"
                 )}
               >
                 <span
@@ -380,7 +380,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 onClick={() => setCurrencyConversion(!currencyConversion)}
                 className={cn(
                   "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  currencyConversion ? "bg-zinc-950" : "bg-zinc-200"
+                  currencyConversion ? "bg-blue-600" : "bg-zinc-200"
                 )}
               >
                 <span
@@ -440,7 +440,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   className={cn(
                     "px-2.5 py-1.5 min-h-9 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
                     Math.abs(monthlyVolume - preset) < 0.01
-                      ? "border-zinc-950 bg-zinc-950 text-white font-bold"
+                      ? "border-blue-600 bg-blue-600 text-white font-bold"
                       : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
                   )}
                 >

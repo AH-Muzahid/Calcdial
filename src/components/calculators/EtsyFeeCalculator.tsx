@@ -52,14 +52,14 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
       const p = new URLSearchParams(window.location.search).get("price");
       if (p && !isNaN(parseFloat(p))) return parseFloat(p).toFixed(2);
     }
-    return "0.00";
+    return "25.00";
   });
   const [costStr, setCostStr] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const c = new URLSearchParams(window.location.search).get("cost");
       if (c && !isNaN(parseFloat(c))) return parseFloat(c).toFixed(2);
     }
-    return "0.00";
+    return "8.00";
   });
   const [shippingStr, setShippingStr] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -251,8 +251,8 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               <button
                 type="button"
                 onClick={() => {
-                  setPriceStr("0.00");
-                  setCostStr("0.00");
+                  setPriceStr("25.00");
+                  setCostStr("8.00");
                   setShippingStr("0.00");
                   setTargetValStr("15.00");
                   setOffsiteAds(false);
@@ -340,7 +340,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
                           targetType === "dollar"
-                            ? "bg-zinc-950 text-white font-bold"
+                            ? "bg-blue-600 text-white font-bold"
                             : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
@@ -352,7 +352,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
                           targetType === "margin"
-                            ? "bg-zinc-950 text-white font-bold"
+                            ? "bg-blue-600 text-white font-bold"
                             : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
@@ -510,7 +510,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       className={cn(
                         "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
                         adsTier === 0.15
-                          ? "bg-white font-bold text-zinc-950 shadow-2xs"
+                          ? "bg-blue-600 font-bold text-white shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950 font-medium"
                       )}
                     >
@@ -522,7 +522,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       className={cn(
                         "px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs",
                         adsTier === 0.12
-                          ? "bg-white font-bold text-zinc-950 shadow-2xs"
+                          ? "bg-blue-600 font-bold text-white shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950 font-medium"
                       )}
                     >
@@ -918,7 +918,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     setPriceStr(reverseResult.recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full mt-3 py-2 px-3 min-h-11 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full mt-3 py-2 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
                   <span>Apply {curr.symbol}{formatAmount(reverseResult.recommendedPrice)} to Standard View</span>
                   <ArrowRight className="size-3.5" />

@@ -476,7 +476,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "min-h-8 rounded-md px-2 py-1 text-[10px] font-mono font-semibold transition-colors cursor-pointer flex items-center justify-center",
                           priceStr === p.toFixed(2)
-                            ? "bg-zinc-950 text-white"
+                            ? "bg-blue-600 text-white font-bold"
                             : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                         )}
                       >
@@ -534,7 +534,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "min-h-8 rounded-md px-2 py-1 text-[10px] font-mono font-semibold transition-colors cursor-pointer flex items-center justify-center",
                           shippingChargedStr === s.toFixed(2)
-                            ? "bg-zinc-950 text-white"
+                            ? "bg-blue-600 text-white font-bold"
                             : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                         )}
                       >
@@ -589,7 +589,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "min-h-8 rounded-md px-2 py-1 text-[10px] font-mono font-semibold transition-colors cursor-pointer flex items-center justify-center",
                           targetMarginStr === m.toString()
-                            ? "bg-zinc-950 text-white"
+                            ? "bg-blue-600 text-white font-bold"
                             : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                         )}
                       >
@@ -646,7 +646,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "min-h-8 rounded-md px-2 py-1 text-[10px] font-mono font-semibold transition-colors cursor-pointer flex items-center justify-center",
                           shippingChargedStr === s.toFixed(2)
-                            ? "bg-zinc-950 text-white"
+                            ? "bg-blue-600 text-white font-bold"
                             : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                         )}
                       >
@@ -772,7 +772,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 onClick={() => setIncludeAds(!includeAds)}
                 className={cn(
                   "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
-                  includeAds ? "bg-zinc-950" : "bg-zinc-200"
+                  includeAds ? "bg-blue-600" : "bg-zinc-200"
                 )}
               >
                 <span
@@ -823,7 +823,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       className={cn(
                         "min-h-8 rounded-md px-2 py-1 text-[10px] font-mono font-semibold transition-colors cursor-pointer flex items-center justify-center",
                         adSpendStr === a.toFixed(2)
-                          ? "bg-zinc-950 text-white"
+                          ? "bg-blue-600 text-white font-bold"
                           : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                       )}
                     >

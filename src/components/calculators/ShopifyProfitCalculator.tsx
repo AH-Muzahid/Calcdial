@@ -397,7 +397,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       className={cn(
                         "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
                         targetType === "margin"
-                          ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                          ? "bg-blue-600 text-white font-bold shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950"
                       )}
                     >
@@ -412,7 +412,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       className={cn(
                         "px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs",
                         targetType === "dollar"
-                          ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                          ? "bg-blue-600 text-white font-bold shadow-2xs"
                           : "text-zinc-600 hover:text-zinc-950"
                       )}
                     >
@@ -1018,7 +1018,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     setPriceStr(recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full mt-3 py-2 px-3 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer min-h-11"
+                  className="w-full mt-3 py-2 px-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer min-h-11"
                 >
                   <span>Apply {curr.symbol}{formatAmount(recommendedPrice)} to Standard View</span>
                   <ArrowRight className="size-3.5" />

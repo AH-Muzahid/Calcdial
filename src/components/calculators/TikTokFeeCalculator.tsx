@@ -392,7 +392,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         className={cn(
                           "min-h-9 px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs flex items-center justify-center",
                           parseFloat(targetMarginStr) === m
-                            ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                            ? "bg-blue-600 text-white font-bold shadow-2xs"
                             : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
@@ -567,7 +567,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     className={cn(
                       "min-h-9 px-2.5 py-1 rounded-md transition-all cursor-pointer whitespace-nowrap text-xs flex items-center justify-center",
                       parseFloat(affiliatePctStr) === rate
-                        ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                        ? "bg-blue-600 text-white font-bold shadow-2xs"
                         : "text-zinc-600 hover:text-zinc-950"
                     )}
                   >

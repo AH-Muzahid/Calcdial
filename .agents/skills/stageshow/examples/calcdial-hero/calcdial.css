@@ -1,0 +1,239 @@
+.cd .ss-stage {
+  overflow: hidden;
+  background: #f4f4f5;
+}
+
+.cd-win {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  width: 620px;
+  translate: -50% 0;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+}
+
+.cd .ss-stage[data-layout='compact'] .cd-win {
+  top: 12px;
+  width: 334px;
+}
+
+.cd-body {
+  padding: 18px 20px 24px;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.cd-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f4f4f5;
+}
+
+.cd-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cd-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #f1641e;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+.cd-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #09090b;
+}
+
+.cd-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #166534;
+  background: #dcfce7;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.cd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cd .ss-stage[data-layout='compact'] .cd-grid {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.cd-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cd-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cd-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #09090b;
+}
+
+.cd-input-box {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 10px;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #09090b;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.cd-input-box[data-active="true"] {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px #2563eb;
+}
+
+.cd-currency {
+  color: #71717a;
+  margin-right: 4px;
+}
+
+.cd-caret {
+  display: inline-block;
+  width: 2px;
+  height: 14px;
+  background: #2563eb;
+  margin-left: 1px;
+  animation: cd-blink 1s infinite;
+}
+
+@keyframes cd-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cd-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border: 1px solid #f4f4f5;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.cd-toggle-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #18181b;
+}
+
+.cd-toggle-sub {
+  font-size: 10px;
+  color: #71717a;
+}
+
+.cd-switch {
+  width: 34px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #e4e4e7;
+  position: relative;
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.cd-switch[data-on="true"] {
+  background: #2563eb;
+}
+
+.cd-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.cd-switch[data-on="true"] .cd-switch-thumb {
+  transform: translateX(14px);
+}
+
+.cd-result-card {
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cd-result-hero {
+  border-bottom: 1px solid #e4e4e7;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+}
+
+.cd-result-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cd-result-profit {
+  font-size: 26px;
+  font-weight: 800;
+  font-family: monospace;
+  color: #059669;
+  margin-top: 2px;
+}
+
+.cd-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.cd-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  color: #52525b;
+}
+
+.cd-breakdown-val {
+  font-family: monospace;
+  font-weight: 600;
+  color: #18181b;
+}

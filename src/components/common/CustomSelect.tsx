@@ -66,8 +66,8 @@ export function CustomSelect({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={cn(
-          "min-h-11 h-11 w-full flex items-center justify-between rounded-lg border border-zinc-300 bg-white px-3.5 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer text-left select-none",
-          isOpen && "border-zinc-950 ring-1 ring-zinc-950",
+          "min-h-11 h-11 w-full flex items-center justify-between rounded-lg border border-zinc-300 bg-white px-3.5 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-blue-600 focus:outline-hidden focus:ring-1 focus:ring-blue-600 transition-all cursor-pointer text-left select-none",
+          isOpen && "border-blue-600 ring-1 ring-blue-600",
           className
         )}
       >
@@ -77,7 +77,7 @@ export function CustomSelect({
         <ChevronDown
           className={cn(
             "size-3.5 shrink-0 text-zinc-500 transition-transform duration-200",
-            isOpen && "rotate-180 text-zinc-950"
+            isOpen && "rotate-180 text-blue-600"
           )}
         />
       </button>
@@ -103,13 +103,13 @@ export function CustomSelect({
                 className={cn(
                   "min-h-11 w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer text-xs sm:text-sm",
                   isSelected
-                    ? "bg-zinc-100 font-bold text-zinc-950"
+                    ? "bg-blue-50 font-bold text-blue-700"
                     : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950"
                 )}
               >
                 <span className="truncate">{option.label}</span>
                 {isSelected && (
-                  <Check className="size-3.5 shrink-0 text-zinc-950 ml-2" />
+                  <Check className="size-3.5 shrink-0 text-blue-600 ml-2" />
                 )}
               </button>
             );
