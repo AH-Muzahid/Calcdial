@@ -5,7 +5,6 @@ import { Search, Shirt, ArrowLeftRight } from "lucide-react";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
 import { HeroShowcaseCard } from "./HeroShowcaseCard";
-import { PixelButton } from "@/components/ui/PixelButton";
 import { AdSlot } from "@/components/layout/AdSlot";
 
 const POPULAR_CALCULATORS = [
@@ -222,14 +221,12 @@ export function ToolsDirectory() {
                 <span>⌘</span>
                 <span>K</span>
               </div>
-              <PixelButton
-                type="button"
-                className="size-9 sm:size-10 p-0 justify-center shrink-0 rounded-xl pointer-events-none"
+              <span
+                className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#2b5cfd] text-white shadow-xs group-hover:bg-[#2554f6] shrink-0 transition-colors"
                 aria-hidden="true"
-                tabIndex={-1}
               >
                 <Search className="size-4 stroke-[2.5]" />
-              </PixelButton>
+              </span>
             </button>
           </div>
         </div>

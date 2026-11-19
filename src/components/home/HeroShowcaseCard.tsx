@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
+import { ArrowRight } from "lucide-react";
 import { PixelLink } from "@/components/ui/PixelButton";
 import { cn } from "@/lib/utils";
 
@@ -343,12 +344,7 @@ export function HeroShowcaseCard() {
                 className="mt-3 w-full h-10 px-4 text-xs font-semibold font-sans justify-between"
               >
                 <span className="truncate">Open Full {platform.name} Calculator</span>
-                <div className="flex size-6 items-center justify-center rounded-lg bg-white/20 border border-white/30 text-white shrink-0 group-hover/pixel:translate-x-0.5 transition-transform">
-                  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" className="stroke-white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </div>
+                <ArrowRight className="size-4 text-white shrink-0 group-hover/pixel:translate-x-0.5 transition-transform" />
               </PixelLink>
             </div>
           </div>

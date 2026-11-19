@@ -99,11 +99,30 @@ export function CommandMenu() {
   const [search, setSearch] = useState("");
   const router = useRouter();
 
+  // Lock body scroll and touch actions while command palette is active
+  useEffect(() => {
+    if (!open) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+    };
+  }, [open]);
+
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((prev) => !prev);
+      }
+      if (e.key === "Escape") {
+        setOpen(false);
       }
     };
 
@@ -133,19 +152,24 @@ export function CommandMenu() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 font-sans">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 font-sans overflow-hidden"
+      onClick={() => {
+        setOpen(false);
+        setSearch("");
+      }}
+    >
       {/* Dim Backdrop with Soft Blur */}
       <div
-        className="fixed inset-0 bg-zinc-950/50 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
-        onClick={() => {
-          setOpen(false);
-          setSearch("");
-        }}
+        className="fixed inset-0 bg-zinc-950/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-150 pointer-events-none"
         aria-hidden="true"
       />
 
       {/* Modern Spotlight Dialog */}
-      <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_24px_64px_-12px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-150 z-10 font-sans">
+      <div
+        className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_24px_64px_-12px_rgba(0,0,0,0.35)] animate-in zoom-in-95 duration-150 z-10 font-sans"
+        onClick={(e) => e.stopPropagation()}
+      >
         <Command className="flex flex-col w-full" loop label="Quick Search">
           {/* Header Search Input */}
           <div className="flex items-center border-b border-zinc-100 px-4 py-3.5 gap-3 bg-white">
