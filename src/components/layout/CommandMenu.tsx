@@ -96,6 +96,7 @@ const CALCULATORS_LIST: PaletteItem[] = [
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -106,7 +107,13 @@ export function CommandMenu() {
       }
     };
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = (e: Event) => {
+      const customEvent = e as CustomEvent<{ query?: string }>;
+      setOpen(true);
+      if (customEvent.detail?.query) {
+        setSearch(customEvent.detail.query);
+      }
+    };
 
     document.addEventListener("keydown", down);
     window.addEventListener("open-command-menu", handleOpen);
@@ -119,6 +126,7 @@ export function CommandMenu() {
 
   const navigateTo = (href: string) => {
     setOpen(false);
+    setSearch("");
     router.push(href);
   };
 
@@ -128,53 +136,69 @@ export function CommandMenu() {
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 font-sans">
       {/* Dim Backdrop with Soft Blur */}
       <div
-        className="fixed inset-0 bg-zinc-950/40 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
-        onClick={() => setOpen(false)}
+        className="fixed inset-0 bg-zinc-950/50 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
+        onClick={() => {
+          setOpen(false);
+          setSearch("");
+        }}
         aria-hidden="true"
       />
 
       {/* Modern Spotlight Dialog */}
-      <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-2xl animate-in zoom-in-95 duration-150 z-10 font-sans">
+      <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-zinc-200/90 bg-white shadow-[0_24px_64px_-12px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-150 z-10 font-sans">
         <Command className="flex flex-col w-full" loop label="Quick Search">
           {/* Header Search Input */}
           <div className="flex items-center border-b border-zinc-100 px-4 py-3.5 gap-3 bg-white">
             <Search className="size-5 text-zinc-400 shrink-0" />
             <Command.Input
               autoFocus
-              placeholder="Search tools, platforms, or guides..."
-              className="w-full bg-transparent text-sm sm:text-base font-normal text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+              value={search}
+              onValueChange={setSearch}
+              placeholder="Search 80+ calculators, platforms, or guides..."
+              className="w-full bg-transparent text-sm sm:text-base font-semibold text-zinc-950 placeholder:text-zinc-400 focus:outline-hidden"
             />
-            <kbd className="hidden sm:inline-flex items-center rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs text-zinc-400 font-medium shadow-2xs">
+            <kbd className="hidden sm:inline-flex items-center rounded-md border border-zinc-200 bg-zinc-100/80 px-2 py-0.5 text-[10px] font-mono font-semibold text-zinc-500 shadow-2xs">
               ESC
             </kbd>
           </div>
 
-          {/* Results List with Clean, Thin, Custom Scrollbar */}
-          <Command.List className="max-h-[380px] overflow-y-auto px-2 py-2.5 focus:outline-none custom-scroll">
-            <Command.Empty className="py-12 text-center text-sm text-zinc-400 font-normal">
-              No matching calculators or guides found.
+          {/* Results List with Clean Custom Scrollbar */}
+          <Command.List className="max-h-[380px] overflow-y-auto px-2 py-2.5 focus:outline-hidden custom-scroll">
+            <Command.Empty className="py-12 px-4 text-center">
+              <Search className="size-8 text-zinc-300 mx-auto mb-2" />
+              <p className="text-sm font-semibold text-zinc-800">
+                No calculators or guides found
+              </p>
+              <p className="text-xs text-zinc-500 mt-1">
+                Try searching for &quot;Etsy&quot;, &quot;Shopify&quot;, &quot;TikTok&quot;, or &quot;Stripe&quot;.
+              </p>
             </Command.Empty>
 
             {/* Calculators Group */}
             <Command.Group
               heading="Calculators &amp; Tools"
-              className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-zinc-400 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider"
+              className="[&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:text-zinc-400 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider"
             >
               {CALCULATORS_LIST.map((tool) => (
                 <Command.Item
                   key={tool.id}
                   value={`${tool.title} ${tool.subtitle}`}
                   onSelect={() => navigateTo(tool.href)}
-                  className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-800 transition-colors cursor-pointer data-[selected=true]:bg-zinc-100 data-[selected=true]:text-zinc-950 group"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-zinc-800 transition-colors cursor-pointer data-[selected=true]:bg-blue-50/70 data-[selected=true]:text-zinc-950 group my-0.5"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     {tool.icon}
-                    <span className="font-medium text-zinc-900 text-sm truncate">
-                      {tool.title}
-                    </span>
+                    <div className="min-w-0">
+                      <span className="font-bold text-zinc-900 text-sm block truncate group-data-[selected=true]:text-blue-700">
+                        {tool.title}
+                      </span>
+                      <span className="text-xs text-zinc-500 font-normal block truncate">
+                        {tool.subtitle}
+                      </span>
+                    </div>
                   </div>
 
-                  <ArrowRight className="size-4 text-zinc-300 opacity-0 group-data-[selected=true]:opacity-100 transition-opacity shrink-0 ml-2" />
+                  <ArrowRight className="size-4 text-blue-600 opacity-0 group-data-[selected=true]:opacity-100 group-data-[selected=true]:translate-x-0.5 transition-all shrink-0 ml-2" />
                 </Command.Item>
               ))}
             </Command.Group>
@@ -182,43 +206,48 @@ export function CommandMenu() {
             {/* Guides Group */}
             <Command.Group
               heading="Seller Guides"
-              className="mt-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[11px] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-zinc-400 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider"
+              className="mt-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-bold [&_[cmdk-group-heading]]:text-zinc-400 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider"
             >
               {GUIDES.map((guide) => (
                 <Command.Item
                   key={guide.slug}
                   value={`${guide.title} ${guide.description}`}
                   onSelect={() => navigateTo(`/guides/${guide.slug}`)}
-                  className="flex items-center justify-between rounded-xl px-3 py-2 text-sm text-zinc-800 transition-colors cursor-pointer data-[selected=true]:bg-zinc-100 data-[selected=true]:text-zinc-950 group"
+                  className="flex items-center justify-between rounded-xl px-3 py-2.5 text-sm text-zinc-800 transition-colors cursor-pointer data-[selected=true]:bg-blue-50/70 data-[selected=true]:text-zinc-950 group my-0.5"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex size-8 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 shrink-0">
+                    <div className="flex size-8 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 shrink-0 border border-zinc-200/60">
                       <BookOpen className="size-4" />
                     </div>
-                    <span className="font-medium text-zinc-900 text-sm truncate">
-                      {guide.title}
-                    </span>
+                    <div className="min-w-0">
+                      <span className="font-bold text-zinc-900 text-sm block truncate group-data-[selected=true]:text-blue-700">
+                        {guide.title}
+                      </span>
+                      <span className="text-xs text-zinc-500 font-normal block truncate">
+                        {guide.description}
+                      </span>
+                    </div>
                   </div>
 
-                  <ArrowRight className="size-4 text-zinc-300 opacity-0 group-data-[selected=true]:opacity-100 transition-opacity shrink-0 ml-2" />
+                  <ArrowRight className="size-4 text-blue-600 opacity-0 group-data-[selected=true]:opacity-100 group-data-[selected=true]:translate-x-0.5 transition-all shrink-0 ml-2" />
                 </Command.Item>
               ))}
             </Command.Group>
           </Command.List>
 
-          {/* Clean Minimal Footer */}
-          <div className="flex items-center justify-between border-t border-zinc-100 bg-zinc-50/70 px-4 py-2.5 text-xs text-zinc-400 font-sans">
+          {/* Clean Minimal Keyboard Navigation Footer */}
+          <div className="flex items-center justify-between border-t border-zinc-100 bg-zinc-50/80 px-4 py-2.5 text-xs text-zinc-500 font-sans">
             <div className="flex items-center gap-3">
               <span className="flex items-center gap-1.5">
-                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] text-zinc-500 font-medium">↑↓</kbd>
-                <span>Navigate</span>
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-zinc-600 font-semibold shadow-2xs">↑↓</kbd>
+                <span className="text-[11px]">Navigate</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] text-zinc-500 font-medium">↵</kbd>
-                <span>Select</span>
+                <kbd className="rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-zinc-600 font-semibold shadow-2xs">↵</kbd>
+                <span className="text-[11px]">Select</span>
               </span>
             </div>
-            <span className="text-[11px] text-zinc-400">Press ESC to exit</span>
+            <span className="text-[11px] text-zinc-400">ESC to close</span>
           </div>
         </Command>
       </div>

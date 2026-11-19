@@ -126,7 +126,6 @@ const POPULAR_CALCULATORS = [
   ];
 
 export function ToolsDirectory() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
 
   const categories = [
@@ -137,26 +136,14 @@ export function ToolsDirectory() {
   ];
 
   const filteredPopular = useMemo(() => {
+    if (activeCategory === "all") return POPULAR_CALCULATORS;
     return POPULAR_CALCULATORS.filter((item) => {
-      // Category Filter
-      let matchesCat = true;
-      if (activeCategory !== "all") {
-        matchesCat =
-          item.category === activeCategory ||
-          (item.categories && item.categories.includes(activeCategory));
-      }
-
-      // Search Query Filter
-      let matchesSearch = true;
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        matchesSearch =
-          item.title.toLowerCase().includes(q) || item.subtitle.toLowerCase().includes(q);
-      }
-
-      return matchesCat && matchesSearch;
+      return (
+        item.category === activeCategory ||
+        (item.categories && item.categories.includes(activeCategory))
+      );
     });
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory]);
 
   return (
     <div className="w-full">
@@ -213,31 +200,37 @@ export function ToolsDirectory() {
             Instant, client-side fee calculators for Etsy, Shopify, TikTok Shop &amp; Stripe with verified platform ratecards.
           </p>
 
-          {/* Floating Search Bar (MindCloud Style Smooth Surface Rise & Bloom Glow) */}
+          {/* Floating Search Bar (Connected to Command Palette) */}
           <div className="animate-hero-cta relative mt-7 sm:mt-8 max-w-lg mx-auto w-full px-2 sm:px-0">
             {/* Ambient Bloom Aura */}
             <div className="animate-hero-bloom pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-blue-500/25 blur-xl transform-gpu" />
-            <form
-              onSubmit={(e) => e.preventDefault()}
-              className="flex items-center w-full rounded-2xl bg-white shadow-[0_12px_32px_rgba(0,0,0,0.18)] border border-white/80 p-1.5 sm:p-2 pl-4 sm:pl-4.5 gap-2.5 transition-all focus-within:ring-4 focus-within:ring-blue-400/30"
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.dispatchEvent(new CustomEvent("open-command-menu"));
+                }
+              }}
+              className="flex items-center w-full rounded-2xl bg-white shadow-[0_12px_32px_rgba(0,0,0,0.18)] border border-white/80 p-1.5 sm:p-2 pl-4 sm:pl-4.5 gap-2.5 transition-all hover:ring-4 hover:ring-blue-400/25 cursor-pointer text-left group"
+              aria-label="Open search command palette"
             >
-              <Search className="size-4.5 text-zinc-400 shrink-0 pointer-events-none" />
-              <input
-                id="hero-search-input"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search 80+ seller calculators (e.g. Etsy, Shopify, TikTok, Stripe)..."
-                className="flex-1 min-w-0 bg-transparent py-1.5 text-sm sm:text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none font-sans"
-              />
+              <Search className="size-4.5 text-zinc-400 shrink-0 group-hover:text-[#2b5cfd] transition-colors" />
+              <span className="flex-1 min-w-0 py-1.5 text-sm sm:text-base text-zinc-400 font-normal font-sans truncate select-none">
+                Search 80+ seller calculators (e.g. Etsy, Shopify, TikTok, Stripe)...
+              </span>
+              <div className="hidden sm:inline-flex items-center gap-1 mr-1 px-2 py-1 rounded-lg bg-zinc-100 border border-zinc-200/80 text-[11px] font-mono font-semibold text-zinc-500">
+                <span>⌘</span>
+                <span>K</span>
+              </div>
               <PixelButton
-                type="submit"
-                className="size-9 sm:size-10 p-0 justify-center shrink-0 rounded-xl"
-                aria-label="Search"
+                type="button"
+                className="size-9 sm:size-10 p-0 justify-center shrink-0 rounded-xl pointer-events-none"
+                aria-hidden="true"
+                tabIndex={-1}
               >
                 <Search className="size-4 stroke-[2.5]" />
               </PixelButton>
-            </form>
+            </button>
           </div>
         </div>
       </section>
