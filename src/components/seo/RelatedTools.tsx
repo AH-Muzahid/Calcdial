@@ -34,6 +34,7 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
               <Link
                 key={t!.slug}
                 href={`/tools/${t!.slug}`}
+                prefetch={false}
                 className="group flex items-center justify-between gap-3 rounded-xl border border-zinc-200/90 bg-white p-3 shadow-2xs hover:border-zinc-950 hover:shadow-xs transition-all"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
@@ -62,6 +63,7 @@ export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToo
               <Link
                 key={g!.slug}
                 href={`/guides/${g!.slug}`}
+                prefetch={false}
                 className="group flex items-center justify-between gap-3 rounded-xl border border-zinc-200/90 bg-white p-3 shadow-2xs hover:border-zinc-950 hover:shadow-xs transition-all"
               >
                 <div className="flex items-center gap-2.5 min-w-0">

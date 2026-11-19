@@ -130,7 +130,9 @@ export function calculateShopifyProfit(input: ShopifyInput): ShopifyResult {
   const totalFeeRatePct = ratePct + thirdPartyTxPct;
   const feeRateDecimal = totalFeeRatePct / 100;
   let breakEvenPrice = 0;
-  if (feeRateDecimal < 1) {
+  if (totalDirectCosts === 0 && rev === 0) {
+    breakEvenPrice = 0;
+  } else if (feeRateDecimal < 1) {
     const minGrossRequired = (totalDirectCosts + fixedFee) / (1 - feeRateDecimal);
     breakEvenPrice = Number(Math.max(0, minGrossRequired - shippingCharged).toFixed(2));
   }

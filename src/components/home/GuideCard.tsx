@@ -20,6 +20,7 @@ export function GuideCard({
   return (
     <Link
       href={`/guides/${slug}`}
+      prefetch={false}
       className={`group flex flex-col rounded-xl border border-zinc-200/80 bg-white overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-150 hover:border-zinc-300 hover:shadow-[0_6px_16px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 ${className}`}
     >
       {/* Visual Thumbnail Banner */}

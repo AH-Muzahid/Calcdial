@@ -18,10 +18,11 @@ export interface TikTokResult {
   referralFee: number;
   referralRatePct: number;
   flatTransactionFee: number;
+  paymentProcessingFee: number;
   affiliateCommission: number;
   cogs: number;
   shippingCost: number;
-  totalFees: number; // referral + fixed + affiliate
+  totalFees: number; // referral + processing + affiliate
   effectiveFeePct: number;
   totalProductCosts: number; // cogs + shippingCost
   totalDeductions: number; // fees + product costs
@@ -58,10 +59,14 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
 
   // TikTok referral fee is charged on gross item sale price
   const referralFee = Number(((price * referralRatePct) / 100).toFixed(2));
+  // TikTok payment processing fee: 1.8% + $0.30 on gross checkout
+  const paymentProcessingFee = grossRevenue > 0
+    ? Number(((grossRevenue * 0.018) + flatTxFee).toFixed(2))
+    : 0;
   // Creator affiliate commission is charged on item sale price (excluding shipping/tax)
   const affiliateCommission = Number(((price * affiliateRatePct) / 100).toFixed(2));
 
-  const totalFees = Number((referralFee + flatTxFee + affiliateCommission).toFixed(2));
+  const totalFees = Number((referralFee + paymentProcessingFee + affiliateCommission).toFixed(2));
   const effectiveFeePct = grossRevenue > 0 ? Number(((totalFees / grossRevenue) * 100).toFixed(2)) : 0;
   const totalProductCosts = Number((cogs + shipping).toFixed(2));
   const totalDeductions = Number((totalFees + totalProductCosts).toFixed(2));
@@ -75,12 +80,11 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
   const roiPct = totalProductCosts > 0 ? Number(((netProfit / totalProductCosts) * 100).toFixed(2)) : 0;
 
   // Break-even price calculation:
-  // P + Sc - (P * (r_ref + r_aff) + flatTx) - (cogs + shipping) = 0
-  // P * (1 - (r_ref + r_aff)) = cogs + shipping + flatTx - Sc
-  const feeRateFraction = (referralRatePct + affiliateRatePct) / 100;
+  // P + Sc - (P * r_ref + (P + Sc)*0.018 + flatTx + P * r_aff) - (cogs + shipping) = 0
+  const feeRateFraction = (referralRatePct + 1.8 + affiliateRatePct) / 100;
   let breakEvenPrice = 0;
   if (feeRateFraction < 1) {
-    const requiredOrder = (cogs + shipping + flatTxFee) / (1 - feeRateFraction);
+    const requiredOrder = (cogs + shipping + flatTxFee + (shipCharged * 0.018)) / (1 - feeRateFraction);
     breakEvenPrice = Number(Math.max(0, requiredOrder - shipCharged).toFixed(2));
   }
 
@@ -90,15 +94,17 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
     const marginFraction = input.targetMarginPct / 100;
     const denominator = 1 - feeRateFraction - marginFraction;
     if (denominator > 0.05) {
-      const requiredOrder = (cogs + shipping + flatTxFee) / denominator;
+      const requiredOrder = (cogs + shipping + flatTxFee + (shipCharged * 0.018)) / denominator;
       targetPriceForMargin = Number(Math.max(0, requiredOrder - shipCharged).toFixed(2));
     }
   }
 
   const breakdown = [
     { label: "Category Referral Fee", amount: referralFee, rate: `${referralRatePct}%` },
-    { label: "TikTok Transaction Fee", amount: flatTxFee, rate: "$0.30 fixed" },
-    { label: "Creator Affiliate Commission", amount: affiliateCommission, rate: `${affiliateRatePct}%` },
+    { label: "Payment Processing Fee", amount: paymentProcessingFee, rate: "1.8% + $0.30" },
+    ...(affiliateCommission > 0
+      ? [{ label: "Creator Affiliate Commission", amount: affiliateCommission, rate: `${affiliateRatePct}%` }]
+      : []),
     { label: "Cost of Goods Sold (COGS)", amount: cogs },
     { label: "Fulfillment & Shipping Out-of-Pocket", amount: shipping },
   ];
@@ -112,6 +118,7 @@ export function calculateTikTokFees(input: TikTokInput): TikTokResult {
     referralFee,
     referralRatePct,
     flatTransactionFee: flatTxFee,
+    paymentProcessingFee,
     affiliateCommission,
     cogs,
     shippingCost: shipping,

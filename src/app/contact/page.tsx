@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
+import { ContactForm } from "@/components/common/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact CalcDial — Support, Feedback & Fee Inquiries",
@@ -12,75 +13,42 @@ export default function ContactPage() {
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <Breadcrumbs items={[{ label: "Contact Us" }]} />
 
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-        Contact the CalcDial Team
-      </h1>
-      <p className="mt-3 text-base text-gray-600 leading-relaxed">
-        We value feedback from e-commerce sellers, developers, and platform partners. Have a question, noticed a fee change, or want to suggest a new tool? Reach out below.
-      </p>
+      <header className="border-b border-zinc-200/90 pb-7">
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-zinc-200/80 bg-zinc-100/90 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-zinc-600">
+          Get in Touch
+        </div>
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl">
+          Contact the CalcDial Team
+        </h1>
+        <p className="mt-3 text-base text-zinc-600 leading-relaxed">
+          We value feedback from e-commerce sellers, developers, and platform partners. Have a question, noticed a fee change, or want to suggest a new tool? Reach out below.
+        </p>
+      </header>
 
-      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-12 border-t border-gray-200 pt-8">
+      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-12">
         <div className="md:col-span-7">
-          <form className="space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-xs">
-            <div>
-              <label className="block text-xs font-semibold text-gray-700">Your Name</label>
-              <input
-                type="text"
-                placeholder="Sarah Jenkins"
-                className="mt-1 h-11 w-full rounded-xl border border-gray-300 px-3.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700">Email Address</label>
-              <input
-                type="email"
-                placeholder="sarah@example.com"
-                className="mt-1 h-11 w-full rounded-xl border border-gray-300 px-3.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700">Subject</label>
-              <select className="mt-1 h-11 w-full rounded-xl border border-gray-300 px-3.5 text-sm text-gray-900 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20">
-                <option>Report Fee Schedule Change / Outdated Rate</option>
-                <option>Suggest a New Calculator / Feature</option>
-                <option>Partnership or Advertising Inquiry</option>
-                <option>General Question</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-gray-700">Message</label>
-              <textarea
-                rows={4}
-                placeholder="Tell us what you need or provide a link to the updated fee schedule..."
-                className="mt-1 w-full rounded-xl border border-gray-300 p-3 text-sm text-gray-900 focus:border-emerald-500 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20"
-              />
-            </div>
-            <button
-              type="button"
-              className="w-full rounded-xl bg-emerald-600 py-3 text-sm font-semibold text-white shadow-xs transition hover:bg-emerald-700"
-            >
-              Send Message
-            </button>
-            <p className="text-[11px] text-gray-400 text-center">
-              We generally respond within 24–48 business hours.
-            </p>
-          </form>
+          <ContactForm />
         </div>
 
-        <div className="md:col-span-5 space-y-6 text-sm text-gray-600">
-          <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-6">
-            <h3 className="font-bold text-gray-900">Direct Inquiries</h3>
-            <p className="mt-2 text-xs leading-relaxed text-gray-600">
+        <div className="md:col-span-5 space-y-5 text-sm text-zinc-600">
+          <div className="rounded-2xl border border-zinc-200/90 bg-zinc-50/70 p-6 shadow-2xs">
+            <h3 className="font-bold text-zinc-950">Direct Inquiries</h3>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-600">
               For editorial corrections, developer inquiries, or partnership discussions, you can reach our editorial desk directly:
             </p>
-            <div className="mt-3 font-mono text-xs font-semibold text-emerald-700">
-              support@calcdial.com
+            <div className="mt-3.5 inline-flex items-center gap-2 rounded-xl border border-zinc-200/90 bg-white px-3.5 py-2 font-mono text-xs font-semibold text-zinc-950 shadow-2xs">
+              support@calcdial.pages.dev
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-gray-50/70 p-6">
-            <h3 className="font-bold text-gray-900">Quarterly Audits</h3>
-            <p className="mt-2 text-xs leading-relaxed text-gray-600">
+          <div className="rounded-2xl border border-zinc-200/90 bg-zinc-50/70 p-6 shadow-2xs">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="inline-flex items-center rounded-md bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-700">
+                Quarterly Audits
+              </span>
+            </div>
+            <h3 className="font-bold text-zinc-950">Platform Fee Submissions</h3>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-zinc-600">
               We review fee schedules every 90 days. If you operate an e-commerce platform and updated your fee structure, send documentation directly so we can verify and update our registry.
             </p>
           </div>

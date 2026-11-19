@@ -99,7 +99,8 @@ export function ContextualToolBridge({
 
         <Link
           href={href}
-          className="group flex w-full items-center justify-between rounded-lg bg-zinc-950 px-3 py-2 text-xs font-semibold text-white shadow-2xs transition-all hover:bg-zinc-800"
+          prefetch={false}
+          className="group flex w-full items-center justify-between rounded-lg bg-zinc-950 px-3.5 py-2.5 min-h-11 text-xs font-semibold text-white shadow-2xs transition-all hover:bg-zinc-800"
         >
           <span>{ctaText}</span>
           <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />

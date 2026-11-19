@@ -7,44 +7,57 @@ import {
   TransactionType,
 } from "@/lib/formulas/stripe-vs-paypal";
 import { PAYMENT_CURRENCY_PRESETS } from "@/data/fee-presets";
-import { InputField } from "./InputField";
-import { PresetSelector } from "./PresetSelector";
+import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { StickyResultBar } from "./StickyResultBar";
 import { ContextualToolBridge } from "./ContextualToolBridge";
-import { ShareButton } from "@/components/layout/ShareButton";
-import { PrintButton } from "@/components/layout/PrintButton";
-import { EmbedModal } from "@/components/layout/EmbedModal";
-import { PillTabs } from "@/components/motion/pill-tabs";
 import { trackEvent } from "@/lib/analytics";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, cn } from "@/lib/utils";
+import {
+  RotateCcw,
+  Copy,
+  Check,
+  ChevronDown,
+  ChevronUp,
+  TrendingUp,
+  CreditCard,
+  Globe,
+  ArrowRight,
+  ShieldCheck,
+  Info,
+} from "lucide-react";
 
 export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {
+  // Mode switcher: direct payment vs gross-up
   const [mode, setMode] = useState<PaymentMode>("direct");
-  const [amount, setAmount] = useState<number>(() => {
+
+  // Currency
+  const [currency, setCurrency] = useState<string>("usd");
+
+  // Form State (Strings for clean input handling and cursor control)
+  const [amountStr, setAmountStr] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const p =
         new URLSearchParams(window.location.search).get("amount") ||
         new URLSearchParams(window.location.search).get("price");
-      if (p && !isNaN(parseFloat(p))) return parseFloat(p);
+      if (p && !isNaN(parseFloat(p))) return parseFloat(p).toFixed(2);
     }
-    return 100.00;
+    return "100.00";
   });
-  const [currency, setCurrency] = useState<string>("usd");
+
   const [transactionType, setTransactionType] = useState<TransactionType>("checkout");
   const [isInternational, setIsInternational] = useState<boolean>(false);
   const [currencyConversion, setCurrencyConversion] = useState<boolean>(false);
-  const [monthlyVolume, setMonthlyVolume] = useState<number>(5000);
+  const [monthlyVolumeStr, setMonthlyVolumeStr] = useState<string>("5000");
 
-  const handleReset = () => {
-    setMode("direct");
-    setAmount(100.00);
-    setCurrency("usd");
-    setTransactionType("checkout");
-    setIsInternational(false);
-    setCurrencyConversion(false);
-    setMonthlyVolume(5000);
-  };
+  // UI Accordions & Copy state
+  const [showItemized, setShowItemized] = useState<boolean>(false);
+  const [copiedSummary, setCopiedSummary] = useState<boolean>(false);
 
+  // Safe numeric parsing
+  const amount = Math.max(0, parseFloat(amountStr) || 0);
+  const monthlyVolume = Math.max(0, parseFloat(monthlyVolumeStr) || 0);
+
+  // Pure formula calculation
   const result = useMemo(() => {
     return comparePaymentProcessors({
       amount,
@@ -57,388 +70,762 @@ export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {
     });
   }, [amount, currency, transactionType, isInternational, currencyConversion, monthlyVolume]);
 
+  // Analytics event
   useEffect(() => {
     const timer = setTimeout(() => {
       trackEvent({
         name: "calculator_used",
-        params: { tool_slug: "stripe-vs-paypal-fee-calculator", preset: `${currency}-${transactionType}` },
+        params: {
+          tool_slug: "stripe-vs-paypal-fee-calculator",
+          preset: `${currency}-${transactionType}`,
+        },
       });
     }, 1500);
     return () => clearTimeout(timer);
-  }, [amount, currency, transactionType, isInternational]);
+  }, [amount, currency, transactionType, isInternational, currencyConversion]);
 
-  const currencyOptions = PAYMENT_CURRENCY_PRESETS.map((p) => ({
-    id: p.id,
-    label: `${p.country} (${p.currency})`,
-  }));
+  const currencyOptions: CustomSelectOption[] = useMemo(() => {
+    return PAYMENT_CURRENCY_PRESETS.map((p) => ({
+      value: p.id,
+      label: `${p.country} (${p.currency}) — ${p.currencySymbol}`,
+    }));
+  }, []);
 
-  const modeTabs = [
-    { id: "direct", label: "Fee on Payment ($ Charge)" },
-    { id: "gross-up", label: "Invoice Gross-Up (Cover Fees)" },
-  ];
-
-  const typeOptions = [
-    { id: "checkout", label: "Online Card Checkout (eCommerce)" },
-    { id: "invoice", label: "Client Invoicing (B2B / Freelance)" },
-  ];
-
-  const getFormattedSummary = () => {
-    if (mode === "gross-up") {
-      return `Stripe vs PayPal Client Gross-Up Analysis (2026)
-----------------------------------------
-Target Net Payout:     ${result.currencySymbol}${amount.toFixed(2)}
-Payment Type:          ${transactionType === "invoice" ? "Digital Invoicing" : "Online Checkout"}
-----------------------------------------
-Stripe Invoice Amount: ${result.currencySymbol}${result.stripe.invoiceToReceiveTarget.toFixed(2)} (Fee: ${result.currencySymbol}${result.stripe.feeOnGrossUp.toFixed(2)})
-PayPal Invoice Amount: ${result.currencySymbol}${result.paypal.invoiceToReceiveTarget.toFixed(2)} (Fee: ${result.currencySymbol}${result.paypal.feeOnGrossUp.toFixed(2)})
-----------------------------------------
-Recommended: ${result.recommended} (Saves ${result.currencySymbol}${result.savingsOnGrossUp.toFixed(2)} per invoice)
-Annual Volume Savings: ${result.currencySymbol}${result.annualSavings.toLocaleString()} at ${result.currencySymbol}${monthlyVolume.toLocaleString()}/mo volume
-Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculator`;
-    }
-
-    return `Stripe vs PayPal Payment Fee Breakdown (2026)
-----------------------------------------
-Charge Amount:         ${result.currencySymbol}${amount.toFixed(2)}
-Stripe Cut:            -${result.currencySymbol}${result.stripe.feeOnCharge.toFixed(2)} (${result.stripe.ratePct}% + ${result.currencySymbol}${result.stripe.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.stripe.netPayoutOnCharge.toFixed(2)}
-PayPal Cut:            -${result.currencySymbol}${result.paypal.feeOnCharge.toFixed(2)} (${result.paypal.ratePct}% + ${result.currencySymbol}${result.paypal.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.paypal.netPayoutOnCharge.toFixed(2)}
-----------------------------------------
-Recommended:           ${result.recommended} (Keeps ${result.currencySymbol}${Math.abs(result.stripe.netPayoutOnCharge - result.paypal.netPayoutOnCharge).toFixed(2)} more)
-Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculator`;
+  const handleReset = () => {
+    setMode("direct");
+    setAmountStr("100.00");
+    setCurrency("usd");
+    setTransactionType("checkout");
+    setIsInternational(false);
+    setCurrencyConversion(false);
+    setMonthlyVolumeStr("5000");
   };
 
+  const handleCopySummary = () => {
+    const summary =
+      mode === "gross-up"
+        ? `Stripe vs PayPal Client Gross-Up Analysis (2026)
+----------------------------------------
+Target Net Payout:     ${result.currencySymbol}${amount.toFixed(2)}
+Payment Channel:       ${transactionType === "invoice" ? "Digital Invoicing (B2B)" : "Online Checkout"}
+Settlement Currency:   ${result.currency} (${result.currencySymbol})
+----------------------------------------
+Stripe Required Bill:  ${result.currencySymbol}${result.stripe.invoiceToReceiveTarget.toFixed(2)} (Fee: ${result.currencySymbol}${result.stripe.feeOnGrossUp.toFixed(2)})
+PayPal Required Bill:  ${result.currencySymbol}${result.paypal.invoiceToReceiveTarget.toFixed(2)} (Fee: ${result.currencySymbol}${result.paypal.feeOnGrossUp.toFixed(2)})
+----------------------------------------
+Recommended Gateway:   ${result.recommended} (Saves ${result.currencySymbol}${result.savingsOnGrossUp.toFixed(2)} per invoice)
+Annual Volume Savings: ${result.currencySymbol}${result.annualSavings.toLocaleString()} on ${result.currencySymbol}${monthlyVolume.toLocaleString()}/mo turnover
+----------------------------------------
+Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/stripe-vs-paypal-fee-calculator"}`
+        : `Stripe vs PayPal Fee Comparison (2026)
+----------------------------------------
+Transaction Amount:    ${result.currencySymbol}${amount.toFixed(2)}
+Payment Channel:       ${transactionType === "invoice" ? "Digital Invoicing (B2B)" : "Online Checkout"}
+Settlement Currency:   ${result.currency} (${result.currencySymbol})
+----------------------------------------
+Stripe Processing Fee: -${result.currencySymbol}${result.stripe.feeOnCharge.toFixed(2)} (${result.stripe.ratePct}% + ${result.currencySymbol}${result.stripe.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.stripe.netPayoutOnCharge.toFixed(2)}
+PayPal Processing Fee: -${result.currencySymbol}${result.paypal.feeOnCharge.toFixed(2)} (${result.paypal.ratePct}% + ${result.currencySymbol}${result.paypal.fixedFee.toFixed(2)}) -> Deposit: ${result.currencySymbol}${result.paypal.netPayoutOnCharge.toFixed(2)}
+----------------------------------------
+Recommended Gateway:   ${result.recommended} (Keeps ${result.currencySymbol}${result.savingsOnDirectCharge.toFixed(2)} more)
+Annual Advantage:      ${result.currencySymbol}${result.annualSavings.toLocaleString()} on ${result.currencySymbol}${monthlyVolume.toLocaleString()}/mo turnover
+----------------------------------------
+Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/stripe-vs-paypal-fee-calculator"}`;
+
+    navigator.clipboard.writeText(summary);
+    setCopiedSummary(true);
+    trackEvent({
+      name: "result_copied",
+      params: { tool_slug: "stripe-vs-paypal-fee-calculator", method: "clipboard" },
+    });
+    setTimeout(() => setCopiedSummary(false), 2000);
+  };
+
+  const amountPresets =
+    mode === "gross-up"
+      ? [100, 250, 500, 1000, 2500, 5000]
+      : [25, 50, 100, 250, 500, 1000];
+
+  const volumePresets = [2500, 5000, 10000, 25000, 50000];
+
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-6 sm:p-8 shadow-xs space-y-8">
-      {/* Header with Mode Tabs */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 border-b border-zinc-100 gap-4">
-        <div>
-          <h2 className="text-base sm:text-lg font-bold tracking-tight text-zinc-950">
-            Stripe vs PayPal Payment Architecture
-          </h2>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            Compare transaction processing cuts, digital invoicing spreads, and client gross-up formulas
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <PillTabs
-            tabs={modeTabs}
-            value={mode}
-            onValueChange={(val) => setMode(val as PaymentMode)}
-            label="Payment Comparison Mode"
-          />
-          <button
-            type="button"
-            onClick={handleReset}
-            className="hidden sm:inline-flex items-center gap-1 text-xs font-mono text-zinc-400 hover:text-zinc-900 transition-colors cursor-pointer"
-            title="Reset to defaults"
-          >
-            <span>↺</span>
-            <span>Reset</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Inputs Grid */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-3 pb-6 border-b border-zinc-100">
-        {/* Card 1: Payment Details */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              1
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              {mode === "gross-up" ? "Desired Net Payout" : "Payment Amount"}
-            </h3>
-          </div>
-
-          <InputField
-            label={mode === "gross-up" ? "Target Net Payout" : "Customer Charge Amount"}
-            value={amount}
-            onChange={setAmount}
-            prefix={result.currencySymbol}
-            helpText={
-              mode === "gross-up"
-                ? "Exact cash you want delivered into your bank"
-                : "Total checkout or invoice value"
-            }
-            presets={mode === "gross-up" ? [100, 250, 500, 1000] : [25, 50, 100, 250]}
-          />
-
-          <PresetSelector
-            label="Settlement Currency"
-            selectedId={currency}
-            options={currencyOptions}
-            onSelect={setCurrency}
-          />
-        </div>
-
-        {/* Card 2: Transaction Method */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              2
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              Transaction Method
-            </h3>
-          </div>
-
-          <PresetSelector
-            label="Payment Type"
-            selectedId={transactionType}
-            options={typeOptions}
-            onSelect={(id) => setTransactionType(id as TransactionType)}
-            helpText="Invoicing charges different gateway fee tiers"
-          />
-
-          <div className="space-y-3 pt-2">
-            <label className="flex items-center gap-2.5 text-xs font-medium text-zinc-700 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isInternational}
-                onChange={(e) => setIsInternational(e.target.checked)}
-                className="h-4 w-4 rounded border-zinc-300 text-zinc-950 accent-zinc-950"
-              />
-              <span>International Payment Card (+1.5%)</span>
-            </label>
-            <label className="flex items-center gap-2.5 text-xs font-medium text-zinc-700 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={currencyConversion}
-                onChange={(e) => setCurrencyConversion(e.target.checked)}
-                className="h-4 w-4 rounded border-zinc-300 text-zinc-950 accent-zinc-950"
-              />
-              <span>Cross-Border FX Conversion (+1% to 3%)</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Card 3: Monthly Volume Simulator */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="flex size-5 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold font-mono text-white">
-              3
-            </span>
-            <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-900">
-              Monthly Processing Volume
-            </h3>
-          </div>
-
-          <InputField
-            label="Monthly Processing Turnover"
-            value={monthlyVolume}
-            onChange={setMonthlyVolume}
-            prefix={result.currencySymbol}
-            helpText="Simulate total monthly card transaction volume"
-            presets={[2500, 5000, 10000, 25000]}
-          />
-
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-3.5">
-            <span className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block">
-              Estimated Annual Advantage
-            </span>
-            <div className="text-xl font-bold text-zinc-950 font-mono mt-0.5">
-              {formatCurrency(result.annualSavings, result.currency)} / year
+    <div>
+      {/* 2-Column Responsive Layout: Left Input Card, Right Results Card */}
+      <div className="grid grid-cols-1 gap-4 lg:gap-5 lg:grid-cols-12 items-start font-sans">
+        {/* ========================================================= */}
+        {/* LEFT CARD: Interactive Input Controls                     */}
+        {/* ========================================================= */}
+        <div className="lg:col-span-7 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-3.5 sm:p-5 shadow-xs space-y-4">
+          {/* Header & Mode Switcher */}
+          <div className="flex items-center justify-between pb-3 border-b border-zinc-100 gap-2">
+            {/* Segmented Pill Tab Switcher */}
+            <div className="inline-flex rounded-lg bg-zinc-100 p-1 text-xs font-sans">
+              <button
+                type="button"
+                onClick={() => setMode("direct")}
+                className={cn(
+                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  mode === "direct"
+                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    : "text-zinc-600 hover:text-zinc-950"
+                )}
+              >
+                Direct Payment Fee
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("gross-up")}
+                className={cn(
+                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  mode === "gross-up"
+                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    : "text-zinc-600 hover:text-zinc-950"
+                )}
+              >
+                Invoice Gross-Up (Cover Fees)
+              </button>
             </div>
-            <p className="text-[11px] text-zinc-400 mt-1">
-              by selecting {result.recommended} for your checkout gateway
+
+            {/* Reset Button */}
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex items-center justify-center min-h-11 min-w-11 px-2.5 gap-1.5 text-xs font-sans font-medium text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
+              title="Reset values to defaults"
+              aria-label="Reset values to defaults"
+            >
+              <RotateCcw className="size-3.5" />
+              <span>Reset</span>
+            </button>
+          </div>
+
+          {/* Settlement Currency Selector */}
+          <div className="flex flex-col gap-1">
+            <label className="text-[11px] font-bold text-zinc-950">
+              Settlement Currency
+            </label>
+            <CustomSelect
+              value={currency}
+              options={currencyOptions}
+              onChange={(val) => setCurrency(val)}
+            />
+          </div>
+
+          {/* Amount Input with Focus Ring & Presets */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center justify-between">
+              <label htmlFor="payment-charge-amount" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
+                {mode === "gross-up" ? "Target Net Payout" : "Payment / Charge Amount"}{" "}
+                <span className="text-rose-600">*</span>
+              </label>
+              <span className="text-[10px] text-zinc-400 font-sans">
+                {mode === "gross-up"
+                  ? "Desired net deposit in bank"
+                  : "Gross checkout or invoice total"}
+              </span>
+            </div>
+
+            <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+              <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
+                {result.currencySymbol}
+              </span>
+              <input
+                id="payment-charge-amount"
+                name="chargeAmount"
+                aria-label={mode === "gross-up" ? "Target Net Payout" : "Payment Amount"}
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="any"
+                value={amountStr}
+                onChange={(e) => setAmountStr(e.target.value)}
+                onFocus={(e) => {
+                  if (e.target.value === "0.00" || e.target.value === "0") {
+                    e.target.select();
+                  }
+                }}
+                onBlur={() => {
+                  const num = parseFloat(amountStr);
+                  if (!isNaN(num) && num >= 0) setAmountStr(num.toFixed(2));
+                  else if (!amountStr) setAmountStr("0.00");
+                }}
+                placeholder="0.00"
+                className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+              />
+            </div>
+
+            {/* Quick Presets */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-[10px] text-zinc-400 font-sans mr-0.5">Quick set:</span>
+              {amountPresets.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setAmountStr(preset.toFixed(2))}
+                  className={cn(
+                    "px-2 py-0.5 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
+                    Math.abs(amount - preset) < 0.01
+                      ? "border-zinc-950 bg-zinc-950 text-white font-bold"
+                      : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
+                  )}
+                >
+                  {result.currencySymbol}
+                  {preset >= 1000 ? `${preset / 1000}k` : preset}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Transaction Channel Selector */}
+          <div className="pt-2 border-t border-zinc-100 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-zinc-950">
+                Payment Channel
+              </label>
+              <span className="text-[10px] text-zinc-500 font-sans">
+                {transactionType === "checkout"
+                  ? "Standard card checkout (2.9% vs 3.49%)"
+                  : "Digital invoicing (3.3% vs 2.99%)"}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-lg bg-zinc-100 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setTransactionType("checkout")}
+                className={cn(
+                  "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
+                  transactionType === "checkout"
+                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    : "text-zinc-600 hover:text-zinc-950"
+                )}
+              >
+                <CreditCard className="size-3.5" />
+                <span>Online Checkout</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setTransactionType("invoice")}
+                className={cn(
+                  "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
+                  transactionType === "invoice"
+                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    : "text-zinc-600 hover:text-zinc-950"
+                )}
+              >
+                <TrendingUp className="size-3.5" />
+                <span>Client Invoicing</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Cross-Border & FX Surcharge Toggles */}
+          <div className="pt-2 border-t border-zinc-100 space-y-2.5">
+            <span className="text-[11px] font-bold text-zinc-950 block">
+              Cross-Border &amp; Currency Surcharges
+            </span>
+
+            {/* International Card Toggle */}
+            <div className="rounded-lg border border-zinc-200/80 bg-zinc-50/50 p-2.5 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <label
+                  htmlFor="toggle-international"
+                  className="text-xs font-bold text-zinc-950 block cursor-pointer truncate"
+                >
+                  International Payment Card (+1.50%)
+                </label>
+                <p className="text-[11px] text-zinc-500 font-sans leading-tight mt-0.5">
+                  Card issued in a country different from your merchant account
+                </p>
+              </div>
+
+              <button
+                type="button"
+                id="toggle-international"
+                role="switch"
+                aria-checked={isInternational}
+                onClick={() => setIsInternational(!isInternational)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                  isInternational ? "bg-zinc-950" : "bg-zinc-200"
+                )}
+              >
+                <span
+                  className={cn(
+                    "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-2xs ring-0 transition duration-200 ease-in-out",
+                    isInternational ? "translate-x-4" : "translate-x-0"
+                  )}
+                />
+              </button>
+            </div>
+
+            {/* Currency Conversion Toggle */}
+            <div className="rounded-lg border border-zinc-200/80 bg-zinc-50/50 p-2.5 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <label
+                  htmlFor="toggle-fx"
+                  className="text-xs font-bold text-zinc-950 block cursor-pointer truncate"
+                >
+                  Cross-Border FX Conversion (+1% to 3%)
+                </label>
+                <p className="text-[11px] text-zinc-500 font-sans leading-tight mt-0.5">
+                  Settlement currency differs from buyer card currency (Stripe +1.0%, PayPal +3.0%)
+                </p>
+              </div>
+
+              <button
+                type="button"
+                id="toggle-fx"
+                role="switch"
+                aria-checked={currencyConversion}
+                onClick={() => setCurrencyConversion(!currencyConversion)}
+                className={cn(
+                  "relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden",
+                  currencyConversion ? "bg-zinc-950" : "bg-zinc-200"
+                )}
+              >
+                <span
+                  className={cn(
+                    "pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-2xs ring-0 transition duration-200 ease-in-out",
+                    currencyConversion ? "translate-x-4" : "translate-x-0"
+                  )}
+                />
+              </button>
+            </div>
+          </div>
+
+          {/* Monthly Turnover / Processing Volume Simulator */}
+          <div className="pt-2 border-t border-zinc-100 space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label htmlFor="payment-monthly-volume" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
+                Monthly Processing Turnover
+              </label>
+              <span className="text-[10px] text-zinc-400 font-sans">
+                Simulate annual cumulative fee impact
+              </span>
+            </div>
+
+            <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+              <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
+                {result.currencySymbol}
+              </span>
+              <input
+                id="payment-monthly-volume"
+                name="monthlyVolume"
+                aria-label="Monthly Processing Turnover"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="any"
+                value={monthlyVolumeStr}
+                onChange={(e) => setMonthlyVolumeStr(e.target.value)}
+                onFocus={(e) => e.target.select()}
+                onBlur={() => {
+                  const num = parseFloat(monthlyVolumeStr);
+                  if (!isNaN(num) && num >= 0) setMonthlyVolumeStr(num.toString());
+                  else if (!monthlyVolumeStr) setMonthlyVolumeStr("5000");
+                }}
+                placeholder="5000"
+                className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+              />
+            </div>
+
+            {/* Quick Volume Presets */}
+            <div className="flex flex-wrap items-center gap-1.5 pt-1">
+              <span className="text-[10px] text-zinc-400 font-sans mr-0.5">Turnover:</span>
+              {volumePresets.map((preset) => (
+                <button
+                  key={preset}
+                  type="button"
+                  onClick={() => setMonthlyVolumeStr(preset.toString())}
+                  className={cn(
+                    "px-2.5 py-1.5 min-h-9 rounded-md border text-[11px] font-mono transition-colors cursor-pointer",
+                    Math.abs(monthlyVolume - preset) < 0.01
+                      ? "border-zinc-950 bg-zinc-950 text-white font-bold"
+                      : "border-zinc-200 bg-zinc-50/70 text-zinc-700 hover:bg-zinc-100 hover:text-zinc-950"
+                  )}
+                >
+                  {result.currencySymbol}
+                  {preset / 1000}k/mo
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* ========================================================= */}
+        {/* RIGHT CARD: Results (Standalone Hero Card, sticky desktop)*/}
+        {/* ========================================================= */}
+        <div className="lg:col-span-5 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-5 shadow-xs lg:sticky lg:top-20 space-y-4">
+          {/* Header & Copy Button */}
+          <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
+            <h3 className="text-sm sm:text-base font-bold tracking-tight text-zinc-950">
+              {mode === "gross-up" ? "Invoice Gross-Up Target" : "Comparison Results"}
+            </h3>
+            <button
+              type="button"
+              onClick={handleCopySummary}
+              className="inline-flex items-center gap-1 text-[11px] font-sans font-bold text-zinc-700 hover:text-zinc-950 transition-colors cursor-pointer"
+              title="Copy Summary"
+            >
+              {copiedSummary ? (
+                <>
+                  <Check className="size-3 text-emerald-600" />
+                  <span className="text-emerald-700 font-semibold">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="size-3" />
+                  <span>Copy</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          {/* Winner Highlight Banner */}
+          <div className="rounded-xl bg-zinc-50 border border-zinc-200/80 p-3 space-y-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+                Gateway Recommendation
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 border border-emerald-300/60 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 whitespace-nowrap shrink-0">
+                <Check className="size-3 shrink-0" />
+                <span>{result.recommended} Recommended</span>
+              </span>
+            </div>
+
+            <div className="text-xs text-zinc-700 leading-snug">
+              {mode === "gross-up" ? (
+                <>
+                  Billing via <strong className="text-zinc-950">{result.recommended}</strong> saves{" "}
+                  <strong className="text-emerald-700 font-mono font-bold">
+                    {result.currencySymbol}
+                    {result.savingsOnGrossUp.toFixed(2)}
+                  </strong>{" "}
+                  on this invoice to deliver your target net payout.
+                </>
+              ) : (
+                <>
+                  Processing with <strong className="text-zinc-950">{result.recommended}</strong> keeps an extra{" "}
+                  <strong className="text-emerald-700 font-mono font-bold">
+                    {result.currencySymbol}
+                    {result.savingsOnDirectCharge.toFixed(2)}
+                  </strong>{" "}
+                  in your bank account on this payment.
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Head-to-Head Comparison Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            {/* Stripe Card */}
+            <div
+              className={cn(
+                "rounded-xl border p-3.5 space-y-2.5 transition-all",
+                result.recommended === "Stripe"
+                  ? "border-zinc-950 bg-zinc-50/70 shadow-2xs ring-1 ring-zinc-950/10"
+                  : "border-zinc-200 bg-white"
+              )}
+            >
+              <div className="flex items-center justify-between gap-1.5">
+                <span className="text-sm font-extrabold text-zinc-950 tracking-tight">
+                  Stripe
+                </span>
+                <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-700 whitespace-nowrap shrink-0">
+                  {result.stripe.ratePct}% + {result.currencySymbol}
+                  {result.stripe.fixedFee.toFixed(2)}
+                </span>
+              </div>
+
+              {mode === "gross-up" ? (
+                <div>
+                  <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    Invoice Amount
+                  </span>
+                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                    {formatCurrency(result.stripe.invoiceToReceiveTarget, result.currency)}
+                  </div>
+                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
+                    <span>Stripe fee:</span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      -{formatCurrency(result.stripe.feeOnGrossUp, result.currency)}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-emerald-700 font-semibold flex justify-between pt-0.5">
+                    <span>You receive:</span>
+                    <span className="font-mono font-bold">
+                      {formatCurrency(result.stripe.targetPayout, result.currency)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    Net Deposit
+                  </span>
+                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                    {formatCurrency(result.stripe.netPayoutOnCharge, result.currency)}
+                  </div>
+                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
+                    <span>Stripe cut:</span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      -{formatCurrency(result.stripe.feeOnCharge, result.currency)} ({result.stripe.effectiveFeePct}%)
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-zinc-500 flex justify-between pt-0.5">
+                    <span>Charged:</span>
+                    <span className="font-mono">
+                      {formatCurrency(amount, result.currency)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* PayPal Card */}
+            <div
+              className={cn(
+                "rounded-xl border p-3.5 space-y-2.5 transition-all",
+                result.recommended === "PayPal"
+                  ? "border-zinc-950 bg-zinc-50/70 shadow-2xs ring-1 ring-zinc-950/10"
+                  : "border-zinc-200 bg-white"
+              )}
+            >
+              <div className="flex items-center justify-between gap-1.5">
+                <span className="text-sm font-extrabold text-zinc-950 tracking-tight">
+                  PayPal
+                </span>
+                <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-700 whitespace-nowrap shrink-0">
+                  {result.paypal.ratePct}% + {result.currencySymbol}
+                  {result.paypal.fixedFee.toFixed(2)}
+                </span>
+              </div>
+
+              {mode === "gross-up" ? (
+                <div>
+                  <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    Invoice Amount
+                  </span>
+                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                    {formatCurrency(result.paypal.invoiceToReceiveTarget, result.currency)}
+                  </div>
+                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
+                    <span>PayPal fee:</span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      -{formatCurrency(result.paypal.feeOnGrossUp, result.currency)}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-emerald-700 font-semibold flex justify-between pt-0.5">
+                    <span>You receive:</span>
+                    <span className="font-mono font-bold">
+                      {formatCurrency(result.paypal.targetPayout, result.currency)}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+                    Net Deposit
+                  </span>
+                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                    {formatCurrency(result.paypal.netPayoutOnCharge, result.currency)}
+                  </div>
+                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
+                    <span>PayPal cut:</span>
+                    <span className="font-mono font-semibold text-zinc-900">
+                      -{formatCurrency(result.paypal.feeOnCharge, result.currency)} ({result.paypal.effectiveFeePct}%)
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-zinc-500 flex justify-between pt-0.5">
+                    <span>Charged:</span>
+                    <span className="font-mono">
+                      {formatCurrency(amount, result.currency)}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Visual Percentage Breakdown Bar */}
+          <div className="pt-2 border-t border-zinc-100 space-y-1.5">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-zinc-600">
+              <span>Net Take-Home Comparison</span>
+              <span className="font-mono text-zinc-950">
+                {mode === "gross-up"
+                  ? `${result.recommended} requires less gross`
+                  : `${result.recommended} keeps ${result.savingsOnDirectCharge > 0 ? `+${result.currencySymbol}${result.savingsOnDirectCharge.toFixed(2)}` : "equal"}`}
+              </span>
+            </div>
+
+            <div className="space-y-1.5">
+              {/* Stripe Bar */}
+              <div>
+                <div className="flex items-center justify-between text-[10px] text-zinc-500 mb-0.5">
+                  <span className="font-bold text-zinc-800">Stripe</span>
+                  <span className="font-mono">
+                    {mode === "gross-up"
+                      ? `${formatCurrency(result.stripe.invoiceToReceiveTarget, result.currency)}`
+                      : `${(100 - result.stripe.effectiveFeePct).toFixed(1)}% net deposit`}
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden flex">
+                  <div
+                    style={{
+                      width: `${Math.min(100, Math.max(0, 100 - result.stripe.effectiveFeePct))}%`,
+                    }}
+                    className="h-full bg-emerald-500 rounded-l-full"
+                  />
+                  <div
+                    style={{
+                      width: `${Math.min(100, Math.max(0, result.stripe.effectiveFeePct))}%`,
+                    }}
+                    className="h-full bg-rose-400 rounded-r-full"
+                  />
+                </div>
+              </div>
+
+              {/* PayPal Bar */}
+              <div>
+                <div className="flex items-center justify-between text-[10px] text-zinc-500 mb-0.5">
+                  <span className="font-bold text-zinc-800">PayPal</span>
+                  <span className="font-mono">
+                    {mode === "gross-up"
+                      ? `${formatCurrency(result.paypal.invoiceToReceiveTarget, result.currency)}`
+                      : `${(100 - result.paypal.effectiveFeePct).toFixed(1)}% net deposit`}
+                  </span>
+                </div>
+                <div className="h-2 w-full rounded-full bg-zinc-100 overflow-hidden flex">
+                  <div
+                    style={{
+                      width: `${Math.min(100, Math.max(0, 100 - result.paypal.effectiveFeePct))}%`,
+                    }}
+                    className="h-full bg-blue-500 rounded-l-full"
+                  />
+                  <div
+                    style={{
+                      width: `${Math.min(100, Math.max(0, result.paypal.effectiveFeePct))}%`,
+                    }}
+                    className="h-full bg-rose-400 rounded-r-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly & Annual Volume Projection Box */}
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50/70 p-3 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+                Annual Volume Advantage
+              </span>
+              <TrendingUp className="size-3.5 text-emerald-600" />
+            </div>
+
+            <div className="text-2xl font-extrabold font-mono tracking-tight text-zinc-950">
+              +{formatCurrency(result.annualSavings, result.currency)}
+              <span className="text-xs font-sans font-medium text-zinc-500"> / year</span>
+            </div>
+
+            <p className="text-[11px] text-zinc-600 leading-snug">
+              Estimated net savings by processing through{" "}
+              <strong className="text-zinc-950">{result.recommended}</strong> at{" "}
+              <span className="font-mono font-semibold">
+                {formatCurrency(monthlyVolume, result.currency)}/month
+              </span>{" "}
+              turnover.
             </p>
-          </div>
-        </div>
-      </div>
 
-      {/* Side-by-Side Processor Cards */}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* Stripe Card */}
-        <div
-          className={`rounded-2xl border p-6 space-y-5 transition-all ${
-            result.recommended === "Stripe"
-              ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
-              : "border-zinc-200 bg-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight">Stripe</h3>
-              {result.recommended === "Stripe" && (
-                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-[11px] font-mono font-bold text-white uppercase tracking-wider">
-                  Recommended
+            <div className="pt-2 border-t border-zinc-200/80 grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span className="text-zinc-500 block">Stripe Monthly Cut:</span>
+                <span className="font-mono font-bold text-zinc-900">
+                  {formatCurrency(result.stripe.monthlyFees, result.currency)}
                 </span>
+              </div>
+              <div className="text-right">
+                <span className="text-zinc-500 block">PayPal Monthly Cut:</span>
+                <span className="font-mono font-bold text-zinc-900">
+                  {formatCurrency(result.paypal.monthlyFees, result.currency)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Itemized Fee Breakdown Accordion */}
+          <div className="pt-1">
+            <button
+              type="button"
+              onClick={() => setShowItemized(!showItemized)}
+              className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-600 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-100"
+            >
+              <span>Rate Components Breakdown</span>
+              {showItemized ? (
+                <ChevronUp className="size-3.5" />
+              ) : (
+                <ChevronDown className="size-3.5" />
               )}
-            </div>
-            <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-mono font-bold text-zinc-700">
-              {result.stripe.ratePct}% + {result.currencySymbol}{result.stripe.fixedFee.toFixed(2)}
-            </span>
-          </div>
+            </button>
 
-          {mode === "gross-up" ? (
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                Invoice This Amount to Client
-              </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
-                {formatCurrency(result.stripe.invoiceToReceiveTarget, result.currency)}
+            {showItemized && (
+              <div className="mt-2 divide-y divide-zinc-100 text-xs font-mono space-y-1 animate-in fade-in duration-150">
+                <div className="flex justify-between py-1 text-zinc-600">
+                  <span>Base Rate:</span>
+                  <span>
+                    Stripe {transactionType === "invoice" ? "3.30%" : "2.90%"} vs PayPal{" "}
+                    {transactionType === "invoice" ? "2.99%" : "3.49%"}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 text-zinc-600">
+                  <span>Fixed Fee:</span>
+                  <span>
+                    Stripe {result.currencySymbol}
+                    {result.stripe.fixedFee.toFixed(2)} vs PayPal {result.currencySymbol}
+                    {result.paypal.fixedFee.toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 text-zinc-600">
+                  <span>International Card:</span>
+                  <span>
+                    {isInternational ? "+1.50% (Both)" : "0.00%"}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 text-zinc-600">
+                  <span>FX Conversion:</span>
+                  <span>
+                    {currencyConversion
+                      ? "Stripe +1.00% vs PayPal +3.00%"
+                      : "0.00%"}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1 font-bold text-zinc-950 pt-1.5">
+                  <span>Total Applied Rate:</span>
+                  <span>
+                    Stripe {result.stripe.ratePct}% vs PayPal {result.paypal.ratePct}%
+                  </span>
+                </div>
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-                <span>Stripe deduction:</span>
-                <span className="font-mono font-semibold text-zinc-700">
-                  -{formatCurrency(result.stripe.feeOnGrossUp, result.currency)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-xs text-zinc-950 font-semibold pt-1">
-                <span>You deposit:</span>
-                <span className="font-mono text-zinc-950">
-                  {formatCurrency(result.stripe.targetPayout, result.currency)}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
-              </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
-                {formatCurrency(result.stripe.netPayoutOnCharge, result.currency)}
-              </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-                <span>Stripe processing fee:</span>
-                <span className="font-mono font-semibold text-zinc-700">
-                  -{formatCurrency(result.stripe.feeOnCharge, result.currency)} ({result.stripe.effectiveFeePct}%)
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-2 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-            <div className="flex justify-between">
-              <span>Monthly Fees on {result.currencySymbol}{monthlyVolume.toLocaleString()}:</span>
-              <span className="font-mono font-semibold text-zinc-900">
-                {formatCurrency(result.stripe.monthlyFees, result.currency)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Annual Net Deposited:</span>
-              <span className="font-mono font-bold text-zinc-950">
-                {formatCurrency(result.stripe.annualNetTakeHome, result.currency)}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* PayPal Card */}
-        <div
-          className={`rounded-2xl border p-6 space-y-5 transition-all ${
-            result.recommended === "PayPal"
-              ? "border-zinc-900 bg-zinc-50/50 shadow-xs ring-1 ring-zinc-900/10"
-              : "border-zinc-200 bg-white"
-          }`}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <h3 className="text-xl font-extrabold text-zinc-950 tracking-tight">PayPal</h3>
-              {result.recommended === "PayPal" && (
-                <span className="rounded-full bg-zinc-950 px-2.5 py-0.5 text-[11px] font-mono font-bold text-white uppercase tracking-wider">
-                  Recommended
-                </span>
-              )}
-            </div>
-            <span className="rounded-lg bg-zinc-100 px-2.5 py-1 text-xs font-mono font-bold text-zinc-700">
-              {result.paypal.ratePct}% + {result.currencySymbol}{result.paypal.fixedFee.toFixed(2)}
-            </span>
-          </div>
-
-          {mode === "gross-up" ? (
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                Invoice This Amount to Client
-              </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
-                {formatCurrency(result.paypal.invoiceToReceiveTarget, result.currency)}
-              </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-                <span>PayPal deduction:</span>
-                <span className="font-mono font-semibold text-zinc-700">
-                  -{formatCurrency(result.paypal.feeOnGrossUp, result.currency)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-xs text-zinc-950 font-semibold pt-1">
-                <span>You deposit:</span>
-                <span className="font-mono text-zinc-950">
-                  {formatCurrency(result.paypal.targetPayout, result.currency)}
-                </span>
-              </div>
-            </div>
-          ) : (
-            <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-2xs">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-500">
-                Net Bank Payout on {result.currencySymbol}{amount.toFixed(2)}
-              </span>
-              <div className="mt-1 text-3xl sm:text-4xl font-extrabold text-zinc-950 font-mono">
-                {formatCurrency(result.paypal.netPayoutOnCharge, result.currency)}
-              </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-                <span>PayPal processing fee:</span>
-                <span className="font-mono font-semibold text-zinc-700">
-                  -{formatCurrency(result.paypal.feeOnCharge, result.currency)} ({result.paypal.effectiveFeePct}%)
-                </span>
-              </div>
-            </div>
-          )}
-
-          <div className="space-y-2 text-xs text-zinc-600 pt-2 border-t border-zinc-100">
-            <div className="flex justify-between">
-              <span>Monthly Fees on {result.currencySymbol}{monthlyVolume.toLocaleString()}:</span>
-              <span className="font-mono font-semibold text-zinc-900">
-                {formatCurrency(result.paypal.monthlyFees, result.currency)}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Annual Net Deposited:</span>
-              <span className="font-mono font-bold text-zinc-950">
-                {formatCurrency(result.paypal.annualNetTakeHome, result.currency)}
-              </span>
-            </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Contextual Next Tool Bridge */}
       {!isEmbed && (
-        <ContextualToolBridge
-          currentTool="stripe-vs-paypal-fee-calculator"
-          price={amount}
-        />
-      )}
-
-      {!isEmbed && (
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <ShareButton
-            toolSlug="stripe-vs-paypal-fee-calculator"
-            getFormattedText={getFormattedSummary}
+        <div className="mt-6">
+          <ContextualToolBridge
+            currentTool="stripe-vs-paypal-fee-calculator"
+            price={amount}
           />
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleReset}
-              className="inline-flex items-center gap-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-mono text-zinc-600 hover:bg-zinc-50 hover:text-zinc-950 transition-colors"
-            >
-              <span>↺</span>
-              <span>Reset Form</span>
-            </button>
-            <PrintButton toolSlug="stripe-vs-paypal-fee-calculator" />
-            <EmbedModal
-              toolSlug="stripe-vs-paypal-fee-calculator"
-              title="Stripe vs PayPal Fee Calculator"
-            />
-          </div>
         </div>
       )}
 
+      {/* Mobile Sticky Result Bar */}
       {!isEmbed && (
         <StickyResultBar
           label={
             mode === "gross-up"
-              ? `Gross-Up (${result.recommended})`
+              ? `Invoice (${result.recommended})`
               : `Net Deposit (${result.recommended})`
           }
           value={
@@ -451,7 +838,48 @@ Calculated on CalcDial: https://calcdial.com/tools/stripe-vs-paypal-fee-calculat
               : result.paypal.netPayoutOnCharge
           }
           subLabel="Advantage"
-          subValue={result.savingsOnGrossUp}
+          subValue={mode === "gross-up" ? result.savingsOnGrossUp : result.savingsOnDirectCharge}
+          subValueFormat="currency"
+          totalFees={
+            mode === "gross-up"
+              ? result.recommended === "Stripe"
+                ? result.stripe.feeOnGrossUp
+                : result.paypal.feeOnGrossUp
+              : result.recommended === "Stripe"
+              ? result.stripe.feeOnCharge
+              : result.paypal.feeOnCharge
+          }
+          payout={
+            mode === "gross-up"
+              ? amount
+              : result.recommended === "Stripe"
+              ? result.stripe.netPayoutOnCharge
+              : result.paypal.netPayoutOnCharge
+          }
+          breakEven={
+            mode === "gross-up"
+              ? result.recommended === "Stripe"
+                ? result.stripe.invoiceToReceiveTarget
+                : result.paypal.invoiceToReceiveTarget
+              : amount
+          }
+          currencySymbol={result.currencySymbol}
+          itemizedFees={[
+            {
+              label: `Stripe ${mode === "gross-up" ? "Invoice" : "Fee"}`,
+              amount:
+                mode === "gross-up"
+                  ? result.stripe.invoiceToReceiveTarget
+                  : result.stripe.feeOnCharge,
+            },
+            {
+              label: `PayPal ${mode === "gross-up" ? "Invoice" : "Fee"}`,
+              amount:
+                mode === "gross-up"
+                  ? result.paypal.invoiceToReceiveTarget
+                  : result.paypal.feeOnCharge,
+            },
+          ]}
         />
       )}
     </div>

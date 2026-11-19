@@ -21,6 +21,26 @@ body {
 }
 
 /* ========================================================
+   Typography Discipline & Number Formatting
+   - Balanced headers to prevent orphan words (CRITIQUE-09)
+   - Tabular numerals & zero synthetic letter spacing on financial digits (CRITIQUE-08)
+   ======================================================== */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+p, li {
+  text-wrap: pretty;
+}
+
+.font-mono,
+.kpi-value,
+[data-mono-num] {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: normal;
+}
+
+/* ========================================================
    Native Select Dropdown Reset
    Completely removes native browser arrows (▲/▼) in Chromium,
    WebKit, Firefox, and Windows Edge/IE

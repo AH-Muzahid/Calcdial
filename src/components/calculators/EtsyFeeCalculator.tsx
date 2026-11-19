@@ -15,17 +15,27 @@ interface EtsyFeeCalculatorProps {
 }
 
 const CURRENCY_MAP: Record<string, { symbol: string; label: string }> = {
-  us: { symbol: "$", label: "USD (US Dollar)" },
-  uk: { symbol: "£", label: "GBP (British Pound)" },
-  de: { symbol: "€", label: "EUR (Euro - Germany)" },
-  fr: { symbol: "€", label: "EUR (Euro - France)" },
-  nl: { symbol: "€", label: "EUR (Euro - Netherlands)" },
-  it: { symbol: "€", label: "EUR (Euro - Italy)" },
-  es: { symbol: "€", label: "EUR (Euro - Spain)" },
-  ca: { symbol: "C$", label: "CAD (Canadian Dollar)" },
-  au: { symbol: "A$", label: "AUD (Australian Dollar)" },
-  in: { symbol: "₹", label: "INR (Indian Rupee)" },
+  us: { symbol: "$", label: "USD ($) - United States" },
+  uk: { symbol: "£", label: "GBP (£) - United Kingdom" },
+  de: { symbol: "€", label: "EUR (€) - Eurozone / Germany" },
+  fr: { symbol: "€", label: "EUR (€) - France" },
+  ca: { symbol: "C$", label: "CAD (C$) - Canada" },
+  au: { symbol: "A$", label: "AUD (A$) - Australia" },
+  in: { symbol: "₹", label: "INR (₹) - India" },
+  nl: { symbol: "€", label: "EUR (€) - Netherlands" },
+  it: { symbol: "€", label: "EUR (€) - Italy" },
+  es: { symbol: "€", label: "EUR (€) - Spain" },
 };
+
+const CURRENCY_OPTIONS = [
+  { value: "us", label: "USD ($) - United States" },
+  { value: "uk", label: "GBP (£) - United Kingdom" },
+  { value: "de", label: "EUR (€) - Eurozone / Germany" },
+  { value: "fr", label: "EUR (€) - France" },
+  { value: "ca", label: "CAD (C$) - Canada" },
+  { value: "au", label: "AUD (A$) - Australia" },
+  { value: "in", label: "INR (₹) - India" },
+];
 
 export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: EtsyFeeCalculatorProps) {
   // Input states matching user reference
@@ -63,12 +73,16 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
   const itemCost = Math.max(0, parseFloat(costStr) || 0);
   const shippingCharged = Math.max(0, parseFloat(shippingStr) || 0);
 
+  const formatAmount = (num: number) =>
+    num.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   const [offsiteAds, setOffsiteAds] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const ads = new URLSearchParams(window.location.search).get("ads");
+      if (ads === "true" || ads === "1") return true;
       if (ads === "false" || ads === "0") return false;
     }
-    return true; // Active in user reference
+    return false; // Default OFF per CRITIQUE-12
   });
 
   const [adsTier, setAdsTier] = useState<0.15 | 0.12>(0.15);
@@ -206,12 +220,12 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         {/* ========================================================= */}
         <div className="lg:col-span-7 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-3.5 sm:p-5 shadow-xs space-y-3">
           <div className="flex flex-wrap items-center justify-between pb-2 border-b border-zinc-150 gap-2">
-            <div className="inline-flex items-center gap-1 bg-zinc-100 p-0.5 rounded-lg border border-zinc-200">
+            <div className="inline-flex items-center gap-1 bg-zinc-100 p-1 rounded-lg border border-zinc-200">
               <button
                 type="button"
                 onClick={() => setCalcMode("standard")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer",
+                  "px-3 py-2 min-h-11 text-xs font-semibold rounded-md transition-all cursor-pointer inline-flex items-center justify-center",
                   calcMode === "standard"
                     ? "bg-white text-zinc-950 shadow-2xs font-bold"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -223,7 +237,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 type="button"
                 onClick={() => setCalcMode("reverse")}
                 className={cn(
-                  "px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer",
+                  "px-3 py-2 min-h-11 text-xs font-semibold rounded-md transition-all cursor-pointer inline-flex items-center justify-center",
                   calcMode === "reverse"
                     ? "bg-white text-zinc-950 shadow-2xs font-bold"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -233,7 +247,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               </button>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => {
@@ -246,17 +260,19 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   setApplySalesTax(false);
                   setCountry("us");
                 }}
-                className="text-[11px] font-sans font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center min-h-11 px-2.5 text-xs font-sans font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
+                title="Reset values to defaults"
+                aria-label="Reset values to defaults"
               >
-                Reset to 0.00
+                Reset
               </button>
               <button
                 type="button"
                 onClick={() => setInputsOpen(!inputsOpen)}
-                className="p-0.5 text-zinc-400 hover:text-zinc-700 sm:hidden"
+                className="p-2 min-h-11 min-w-11 inline-flex items-center justify-center text-zinc-400 hover:text-zinc-700 sm:hidden"
                 aria-label="Toggle inputs"
               >
-                {inputsOpen ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+                {inputsOpen ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
               </button>
             </div>
           </div>
@@ -270,10 +286,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 </label>
                 <CustomSelect
                   value={country}
-                  options={Object.entries(CURRENCY_MAP).map(([id, item]) => ({
-                    value: id,
-                    label: item.label,
-                  }))}
+                  options={CURRENCY_OPTIONS}
                   onChange={(val) => setCountry(val)}
                 />
               </div>
@@ -281,14 +294,17 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               {/* Standard: Item Price Input */}
               {calcMode === "standard" ? (
                 <div className="flex flex-col gap-1">
-                  <label className="text-[11px] font-bold text-zinc-950">
+                  <label htmlFor="etsy-item-price" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
                     Item Price <span className="text-rose-600">*</span>
                   </label>
-                  <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
                     <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
                       {curr.symbol}
                     </span>
                     <input
+                      id="etsy-item-price"
+                      name="itemPrice"
+                      aria-label="Item Retail Price"
                       type="number"
                       inputMode="decimal"
                       min={0}
@@ -306,7 +322,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         else if (!priceStr) setPriceStr("0.00");
                       }}
                       placeholder="0.00"
-                      className="h-9 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+                      className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
                     />
                   </div>
                 </div>
@@ -322,7 +338,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         type="button"
                         onClick={() => setTargetType("dollar")}
                         className={cn(
-                          "px-2 py-0.5 rounded-md transition-all cursor-pointer",
+                          "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
                           targetType === "dollar"
                             ? "bg-zinc-950 text-white font-bold"
                             : "text-zinc-600 hover:text-zinc-950"
@@ -334,7 +350,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                         type="button"
                         onClick={() => setTargetType("margin")}
                         className={cn(
-                          "px-2 py-0.5 rounded-md transition-all cursor-pointer",
+                          "px-2.5 py-1 min-h-9 rounded-md transition-all cursor-pointer whitespace-nowrap",
                           targetType === "margin"
                             ? "bg-zinc-950 text-white font-bold"
                             : "text-zinc-600 hover:text-zinc-950"
@@ -345,11 +361,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     </div>
                   </div>
 
-                  <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+                  <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
                     <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
                       {targetType === "dollar" ? curr.symbol : "%"}
                     </span>
                     <input
+                      id="etsy-target-val"
+                      name="targetVal"
+                      aria-label="Target Profit Goal"
                       type="number"
                       inputMode="decimal"
                       min={0}
@@ -380,14 +399,17 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
 
               {/* Product Cost Input */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-zinc-950">
+                <label htmlFor="etsy-product-cost" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
                   Product Cost
                 </label>
-                <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
                   <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
                     {curr.symbol}
                   </span>
                   <input
+                    id="etsy-product-cost"
+                    name="productCost"
+                    aria-label="Product Cost"
                     type="number"
                     inputMode="decimal"
                     min={0}
@@ -405,21 +427,24 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       else if (!costStr) setCostStr("0.00");
                     }}
                     placeholder="0.00"
-                    className="h-9 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
                   />
                 </div>
               </div>
 
               {/* Shipping Charge (to buyer) */}
               <div className="flex flex-col gap-1">
-                <label className="text-[11px] font-bold text-zinc-950">
+                <label htmlFor="etsy-shipping-charge" className="text-[11px] font-bold text-zinc-950 cursor-pointer">
                   Shipping Charge (to buyer)
                 </label>
-                <div className="relative flex items-center rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
+                <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white transition-all hover:border-zinc-400 focus-within:border-zinc-950 focus-within:ring-1 focus-within:ring-zinc-950">
                   <span className="pl-3 pr-1 text-xs sm:text-sm font-mono font-bold text-zinc-600 select-none">
                     {curr.symbol}
                   </span>
                   <input
+                    id="etsy-shipping-charge"
+                    name="shippingCharge"
+                    aria-label="Shipping Charge to Buyer"
                     type="number"
                     inputMode="decimal"
                     min={0}
@@ -437,7 +462,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       else if (!shippingStr) setShippingStr("0.00");
                     }}
                     placeholder="0.00"
-                    className="h-9 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
+                    className="h-11 min-h-11 w-full rounded-lg bg-transparent px-2 text-xs sm:text-sm font-mono font-bold text-zinc-950 placeholder-zinc-400 focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -453,7 +478,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                       Etsy Offsite Ads
                     </label>
                     <p className="text-[11px] text-zinc-500 font-sans">
-                      Fee applied only when a sale comes from Etsy advertising
+                      Only applies if Etsy drives the sale via Offsite Ads (12–15%). Most sellers leave this off.
                     </p>
                   </div>
 
@@ -670,36 +695,44 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               {/* Top Metrics Row - Clear Hero Focal Point */}
               <div className="py-3 border-b border-zinc-100">
                 <div className="flex items-baseline justify-between gap-3">
-                  <div>
-                    <span
-                      className={`block text-xs font-bold mb-0.5 tracking-tight ${
-                        result.netProfit > 0
-                          ? "text-emerald-700"
-                          : result.netProfit < 0
-                          ? "text-rose-700"
-                          : "text-zinc-600"
-                      }`}
-                    >
-                      Net Profit
-                    </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <span
+                        className={`block text-xs font-bold tracking-tight ${
+                          result.netProfit > 0
+                            ? "text-emerald-700"
+                            : result.netProfit < 0
+                            ? "text-rose-700"
+                            : "text-zinc-600"
+                        }`}
+                      >
+                        Net Profit
+                      </span>
+                      {result.netProfit < 0 && (
+                        <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-700 uppercase tracking-wider">
+                          Loss
+                        </span>
+                      )}
+                    </div>
                     <div
-                      className={`text-3xl sm:text-4xl font-extrabold font-mono tracking-tight ${
+                      className={`text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-extrabold font-mono tracking-tight truncate ${
                         result.netProfit > 0
                           ? "text-emerald-600"
                           : result.netProfit < 0
-                          ? "text-rose-600"
+                          ? "text-rose-600 font-extrabold"
                           : "text-zinc-950"
                       }`}
+                      title={`${curr.symbol}${formatAmount(result.netProfit)}`}
                     >
-                      {curr.symbol}{result.netProfit.toFixed(2)}
+                      {curr.symbol}{formatAmount(result.netProfit)}
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <span className="block text-xs font-semibold text-zinc-600 mb-0.5 tracking-tight">
                       Profit Margin
                     </span>
-                    <div className="text-2xl sm:text-3xl font-extrabold font-mono tracking-tight text-zinc-950">
+                    <div className="text-xl sm:text-2xl lg:text-2xl xl:text-3xl font-extrabold font-mono tracking-tight text-zinc-950">
                       {result.netMarginPct.toFixed(1)}%
                     </div>
                   </div>
@@ -709,7 +742,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <div className="mt-2.5 flex items-center justify-between text-xs sm:text-sm pt-1">
                   <span className="font-sans font-semibold text-zinc-700">Total Fees</span>
                   <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{result.totalFees.toFixed(2)}
+                    {curr.symbol}{formatAmount(result.totalFees)}
                   </span>
                 </div>
               </div>
@@ -750,7 +783,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{costTotal.toFixed(2)}
+                        {curr.symbol}{formatAmount(costTotal)}
                       </span>
                       <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
                         {costPct.toFixed(1)}%
@@ -766,7 +799,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{feesTotal.toFixed(2)}
+                        {curr.symbol}{formatAmount(feesTotal)}
                       </span>
                       <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
                         {feesPct.toFixed(1)}%
@@ -782,7 +815,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="font-mono font-bold text-zinc-950">
-                        {curr.symbol}{profitTotal.toFixed(2)}
+                        {curr.symbol}{formatAmount(profitTotal)}
                       </span>
                       <span className="font-mono text-zinc-600 font-semibold w-11 text-right text-[11px]">
                         {profitPct.toFixed(1)}%
@@ -797,13 +830,13 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-700 font-semibold">Estimated Etsy Bank Deposit:</span>
                   <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{result.etsyPayout.toFixed(2)}
+                    {curr.symbol}{formatAmount(result.etsyPayout)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-700 font-semibold">Break-Even Floor Price:</span>
-                  <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{result.breakEvenPrice.toFixed(2)}
+                  <span className="font-mono font-bold text-zinc-950 truncate" title={`${curr.symbol}${formatAmount(result.breakEvenPrice)}`}>
+                    {curr.symbol}{formatAmount(result.breakEvenPrice)}
                   </span>
                 </div>
               </div>
@@ -823,26 +856,26 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <div className="mt-1 divide-y divide-zinc-100 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
                     <div className="flex justify-between py-1 text-zinc-600">
                       <span>Listing Fee ($0.20)</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{result.listingFee.toFixed(2)}</span>
+                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.listingFee)}</span>
                     </div>
                     <div className="flex justify-between py-1 text-zinc-600">
                       <span>Transaction Fee (6.5%)</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{result.transactionFee.toFixed(2)}</span>
+                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.transactionFee)}</span>
                     </div>
                     <div className="flex justify-between py-1 text-zinc-600">
                       <span>Payment Processing</span>
-                      <span className="font-semibold text-zinc-900">{curr.symbol}{result.paymentProcessingFee.toFixed(2)}</span>
+                      <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.paymentProcessingFee)}</span>
                     </div>
                     {offsiteAds && result.offsiteAdsFee > 0 && (
                       <div className="flex justify-between py-1 text-zinc-600">
                         <span>Offsite Ads ({(adsTier * 100).toFixed(0)}%)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.offsiteAdsFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.offsiteAdsFee)}</span>
                       </div>
                     )}
                     {result.regulatoryFee > 0 && (
                       <div className="flex justify-between py-1 text-zinc-600">
                         <span>Regulatory Operating Fee</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.regulatoryFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900">{curr.symbol}{formatAmount(result.regulatoryFee)}</span>
                       </div>
                     )}
                   </div>
@@ -859,15 +892,15 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <span className="block text-xs font-bold text-blue-700 mb-0.5 tracking-tight">
                   Recommended Listing Price
                 </span>
-                <div className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
-                  {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)}
+                <div className="text-3xl sm:text-4xl font-extrabold font-mono tracking-tight text-blue-600 truncate" title={`${curr.symbol}${formatAmount(reverseResult.recommendedPrice)}`}>
+                  {curr.symbol}{formatAmount(reverseResult.recommendedPrice)}
                 </div>
 
                 <div className="mt-3 grid grid-cols-2 gap-2 rounded-lg bg-zinc-50 border border-zinc-200/80 p-2.5 text-xs font-sans">
                   <div>
                     <span className="block text-[11px] text-zinc-500 font-medium">Target Profit</span>
                     <span className="font-mono font-bold text-emerald-600">
-                      {curr.symbol}{reverseResult.estimatedNetProfit.toFixed(2)}
+                      {curr.symbol}{formatAmount(reverseResult.estimatedNetProfit)}
                     </span>
                   </div>
                   <div className="text-right">
@@ -885,9 +918,9 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     setPriceStr(reverseResult.recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full mt-3 py-2 px-3 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full mt-3 py-2 px-3 min-h-11 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)} to Standard View</span>
+                  <span>Apply {curr.symbol}{formatAmount(reverseResult.recommendedPrice)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
@@ -897,19 +930,19 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-700 font-semibold">Total Etsy Fees:</span>
                   <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{reverseResult.totalFees.toFixed(2)}
+                    {curr.symbol}{formatAmount(reverseResult.totalFees)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-700 font-semibold">Estimated Bank Deposit:</span>
                   <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{reverseResult.etsyPayout.toFixed(2)}
+                    {curr.symbol}{formatAmount(reverseResult.etsyPayout)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-700 font-semibold">Product & Shipping Costs:</span>
                   <span className="font-mono font-bold text-zinc-950">
-                    {curr.symbol}{(itemCost + shippingCost).toFixed(2)}
+                    {curr.symbol}{formatAmount(itemCost + shippingCost)}
                   </span>
                 </div>
               </div>

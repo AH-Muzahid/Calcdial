@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { Search, Calculator, Layers, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
+import { Search, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { ToolConfig } from "@/data/tools-registry";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
@@ -18,8 +18,8 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
   const categories = [
     { id: "all", label: "All Tools" },
     { id: "ecommerce", label: "E-Commerce & Seller" },
-    { id: "freelance", label: "Freelance & Tax" },
-    { id: "saas", label: "SaaS & AI" },
+    { id: "payments", label: "Payments & Invoicing" },
+    { id: "comparison", label: "Comparisons" },
   ];
 
   const popularCalculators = [
@@ -28,6 +28,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       title: "Etsy Fee Calculator",
       subtitle: "Calculate Etsy fees, Offsite Ads and your net profit.",
       category: "ecommerce",
+      categories: ["ecommerce"],
       href: "/tools/etsy-fee-calculator",
       icon: (
         <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#F1641E] text-white shrink-0 shadow-2xs font-serif font-black text-lg sm:text-xl select-none">
@@ -40,9 +41,10 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       title: "Shopify Fee Calculator",
       subtitle: "Calculate Shopify fees, payment processing and profit.",
       category: "ecommerce",
+      categories: ["ecommerce", "payments"],
       href: "/tools/shopify-profit-calculator",
       icon: (
-        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-white border border-zinc-150 shadow-2xs shrink-0 p-1.5 sm:p-2">
+        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-white border border-zinc-200/90 shadow-2xs shrink-0 p-1.5 sm:p-2">
           <svg viewBox="0 0 109 123" fill="none" className="size-full">
             <path d="M74.7 15.6c-.3-1.4-1.2-6.5-4.8-9.4C66.1 3.2 61.2 3 59.4 3c-.7 0-1.2.1-1.3.1-.9.2-2.3.8-3.7 2-3.1 2.8-5.3 7.8-6.4 13.9l-19.4 6c-2.3.7-2.3.9-2.6 3.1L12.5 106.6l54.8 13.4 39.8-13.4-32.4-91z" fill="#95BF47" />
             <path d="M58.1 3.1c-.7 0-1.2.1-1.3.1-.9.2-2.3.8-3.7 2-3.1 2.8-5.3 7.8-6.4 13.9l-18 5.6 15 95.3 23.6-7.9 3.4-94.6c-.3-1.4-1.2-6.5-4.8-9.4-3.8-3-8.7-3.2-10.5-3.2z" fill="#5E8E3E" />
@@ -57,6 +59,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       title: "TikTok Shop Calculator",
       subtitle: "Estimate fees, take-home profit and break-even price.",
       category: "ecommerce",
+      categories: ["ecommerce"],
       href: "/tools/tiktok-shop-fee-calculator",
       icon: (
         <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-black text-white shrink-0 shadow-2xs p-1.5 sm:p-2">
@@ -69,46 +72,11 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       ),
     },
     {
-      id: "stripe",
-      title: "Stripe Fee Calculator",
-      subtitle: "Calculate Stripe processing fees and payout.",
-      category: "freelance",
-      href: "/tools/stripe-vs-paypal-fee-calculator",
-      icon: (
-        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#635BFF] text-white shrink-0 shadow-2xs font-bold text-lg select-none">
-          S
-        </div>
-      ),
-    },
-    {
-      id: "freelance-tax",
-      title: "Freelancer Tax Calculator",
-      subtitle: "Estimate your U.S. (1099) self-employment tax and take-home income.",
-      category: "freelance",
-      href: "/tools/stripe-vs-paypal-fee-calculator",
-      icon: (
-        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-blue-600 text-white shrink-0 shadow-2xs">
-          <Calculator className="size-5" />
-        </div>
-      ),
-    },
-    {
-      id: "saas-profit",
-      title: "SaaS Profit Calculator",
-      subtitle: "Model pricing, costs and monthly profit for your SaaS.",
-      category: "saas",
-      href: "/tools/pod-profit-calculator",
-      icon: (
-        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-cyan-600 text-white shrink-0 shadow-2xs">
-          <Layers className="size-5" />
-        </div>
-      ),
-    },
-    {
       id: "pod",
       title: "Print-on-Demand (POD)",
       subtitle: "Calculate Printify base cost vs. retail markup & margin.",
       category: "ecommerce",
+      categories: ["ecommerce"],
       href: "/tools/pod-profit-calculator",
       icon: (
         <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-purple-600 text-white shrink-0 shadow-2xs">
@@ -120,11 +88,25 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       id: "comparison",
       title: "Marketplace Compare",
       subtitle: "Side-by-side fee take rates for Etsy vs. Shopify vs. TikTok.",
-      category: "ecommerce",
+      category: "comparison",
+      categories: ["ecommerce", "comparison"],
       href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator",
       icon: (
         <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-indigo-600 text-white shrink-0 shadow-2xs">
           <ArrowLeftRight className="size-5" />
+        </div>
+      ),
+    },
+    {
+      id: "stripe-paypal",
+      title: "Stripe vs. PayPal Calculator",
+      subtitle: "Compare processor fees and calculate client invoice gross-up amounts.",
+      category: "payments",
+      categories: ["payments", "comparison"],
+      href: "/tools/stripe-vs-paypal-fee-calculator",
+      icon: (
+        <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#635BFF] text-white shrink-0 shadow-2xs font-bold text-lg select-none">
+          S
         </div>
       ),
     },
@@ -162,7 +144,9 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       // Category Filter
       let matchesCat = true;
       if (activeCategory !== "all") {
-        matchesCat = item.category === activeCategory;
+        matchesCat =
+          item.category === activeCategory ||
+          (item.categories && item.categories.includes(activeCategory));
       }
 
       // Search Query Filter
@@ -182,6 +166,14 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
       {/* ===================== HERO SECTION ===================== */}
       <section className="pt-10 sm:pt-14 pb-6 text-center px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
+          {/* Trust Badges */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200/90 bg-zinc-50 px-3.5 py-1 text-xs font-semibold text-zinc-700 shadow-2xs mb-4 select-none">
+            <span className="size-2 rounded-full bg-emerald-500" />
+            <span>Updated for 2026 Fee Schedules</span>
+            <span className="text-zinc-300">•</span>
+            <span className="text-zinc-500 font-normal">Official Rates Verified</span>
+          </div>
+
           {/* Main Headline */}
           <h1 className="text-3xl sm:text-4xl md:text-[46px] font-extrabold tracking-tight text-zinc-950 leading-[1.18] max-w-2xl mx-auto">
             Calculate Fees, Profit &amp; Compare Platforms
@@ -219,8 +211,8 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
         </div>
       </section>
 
-      {/* ===================== POPULAR CALCULATORS (4 Columns x 2 Rows) ===================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-14">
+      {/* ===================== POPULAR CALCULATORS (3 Columns x 2 Rows) ===================== */}
+      <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-14 scroll-mt-20">
         {/* Header Row: Title on Left, Filter Pills on Right */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 mb-5">
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
@@ -249,8 +241,8 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
           </div>
         </div>
 
-        {/* 4 Columns x 2 Rows Clean Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* 3 Columns x 2 Rows Clean Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredPopular.map((item) => (
             <CalculatorCard
               key={item.id}
@@ -262,24 +254,29 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
           ))}
         </div>
 
-        {/* View All Button: Highlighted, Focused, rounded-lg */}
+        {/* View All Calculators Button */}
         <div className="mt-8 flex justify-center">
           <Link
-            href="/#all-tools-grid"
-            onClick={() => {
-              const el = document.getElementById("all-tools-grid");
-              if (el) el.scrollIntoView({ behavior: "smooth" });
+            href="/#tools"
+            onClick={(e) => {
+              setActiveCategory("all");
+              setSearchQuery("");
+              const el = document.getElementById("tools");
+              if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: "smooth" });
+              }
             }}
             className="group inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 text-sm font-medium shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
-            <span>View All</span>
+            <span>View All Calculators</span>
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
       </section>
 
       {/* ===================== GUIDES & RESOURCES (4 Columns) ===================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-14">
+      <section id="guides" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-14 scroll-mt-20">
         {/* Section Header */}
         <div className="mb-5">
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
@@ -300,13 +297,20 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
           ))}
         </div>
 
-        {/* View All Guides Button: Highlighted, Centered Below Cards */}
+        {/* View All Guides Button: Scrolls smoothly to #guides */}
         <div className="mt-8 flex justify-center">
           <Link
-            href="/guides/how-to-calculate-etsy-fees-2026"
+            href="/#guides"
+            onClick={(e) => {
+              const el = document.getElementById("guides");
+              if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: "smooth" });
+              }
+            }}
             className="group inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 text-sm font-medium shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
-            <span>View All</span>
+            <span>View All Guides</span>
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>

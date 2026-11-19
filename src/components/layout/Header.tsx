@@ -122,6 +122,7 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
+                      prefetch={false}
                       onClick={() => setCalcMenuOpen(false)}
                       className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors hover:bg-zinc-50 group"
                     >
@@ -135,6 +136,7 @@ export function Header() {
                 <div className="mt-1.5 pt-1.5 border-t border-zinc-100 px-2 pb-1">
                   <Link
                     href="/#all-tools-grid"
+                    prefetch={false}
                     onClick={() => setCalcMenuOpen(false)}
                     className="flex items-center justify-between text-xs font-medium text-blue-600 hover:text-blue-700 px-2 py-1 rounded transition-colors"
                   >
@@ -149,6 +151,7 @@ export function Header() {
           {/* Comparisons Link */}
           <Link
             href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator"
+            prefetch={false}
             className="text-zinc-600 hover:text-zinc-950 transition-colors"
           >
             Comparisons
@@ -157,6 +160,7 @@ export function Header() {
           {/* Guides Link */}
           <Link
             href="/guides/how-to-calculate-etsy-fees-2026"
+            prefetch={false}
             className="text-zinc-600 hover:text-zinc-950 transition-colors"
           >
             Guides
@@ -213,6 +217,7 @@ export function Header() {
                     <Link
                       key={item.href}
                       href={item.href}
+                      prefetch={false}
                       onClick={() => setMobileMenuOpen(false)}
                       className="block rounded-md px-2.5 py-1.5 text-xs text-zinc-600 hover:text-blue-600 hover:bg-zinc-50 transition-colors"
                     >
@@ -226,6 +231,7 @@ export function Header() {
             {/* Comparisons */}
             <Link
               href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator"
+              prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors"
             >
@@ -235,6 +241,7 @@ export function Header() {
             {/* Guides */}
             <Link
               href="/guides/how-to-calculate-etsy-fees-2026"
+              prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors"
             >

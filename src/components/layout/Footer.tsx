@@ -14,32 +14,32 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <Link href="/tools/etsy-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/etsy-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Etsy Fee Calculator
                 </Link>
               </li>
               <li>
-                <Link href="/tools/shopify-profit-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/shopify-profit-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Shopify & ROAS Engine
                 </Link>
               </li>
               <li>
-                <Link href="/tools/tiktok-shop-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/tiktok-shop-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   TikTok Shop Calculator
                 </Link>
               </li>
               <li>
-                <Link href="/tools/stripe-vs-paypal-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/stripe-vs-paypal-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Stripe vs PayPal
                 </Link>
               </li>
               <li>
-                <Link href="/tools/pod-profit-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/pod-profit-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Print-on-Demand Profit
                 </Link>
               </li>
               <li>
-                <Link href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Marketplace Comparison
                 </Link>
               </li>
@@ -53,27 +53,27 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <Link href="/guides/how-to-calculate-etsy-fees-2026" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/guides/how-to-calculate-etsy-fees-2026" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Etsy Fees in 2026
                 </Link>
               </li>
               <li>
-                <Link href="/guides/etsy-vs-shopify-vs-tiktok-shop-comparison" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/guides/etsy-vs-shopify-vs-tiktok-shop-comparison" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Etsy vs Shopify vs TikTok
                 </Link>
               </li>
               <li>
-                <Link href="/guides/pod-pricing-strategy-offsite-ads" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/guides/pod-pricing-strategy-offsite-ads" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   POD Pricing Strategy
                 </Link>
               </li>
               <li>
-                <Link href="/guides/pass-payment-processing-fees-to-clients" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/guides/pass-payment-processing-fees-to-clients" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Invoice Gross-Up Guide
                 </Link>
               </li>
               <li>
-                <Link href="/#fee-traps" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/#fee-traps" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Platform Fee Traps
                 </Link>
               </li>
@@ -87,32 +87,32 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
-                <Link href="/tools/etsy-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/etsy-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Etsy Marketplace
                 </Link>
               </li>
               <li>
-                <Link href="/tools/shopify-profit-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/shopify-profit-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Shopify Stores
                 </Link>
               </li>
               <li>
-                <Link href="/tools/tiktok-shop-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/tiktok-shop-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   TikTok Shop
                 </Link>
               </li>
               <li>
-                <Link href="/tools/stripe-vs-paypal-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/stripe-vs-paypal-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Stripe Payments
                 </Link>
               </li>
               <li>
-                <Link href="/tools/stripe-vs-paypal-fee-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/stripe-vs-paypal-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   PayPal Commerce
                 </Link>
               </li>
               <li>
-                <Link href="/tools/pod-profit-calculator" className="text-zinc-500 hover:text-zinc-950 transition-colors">
+                <Link href="/tools/pod-profit-calculator" prefetch={false} className="text-zinc-500 hover:text-zinc-950 transition-colors">
                   Printify POD
                 </Link>
               </li>

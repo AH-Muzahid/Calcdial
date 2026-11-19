@@ -53,8 +53,9 @@ export function MobileToolPills({ currentSlug }: MobileToolNavProps) {
             <Link
               key={t.slug}
               href={`/tools/${t.slug}`}
+              prefetch={false}
               className={cn(
-                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all select-none",
+                "inline-flex items-center gap-1.5 px-3.5 py-2 min-h-11 rounded-full text-xs font-semibold whitespace-nowrap transition-all select-none",
                 isActive
                   ? "bg-zinc-900 text-white shadow-xs font-bold ring-1 ring-zinc-900"
                   : "bg-white text-zinc-700 hover:text-zinc-950 border border-zinc-200/90 hover:bg-zinc-50"
@@ -95,7 +96,8 @@ export function MobileToolDirectory({ currentSlug }: MobileToolNavProps) {
         </div>
         <Link
           href="/#tools"
-          className="text-xs font-bold text-zinc-700 hover:text-zinc-950 transition-colors shrink-0 ml-2"
+          prefetch={false}
+          className="text-xs font-bold text-zinc-700 hover:text-zinc-950 transition-colors shrink-0 ml-2 py-2 px-1"
         >
           All &rarr;
         </Link>
@@ -114,8 +116,9 @@ export function MobileToolDirectory({ currentSlug }: MobileToolNavProps) {
                   <li key={t.slug}>
                     <Link
                       href={`/tools/${t.slug}`}
+                      prefetch={false}
                       className={cn(
-                        "flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all",
+                        "flex items-center justify-between px-3 py-2.5 min-h-11 rounded-lg text-xs transition-all",
                         isActive
                           ? "bg-zinc-100 text-zinc-950 font-bold border border-zinc-200/90 shadow-2xs"
                           : "text-zinc-700 hover:text-zinc-950 hover:bg-zinc-50 font-medium"

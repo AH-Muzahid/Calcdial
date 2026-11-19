@@ -45,9 +45,9 @@ export default async function EmbedPage({
   return (
     <div className="p-3 bg-white min-h-screen flex flex-col justify-between">
       <div>
-        <div className="flex items-center justify-between pb-2 mb-2 border-b border-gray-100">
-          <h2 className="text-sm font-bold text-gray-900">{tool.title}</h2>
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+        <div className="flex items-center justify-between pb-2 mb-2 border-b border-zinc-200/80 gap-2">
+          <h2 className="text-sm font-bold text-zinc-950 truncate">{tool.title}</h2>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-700 bg-zinc-100 px-2 py-0.5 rounded-md border border-zinc-200/60 whitespace-nowrap shrink-0">
             Free Widget
           </span>
         </div>
@@ -64,13 +64,13 @@ export default async function EmbedPage({
         )}
       </div>
 
-      <footer className="mt-4 pt-2 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-400">
+      <footer className="mt-4 pt-2 border-t border-zinc-200/80 flex items-center justify-between text-[11px] text-zinc-500">
         <span>Updated for 2026</span>
         <Link
-          href={`https://calcdial.com/tools/${tool.slug}`}
+          href={`https://calcdial.pages.dev/tools/${tool.slug}`}
           target="_blank"
           rel="noopener"
-          className="font-medium text-emerald-600 hover:underline"
+          className="font-medium text-zinc-900 hover:text-blue-600 hover:underline transition-colors"
         >
           Powered by CalcDial &rarr;
         </Link>

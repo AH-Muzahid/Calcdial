@@ -21,6 +21,7 @@ export function CalculatorCard({
   return (
     <Link
       href={href}
+      prefetch={false}
       className={`group flex items-center justify-between rounded-xl border border-zinc-200/80 bg-white px-4 py-3.5 sm:px-4.5 sm:py-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-150 hover:border-zinc-300 hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 ${className}`}
     >
       <div className="flex items-center gap-3.5 min-w-0 pr-2">

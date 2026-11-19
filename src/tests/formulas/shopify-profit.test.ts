@@ -148,5 +148,6 @@ describe("Shopify Profit & ROAS Formula", () => {
     expect(zero.netProfit).toBe(0);
     expect(zero.breakEvenRoas).toBe(0);
     expect(zero.grossMarginPct).toBe(0);
+    expect(zero.breakEvenPrice).toBe(0);
   });
 });

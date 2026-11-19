@@ -66,7 +66,7 @@ export function CustomSelect({
         aria-haspopup="listbox"
         aria-expanded={isOpen}
         className={cn(
-          "h-9 w-full flex items-center justify-between rounded-lg border border-zinc-300 bg-white px-3 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer text-left select-none",
+          "min-h-11 h-11 w-full flex items-center justify-between rounded-lg border border-zinc-300 bg-white px-3.5 text-xs sm:text-sm font-sans font-semibold text-zinc-950 shadow-2xs hover:border-zinc-400 focus:border-zinc-950 focus:outline-hidden focus:ring-1 focus:ring-zinc-950 transition-all cursor-pointer text-left select-none",
           isOpen && "border-zinc-950 ring-1 ring-zinc-950",
           className
         )}
@@ -101,7 +101,7 @@ export function CustomSelect({
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer text-xs sm:text-sm",
+                  "min-h-11 w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer text-xs sm:text-sm",
                   isSelected
                     ? "bg-zinc-100 font-bold text-zinc-950"
                     : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950"

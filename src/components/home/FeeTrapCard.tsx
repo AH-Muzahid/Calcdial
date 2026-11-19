@@ -58,6 +58,7 @@ export function FeeTrapCard({
       <div className="mt-3.5 pt-2.5 border-t border-zinc-100 flex items-center justify-between">
         <Link
           href={href}
+          prefetch={false}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-blue-600 hover:text-blue-700 transition-colors group/link"
         >
           <span>{actionText}</span>

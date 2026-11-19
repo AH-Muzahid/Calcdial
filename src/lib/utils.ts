@@ -19,6 +19,8 @@ export function formatCurrency(
   }).format(amount);
 }
 
+export const fmtUSD = (amount: number): string => formatCurrency(amount, "USD");
+
 export function formatPercent(value: number, decimals: number = 2): string {
   if (isNaN(value) || !isFinite(value)) return "0.00%";
   return `${value.toFixed(decimals)}%`;

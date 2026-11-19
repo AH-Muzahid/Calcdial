@@ -74,6 +74,7 @@ export function DesktopToolSidebar({ currentSlug }: DesktopToolSidebarProps) {
           </h4>
           <Link
             href="/#tools"
+            prefetch={false}
             className="text-[11px] font-bold text-zinc-700 hover:text-zinc-950 transition-colors"
           >
             All &rarr;
@@ -93,6 +94,7 @@ export function DesktopToolSidebar({ currentSlug }: DesktopToolSidebarProps) {
                     <li key={t.slug}>
                       <Link
                         href={`/tools/${t.slug}`}
+                        prefetch={false}
                         className={cn(
                           "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs transition-all",
                           isActive

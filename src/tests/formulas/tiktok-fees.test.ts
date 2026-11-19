@@ -15,8 +15,9 @@ describe("TikTok Shop Fee Formula", () => {
     expect(result.referralFee).toBe(1.20);
     expect(result.affiliateCommission).toBe(2.00);
     expect(result.flatTransactionFee).toBe(0.30);
-    expect(result.netPayout).toBe(16.50);
-    expect(result.netProfit).toBe(9.50);
+    expect(result.paymentProcessingFee).toBe(0.66);
+    expect(result.netPayout).toBe(16.14);
+    expect(result.netProfit).toBe(9.14);
     expect(result.breakEvenPrice).toBeGreaterThan(0);
   });
 
