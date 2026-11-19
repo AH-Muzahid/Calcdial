@@ -41,11 +41,11 @@ export function EmailCapture({
   return (
     <div
       className={cn(
-        "relative rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-7 shadow-xs print:hidden font-sans my-6",
+        "relative rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs print:hidden font-sans my-6",
         className
       )}
     >
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-5 lg:gap-8">
         {/* Left Side: Editorial & Subscription Form */}
         <div className="w-full lg:max-w-xl text-left">
           {/* Main Headline */}
@@ -102,17 +102,17 @@ export function EmailCapture({
           </div>
         </div>
 
-        {/* Right Side: 3D Robot Sprite with Full Motion Tracking & Zero Clipping */}
+        {/* Right Side: 3D Robot Sprite - Maximized inside natural row height without inflating main div */}
         <div className="relative flex items-center justify-center shrink-0 w-full lg:w-auto self-center">
-          <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-60 lg:h-60 flex items-center justify-center">
+          <div className="relative size-32 sm:size-36 lg:size-40 flex items-center justify-center">
             <CobaltSprite
               transparent
               background="transparent"
               follow="page"
-              scale={120}
-              reach={10}
-              lean={8}
-              float={6}
+              scale={135}
+              reach={7}
+              lean={5}
+              float={3}
               blink={10}
             />
           </div>
