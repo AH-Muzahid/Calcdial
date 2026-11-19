@@ -6,7 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { FormulaBreakdown } from "@/components/seo/FormulaBreakdown";
 import { WorkedExample } from "@/components/seo/WorkedExample";
 import { FAQAccordion } from "@/components/seo/FAQAccordion";
-import { RelatedTools } from "@/components/seo/RelatedTools";
+import { RelatedTools, RelatedGuides } from "@/components/seo/RelatedTools";
 import { AdSlot } from "@/components/layout/AdSlot";
 import { AffiliateCallout } from "@/components/layout/AffiliateCallout";
 import { EmailCapture } from "@/components/layout/EmailCapture";
@@ -245,23 +245,25 @@ export default async function ToolPage({
             />
           </section>
 
-          {/* SECTION 5: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
+          {/* SECTION 5: Related Calculators (Compact minimal pills directly below formula & examples) */}
+          <RelatedTools relatedToolSlugs={tool.relatedTools} />
+
+          {/* SECTION 6: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
           <FeeScheduleTable toolSlug={tool.slug} />
 
-          {/* SECTION 6: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
+          {/* SECTION 7: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
           <InDepthGuide toolSlug={tool.slug} />
 
-          {/* SECTION 7: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
+          {/* SECTION 8: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
           <AdSlot position="in-content" />
 
-          {/* SECTION 8: FAQ Accordion + JSON-LD Schema */}
+          {/* SECTION 9: FAQ Accordion + JSON-LD Schema */}
           <FAQAccordion faqs={tool.faqs} />
 
-          {/* SECTION 9: Related Calculators & Guides Internal Links */}
-          <RelatedTools
-            relatedToolSlugs={tool.relatedTools}
-            relatedGuideSlugs={tool.relatedGuides}
-          />
+          {/* SECTION 10: Related Seller Guides (Clean minimal pills at the bottom) */}
+          {tool.relatedGuides && tool.relatedGuides.length > 0 && (
+            <RelatedGuides guideSlugs={tool.relatedGuides} />
+          )}
         </div>
 
         {/* Right Desktop Sticky Sidebar (Visible on lg and above) */}

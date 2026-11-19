@@ -1,92 +1,71 @@
 import Link from "next/link";
 import { getToolBySlug, getGuideBySlug } from "@/data/tools-registry";
-import { ToolIcon } from "@/components/common/ToolIcons";
 import { ArrowRight, BookOpen } from "lucide-react";
 
 interface RelatedToolsProps {
   relatedToolSlugs: string[];
-  relatedGuideSlugs: string[];
+  relatedGuideSlugs?: string[];
 }
 
-export function RelatedTools({ relatedToolSlugs, relatedGuideSlugs }: RelatedToolsProps) {
+export function RelatedTools({ relatedToolSlugs }: RelatedToolsProps) {
   const tools = relatedToolSlugs.map((slug) => getToolBySlug(slug)).filter(Boolean);
-  const guides = relatedGuideSlugs.map((slug) => getGuideBySlug(slug)).filter(Boolean);
 
-  if (tools.length === 0 && guides.length === 0) return null;
+  if (tools.length === 0) return null;
 
   return (
-    <section className="my-8 pt-6 border-t border-zinc-200 print:hidden">
-      {/* Section Header - Clean, No outer card, No arbitrary badges */}
-      <div className="pb-3">
-        <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-zinc-950">
-          Related Calculators &amp; Seller Guides
-        </h2>
-        <p className="mt-0.5 text-xs text-zinc-600">
-          Cross-check your margins on competing platforms and learn fee reduction strategies.
-        </p>
+    <section className="my-5 pt-4 border-t border-zinc-200/70 print:hidden font-sans">
+      <div className="flex items-center justify-between mb-2.5">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+          Related Calculators
+        </h3>
+        <span className="text-[11px] text-zinc-400 font-normal">
+          Cross-check fees
+        </span>
       </div>
 
-      {/* Recommended Calculators Grid */}
-      {tools.length > 0 && (
-        <div className="mt-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {tools.map((t) => (
-              <Link
-                key={t!.slug}
-                href={`/tools/${t!.slug}`}
-                prefetch={false}
-                className="group flex items-center justify-between gap-3 rounded-xl border border-zinc-200/90 bg-white p-3 shadow-2xs hover:border-zinc-950 hover:shadow-xs transition-all"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <ToolIcon slug={t!.slug} size="sm" />
-                  <div className="min-w-0 flex-1">
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors truncate">
-                      {t!.title}
-                    </h3>
-                    <p className="text-[11px] text-zinc-500 truncate mt-0.5">
-                      {t!.shortDescription}
-                    </p>
-                  </div>
-                </div>
-                <ArrowRight className="size-4 shrink-0 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Ultra-compact, Icon-Free Minimal Pills */}
+      <div className="flex flex-wrap gap-2">
+        {tools.map((t) => (
+          <Link
+            key={t!.slug}
+            href={`/tools/${t!.slug}`}
+            prefetch={false}
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-zinc-200/85 bg-zinc-50/70 hover:bg-white hover:border-[#2b5cfd] px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:text-[#2b5cfd] shadow-2xs hover:shadow-xs transition-all"
+          >
+            <span>{t!.title}</span>
+            <ArrowRight className="size-3 text-zinc-400 group-hover:text-[#2b5cfd] group-hover:translate-x-0.5 transition-all" />
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
 
-      {/* In-Depth Guides Grid */}
-      {guides.length > 0 && (
-        <div className="mt-4 pt-4 border-t border-zinc-100">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {guides.map((g) => (
-              <Link
-                key={g!.slug}
-                href={`/guides/${g!.slug}`}
-                prefetch={false}
-                className="group flex items-center justify-between gap-3 rounded-xl border border-zinc-200/90 bg-white p-3 shadow-2xs hover:border-zinc-950 hover:shadow-xs transition-all"
-              >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="size-8 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-700 shrink-0">
-                    <BookOpen className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5 text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
-                      <span>Guide</span>
-                      <span>•</span>
-                      <span>{g!.estimatedReadMinutes} min read</span>
-                    </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors truncate mt-0.5">
-                      {g!.title}
-                    </h3>
-                  </div>
-                </div>
-                <ArrowRight className="size-4 shrink-0 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+export function RelatedGuides({ guideSlugs }: { guideSlugs: string[] }) {
+  const guides = guideSlugs.map((slug) => getGuideBySlug(slug)).filter(Boolean);
+  if (guides.length === 0) return null;
+
+  return (
+    <section className="my-6 pt-5 border-t border-zinc-200/70 print:hidden font-sans">
+      <div className="flex items-center justify-between mb-2.5">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500">
+          Related Seller Guides
+        </h3>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {guides.map((g) => (
+          <Link
+            key={g!.slug}
+            href={`/guides/${g!.slug}`}
+            prefetch={false}
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-zinc-200/85 bg-white hover:border-zinc-900 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:text-zinc-950 shadow-2xs transition-all"
+          >
+            <BookOpen className="size-3 text-zinc-400 group-hover:text-zinc-950" />
+            <span>{g!.title}</span>
+            <ArrowRight className="size-3 text-zinc-400 group-hover:translate-x-0.5 transition-all" />
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }
