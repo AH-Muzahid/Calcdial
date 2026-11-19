@@ -95,7 +95,7 @@ export function ShopifyInDepthGuide() {
 
             <li className="space-y-1">
               <div className="text-sm font-bold text-zinc-950">
-                Trap C: The "Blended ROAS" Fallacy on Meta &amp; TikTok Ads
+                Trap C: The &ldquo;Blended ROAS&rdquo; Fallacy on Meta &amp; TikTok Ads
               </div>
               <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed">
                 Evaluating ad performance using account-wide blended ROAS instead of calculating SKU-level break-even thresholds is the primary reason scaling brands burn cash. If a product has a 55% gross margin, any ad campaign generating lower than 1.82x ROAS is directly losing money on every single sale.
@@ -134,7 +134,7 @@ export function ShopifyInDepthGuide() {
                 Rule 2: Free Shipping Thresholds &amp; AOV Bundling
               </h4>
               <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed">
-                Because credit card processors deduct a fixed 30¢ on every transaction, low-ticket orders ($15 to $20) suffer disproportionately. Setting a free shipping threshold 20% to 30% above your median average order value (e.g. "$65 Free Shipping") encourages multi-item carts, dilutes fixed fees, and increases cash profit per order.
+                Because credit card processors deduct a fixed 30¢ on every transaction, low-ticket orders ($15 to $20) suffer disproportionately. Setting a free shipping threshold 20% to 30% above your median average order value (e.g. &ldquo;$65 Free Shipping&rdquo;) encourages multi-item carts, dilutes fixed fees, and increases cash profit per order.
               </p>
             </div>
 

@@ -1,31 +1,14 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
-import Link from "next/link";
-import { Search, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
-import { ToolConfig } from "@/data/tools-registry";
+import React, { useState, useMemo } from "react";
+import { Search, Shirt, ArrowLeftRight } from "lucide-react";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
 import { HeroShowcaseCard } from "./HeroShowcaseCard";
 import { PixelButton } from "@/components/ui/PixelButton";
 import { AdSlot } from "@/components/layout/AdSlot";
 
-interface ToolsDirectoryProps {
-  tools: ToolConfig[];
-}
-
-export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = [
-    { id: "all", label: "All Tools" },
-    { id: "ecommerce", label: "E-Commerce & Seller" },
-    { id: "payments", label: "Payments & Invoicing" },
-    { id: "comparison", label: "Comparisons" },
-  ];
-
-  const popularCalculators = [
+const POPULAR_CALCULATORS = [
     {
       id: "etsy",
       title: "Etsy Fee Calculator",
@@ -115,7 +98,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
     },
   ];
 
-  const guides = [
+  const GUIDES = [
     {
       slug: "how-to-calculate-etsy-fees-2026",
       title: "Etsy Fees Explained (2026 Guide)",
@@ -142,8 +125,19 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
     },
   ];
 
+export function ToolsDirectory() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const categories = [
+    { id: "all", label: "All Tools" },
+    { id: "ecommerce", label: "E-Commerce & Seller" },
+    { id: "payments", label: "Payments & Invoicing" },
+    { id: "comparison", label: "Comparisons" },
+  ];
+
   const filteredPopular = useMemo(() => {
-    return popularCalculators.filter((item) => {
+    return POPULAR_CALCULATORS.filter((item) => {
       // Category Filter
       let matchesCat = true;
       if (activeCategory !== "all") {
@@ -162,7 +156,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
 
       return matchesCat && matchesSearch;
     });
-  }, [popularCalculators, activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery]);
 
   return (
     <div className="w-full">
@@ -327,7 +321,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
 
         {/* 4 Columns Grid using Reusable GuideCard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 sm:gap-5">
-          {guides.map((guide) => (
+          {GUIDES.map((guide) => (
             <GuideCard
               key={guide.slug}
               slug={guide.slug}

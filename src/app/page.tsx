@@ -1,7 +1,5 @@
-import { TOOLS } from "@/data/tools-registry";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { EmailCapture } from "@/components/layout/EmailCapture";
-import { AdSlot } from "@/components/layout/AdSlot";
 import { ToolsDirectory } from "@/components/home/ToolsDirectory";
 import { FeeTrapCard } from "@/components/home/FeeTrapCard";
 
@@ -87,7 +85,7 @@ export default function HomePage() {
       <JsonLd data={organizationSchema} />
 
       {/* Directory Search, Hero Banner & Filterable Calculator Grid + Guides */}
-      <ToolsDirectory tools={TOOLS} />
+      <ToolsDirectory />
 
       <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         {/* Fintech Insights: Hidden Platform Fee Traps (High SEO Value & Authority) */}

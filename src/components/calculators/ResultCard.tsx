@@ -23,10 +23,6 @@ export interface ResultCardProps {
   marginPct?: number;
   roiPct?: number;
   breakdown: BreakdownItem[];
-  currencySymbol?: string;
-  currentTool?: string;
-  toolPrice?: number;
-  toolCost?: number;
 }
 
 export function ResultCard({
@@ -41,10 +37,6 @@ export function ResultCard({
   marginPct,
   roiPct,
   breakdown,
-  currencySymbol = "$",
-  currentTool,
-  toolPrice,
-  toolCost,
 }: ResultCardProps) {
   const [copied, setCopied] = useState(false);
 

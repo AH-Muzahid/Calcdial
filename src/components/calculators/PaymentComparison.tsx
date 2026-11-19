@@ -20,10 +20,6 @@ import {
   ChevronUp,
   TrendingUp,
   CreditCard,
-  Globe,
-  ArrowRight,
-  ShieldCheck,
-  Info,
 } from "lucide-react";
 
 export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {

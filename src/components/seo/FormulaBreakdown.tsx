@@ -191,6 +191,8 @@ export function FormulaBreakdown({
   // If data-driven config is provided, render directly from it
   const formulaHtml = config?.primaryFormula
     ? formatFormula(config.primaryFormula, "text-emerald-700")
+    : formulaMarkdown
+    ? formatFormula(formulaMarkdown.replace(/`/g, ""), "text-emerald-700")
     : TOOL_METHODOLOGIES[toolSlug]?.formulaHtml || (
         <span>
           <span className="text-emerald-700 font-extrabold">Net Profit</span> = Revenue − (Direct Costs + Platform Fees)
@@ -217,6 +219,7 @@ export function FormulaBreakdown({
       {/* Header with Accordion Toggle */}
       <button
         type="button"
+        aria-label={`Formula and methodology for ${toolTitle}`}
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 text-left hover:bg-zinc-50 transition-colors cursor-pointer"
       >

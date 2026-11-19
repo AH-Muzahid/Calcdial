@@ -128,7 +128,7 @@ export function MarketplaceInDepthGuide() {
         {/* SECTION 4: The 2026 Hybrid Playbook */}
         <section className="mt-10 max-w-3xl space-y-4">
           <h3 className="text-lg sm:text-xl font-bold text-zinc-950 tracking-tight">
-            4. The Multi-Channel "Hub &amp; Spoke" Playbook for Maximum Margin
+            4. The Multi-Channel &ldquo;Hub &amp; Spoke&rdquo; Playbook for Maximum Margin
           </h3>
           <p className="text-sm text-zinc-800 leading-relaxed">
             The most profitable modern brands do not choose just one channel; they deploy a disciplined multi-channel funnel:

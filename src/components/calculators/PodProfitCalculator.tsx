@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { calculatePodProfit } from "@/lib/formulas/pod-profit";
 import { POD_ITEM_PRESETS } from "@/data/fee-presets";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
@@ -43,13 +43,6 @@ const CHANNEL_OPTIONS: CustomSelectOption[] = [
 type SalesChannel = "etsy" | "shopify" | "tiktok" | "ebay";
 
 const PRESETS = [22, 29.99, 34.99, 45, 60, 80];
-
-const formatAmount = (val: number) => {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(val);
-};
 
 export function PodProfitCalculator({
   initialProduct = "t-shirts",

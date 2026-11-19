@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { calculateTikTokFees } from "@/lib/formulas/tiktok-fees";
 import { TIKTOK_CATEGORY_PRESETS } from "@/data/fee-presets";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
@@ -42,13 +42,6 @@ const categoryOptions: CustomSelectOption[] = TIKTOK_CATEGORY_PRESETS.map((p) =>
 
 const PRESETS = [20, 30, 45, 60, 85, 120];
 const AFFILIATE_PRESETS = [0, 10, 15, 20];
-
-const formatAmount = (val: number) => {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(val);
-};
 
 export function TikTokFeeCalculator({
   initialCategory = "beauty",

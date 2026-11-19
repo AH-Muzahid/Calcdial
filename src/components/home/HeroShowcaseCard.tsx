@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Link from "next/link";
 import { PixelLink } from "@/components/ui/PixelButton";
 import { cn } from "@/lib/utils";
 
@@ -120,7 +119,7 @@ export function HeroShowcaseCard() {
     setExtraToggle(false);
   };
 
-  const { totalFees, netProfit, marginPct, payout, feeDetails } = useMemo(() => {
+  const { totalFees, netProfit, marginPct, payout } = useMemo(() => {
     return platform.calc(price, cost, extraToggle);
   }, [platform, price, cost, extraToggle]);
 

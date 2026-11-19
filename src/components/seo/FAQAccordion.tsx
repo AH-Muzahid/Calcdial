@@ -7,10 +7,10 @@ import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
 export function FAQAccordion({ faqs }: { faqs: FAQItem[] }) {
-  if (!faqs || faqs.length === 0) return null;
-
   // First item open by default for immediate value & zero CLS
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  if (!faqs || faqs.length === 0) return null;
 
   const toggle = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { calculateEtsyFees, calculateReverseEtsyPrice } from "@/lib/formulas/etsy-fees";
-import { formatCurrency, formatPercent, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { StickyResultBar } from "./StickyResultBar";
 import { CustomSelect } from "@/components/common/CustomSelect";
 import { ChevronDown, ChevronUp, Copy, Check, RotateCcw, ArrowRight } from "lucide-react";
@@ -79,7 +79,6 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
 
   const [adsTier, setAdsTier] = useState<0.15 | 0.12>(0.15);
   const [applySalesTax, setApplySalesTax] = useState<boolean>(false);
-  const [salesTaxPct, setSalesTaxPct] = useState<number>(7.5);
   const [quantity, setQuantity] = useState<number>(1);
   const [isInternational, setIsInternational] = useState<boolean>(false);
 
@@ -144,8 +143,6 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
     offsiteAds,
     adsTier,
     isInternational,
-    applySalesTax,
-    salesTaxPct,
     isZeroInput,
   ]);
 

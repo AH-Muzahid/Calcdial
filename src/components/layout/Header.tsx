@@ -72,13 +72,11 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileCalcOpen, setMobileCalcOpen] = useState(false);
   const [scrollState, setScrollState] = useState<"top" | "dark-scrolled" | "light">("top");
+  const effectiveScrollState = !isHome ? "light" : scrollState;
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isHome) {
-      setScrollState("light");
-      return;
-    }
+    if (!isHome) return;
 
     const handleScroll = () => {
       const y = window.scrollY;
@@ -112,15 +110,15 @@ export function Header() {
     }
   };
 
-  const isDarkNavbar = scrollState !== "light";
+  const isDarkNavbar = effectiveScrollState !== "light";
 
   return (
     <header
       className={cn(
         "fixed top-0 left-0 z-50 w-full transition-all duration-300",
-        scrollState === "top" && "bg-transparent border-b border-transparent text-white",
-        scrollState === "dark-scrolled" && "bg-[#010918]/85 backdrop-blur-md border-b border-white/10 text-white shadow-sm",
-        scrollState === "light" && "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-950 shadow-xs"
+        effectiveScrollState === "top" && "bg-transparent border-b border-transparent text-white",
+        effectiveScrollState === "dark-scrolled" && "bg-[#010918]/85 backdrop-blur-md border-b border-white/10 text-white shadow-sm",
+        effectiveScrollState === "light" && "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-950 shadow-xs"
       )}
     >
       <div className="relative mx-auto flex h-14 sm:h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Link2, Printer, Code, Check } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { EmbedModal } from "./EmbedModal";
 
 interface ActionButtonsProps {
   toolSlug: string;

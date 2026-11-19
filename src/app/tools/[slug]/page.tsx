@@ -10,12 +10,10 @@ import { RelatedTools } from "@/components/seo/RelatedTools";
 import { AdSlot } from "@/components/layout/AdSlot";
 import { AffiliateCallout } from "@/components/layout/AffiliateCallout";
 import { EmailCapture } from "@/components/layout/EmailCapture";
-import { ShimmerText } from "@/components/motion/shimmer-text";
 import { ActionButtons } from "@/components/layout/ActionButtons";
 import { DesktopToolSidebar } from "@/components/layout/DesktopToolSidebar";
 import { FeeScheduleTable } from "@/components/seo/FeeScheduleTable";
 import { InDepthGuide } from "@/components/seo/InDepthGuide";
-import { formatDate } from "@/lib/utils";
 
 // Calculators
 import { EtsyFeeCalculator } from "@/components/calculators/EtsyFeeCalculator";
