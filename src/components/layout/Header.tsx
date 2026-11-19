@@ -2,8 +2,10 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Search, Menu, X, ChevronDown, ShoppingBag, Video, Shirt, ArrowLeftRight, CreditCard, ArrowRight } from "lucide-react";
 import { CalcDialLogo } from "./CalcDialLogo";
+import { cn } from "@/lib/utils";
 
 const NAV_CALCULATORS = [
   {
@@ -63,10 +65,36 @@ const NAV_CALCULATORS = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   const [calcMenuOpen, setCalcMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileCalcOpen, setMobileCalcOpen] = useState(false);
+  const [scrollState, setScrollState] = useState<"top" | "dark-scrolled" | "light">("top");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isHome) {
+      setScrollState("light");
+      return;
+    }
+
+    const handleScroll = () => {
+      const y = window.scrollY;
+      if (y <= 20) {
+        setScrollState("top");
+      } else if (y <= 380) {
+        setScrollState("dark-scrolled");
+      } else {
+        setScrollState("light");
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -84,30 +112,53 @@ export function Header() {
     }
   };
 
+  const isDarkNavbar = scrollState !== "light";
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-zinc-200/70 bg-white/90 backdrop-blur-md">
-      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header
+      className={cn(
+        "fixed top-0 left-0 z-50 w-full transition-all duration-300",
+        scrollState === "top" && "bg-transparent border-b border-transparent text-white",
+        scrollState === "dark-scrolled" && "bg-[#010918]/85 backdrop-blur-md border-b border-white/10 text-white shadow-sm",
+        scrollState === "light" && "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-950 shadow-xs"
+      )}
+    >
+      <div className="relative mx-auto flex h-14 sm:h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand Logo */}
         <div className="flex items-center">
-          <CalcDialLogo />
+          <CalcDialLogo isDark={isDarkNavbar} />
         </div>
 
         {/* Center: Desktop Navigation Links (Centrally Aligned in Navbar) */}
-        <nav className="hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center gap-8 text-[14px] font-medium text-zinc-600">
+        <nav
+          className={cn(
+            "hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center gap-8 text-[14px] font-medium transition-colors",
+            isDarkNavbar ? "text-white/80" : "text-zinc-600"
+          )}
+        >
           {/* Calculators Dropdown */}
           <div className="relative flex items-center h-full" ref={dropdownRef}>
             <button
               type="button"
               onClick={() => setCalcMenuOpen(!calcMenuOpen)}
-              className={`flex items-center gap-1.5 py-1 transition-colors cursor-pointer ${
-                calcMenuOpen ? "text-zinc-950 font-semibold" : "text-zinc-600 hover:text-zinc-950"
-              }`}
+              className={cn(
+                "flex items-center gap-1.5 py-1 transition-colors cursor-pointer",
+                isDarkNavbar
+                  ? calcMenuOpen
+                    ? "text-white font-semibold"
+                    : "text-white/80 hover:text-white"
+                  : calcMenuOpen
+                  ? "text-zinc-950 font-semibold"
+                  : "text-zinc-600 hover:text-zinc-950"
+              )}
             >
               <span>Calculators</span>
               <ChevronDown
-                className={`size-3.5 text-zinc-400 transition-transform duration-200 ${
-                  calcMenuOpen ? "rotate-180 text-zinc-900" : ""
-                }`}
+                className={cn(
+                  "size-3.5 transition-transform duration-200",
+                  isDarkNavbar ? "text-white/60 group-hover:text-white" : "text-zinc-400",
+                  calcMenuOpen ? "rotate-180 text-blue-500" : ""
+                )}
               />
             </button>
 
@@ -152,7 +203,10 @@ export function Header() {
           <Link
             href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator"
             prefetch={false}
-            className="text-zinc-600 hover:text-zinc-950 transition-colors"
+            className={cn(
+              "transition-colors",
+              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950"
+            )}
           >
             Comparisons
           </Link>
@@ -161,33 +215,45 @@ export function Header() {
           <Link
             href="/guides/how-to-calculate-etsy-fees-2026"
             prefetch={false}
-            className="text-zinc-600 hover:text-zinc-950 transition-colors"
+            className={cn(
+              "transition-colors",
+              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950"
+            )}
           >
             Guides
           </Link>
         </nav>
 
-        {/* Right Actions: Precise Search Icon Button & Mobile Toggle */}
-        <div className="flex items-center gap-2.5">
-          {/* Precise Search Icon Button (opens ⌘K command menu) */}
+        {/* Right Actions: Minimalist Ghost Icon Buttons */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Minimal Search Icon Button (No Box, No Border, Pure Icon) */}
           <button
             type="button"
             onClick={triggerGlobalSearch}
-            className="flex size-9 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50 hover:border-zinc-300 shadow-2xs transition-all cursor-pointer"
-            aria-label="Search calculators (⌘K)"
-            title="Search calculators (⌘K)"
+            className={cn(
+              "flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              isDarkNavbar
+                ? "text-white/80 hover:text-white hover:bg-white/10"
+                : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
+            )}
+            aria-label="Search calculators"
           >
-            <Search className="size-4" />
+            <Search className="size-5" />
           </button>
 
-          {/* Mobile Hamburger Toggle */}
+          {/* Mobile Menu Toggle (Pure Icon, No Border, No Background) */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="flex md:hidden size-9 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-600 hover:text-zinc-950 hover:bg-zinc-50 transition-colors cursor-pointer"
+            className={cn(
+              "flex md:hidden items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              isDarkNavbar
+                ? "text-white/80 hover:text-white hover:bg-white/10"
+                : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
+            )}
             aria-label="Toggle navigation"
           >
-            {mobileMenuOpen ? <X className="size-4.5" /> : <Menu className="size-4.5" />}
+            {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </div>

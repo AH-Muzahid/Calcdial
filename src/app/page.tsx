@@ -89,25 +89,22 @@ export default function HomePage() {
       {/* Directory Search, Hero Banner & Filterable Calculator Grid + Guides */}
       <ToolsDirectory tools={TOOLS} />
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        {/* Ad Placement */}
-        <AdSlot position="in-content" />
-
+      <div className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         {/* Fintech Insights: Hidden Platform Fee Traps (High SEO Value & Authority) */}
-        <section className="my-14 sm:my-16">
-          <div className="mb-6 sm:mb-8 pb-3 border-b border-zinc-100">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 block mb-0.5">
+        <section className="mb-20 sm:mb-24">
+          <div className="mb-6 pb-4 border-b border-zinc-200/70">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 block mb-1">
               Margin Protections
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
+            <h2 className="text-2xl sm:text-3xl font-medium tracking-[-0.8px] text-zinc-950 font-sans">
               Hidden Platform Fee Traps
             </h2>
-            <p className="mt-0.5 text-xs sm:text-sm text-zinc-500 font-normal">
+            <p className="mt-1 text-xs sm:text-sm text-zinc-500 font-normal max-w-xl">
               Critical fee nuances and stealth deductions to watch before pricing your items.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-stretch">
             {FEE_TRAPS.map((trap) => (
               <FeeTrapCard key={trap.platform} {...trap} />
             ))}
@@ -115,7 +112,7 @@ export default function HomePage() {
         </section>
 
         {/* Email Capture Newsletter */}
-        <section className="my-14 sm:my-16">
+        <section className="mb-14 sm:mb-16">
           <EmailCapture source="homepage" />
         </section>
       </div>

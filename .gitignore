@@ -49,3 +49,6 @@ next-env.d.ts
 # agents skills node_modules
 .agents/**/node_modules
 .agents/**/dist
+
+# scratch / temp inspection files
+scratch/

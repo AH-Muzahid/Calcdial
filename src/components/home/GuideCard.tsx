@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { Clock } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface GuideCardProps {
   slug: string;
@@ -21,10 +22,16 @@ export function GuideCard({
     <Link
       href={`/guides/${slug}`}
       prefetch={false}
-      className={`group flex flex-col rounded-xl border border-zinc-200/80 bg-white overflow-hidden shadow-[0_1px_2px_rgba(0,0,0,0.03)] transition-all duration-150 hover:border-zinc-300 hover:shadow-[0_6px_16px_rgba(0,0,0,0.05)] hover:-translate-y-0.5 ${className}`}
+      className={cn(
+        "group relative isolate flex flex-col rounded-xl border border-zinc-200/80 bg-white overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.03)] select-none transform-gpu",
+        "transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+        "hover:-translate-y-1 hover:border-blue-400/50 hover:shadow-[0_14px_34px_-8px_rgba(43,92,253,0.12),0_2px_8px_rgba(0,0,0,0.03)]",
+        className
+      )}
     >
       {/* Visual Thumbnail Banner */}
       <div className="h-40 w-full relative overflow-hidden bg-[#f4f2ee] flex items-center justify-center select-none border-b border-zinc-100">
+        <div className="size-full transition-transform duration-500 ease-out group-hover:scale-105">
         {type === "etsy" && (
           <div className="w-full h-full bg-gradient-to-br from-[#faf7f2] via-[#f3ede3] to-[#e8dfd2] relative flex items-center justify-center">
             {/* Potted Plant Accent Left */}
@@ -136,16 +143,23 @@ export function GuideCard({
             <div className="absolute right-7 bottom-4 w-1.5 h-20 bg-gradient-to-b from-zinc-800 via-zinc-600 to-amber-500 rounded-full shadow-sm rotate-12" />
           </div>
         )}
+        </div>
       </div>
 
       {/* Guide Card Footer Info */}
-      <div className="p-4 flex flex-col flex-1 justify-between bg-white">
-        <h3 className="font-semibold text-[14px] sm:text-[15px] text-zinc-900 group-hover:text-blue-600 transition-colors leading-snug line-clamp-2">
+      <div className="p-4 sm:p-4.5 flex flex-col flex-1 justify-between bg-white">
+        <h3 className="font-bold text-[15px] sm:text-[16px] text-zinc-950 group-hover:text-[#2b5cfd] transition-colors duration-200 leading-snug line-clamp-2">
           {title}
         </h3>
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400 font-normal">
-          <Clock className="size-3.5 text-zinc-400" />
-          <span>{readTime}</span>
+        <div className="mt-3.5 pt-2.5 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500 font-normal">
+          <div className="flex items-center gap-1.5 text-zinc-400">
+            <Clock className="size-3.5 text-zinc-400" />
+            <span>{readTime}</span>
+          </div>
+          <span className="flex items-center gap-1 text-[12px] font-bold text-[#2b5cfd] opacity-90 group-hover:opacity-100 transition-all group-hover:translate-x-0.5">
+            Read Guide
+            <ArrowRight className="size-3 stroke-[2.2]" />
+          </span>
         </div>
       </div>
     </Link>

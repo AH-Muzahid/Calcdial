@@ -87,4 +87,5 @@ Never jump straight into writing frontend code without verifying calculations an
 1. **Pure Calculation Engine:** UI components in `src/components/calculators/` must never contain raw calculation math. Math belongs in `src/lib/` and must be covered by unit tests in `vitest`.
 2. **Next.js 16 App Router Compliance:** Read documentation from `node_modules/next/dist/docs/` before implementing server actions or metadata handlers.
 3. **No Unreviewed Deployments:** Every PR or release slice must pass `/gstack-review` and `/gstack-qa` before deployment to Cloudflare or Vercel.
+4. **Design Token Compliance:** All pages, calculators, cards, and buttons must strictly adhere to `DESIGN.md` (Roobert typography, `#010918` cosmic header, `#2b5cfd` pixel buttons, `rounded-xl` border radii). Never introduce conflicting styles or generic AI-generated layouts.
 

@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Search, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { ToolConfig } from "@/data/tools-registry";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
 import { HeroShowcaseCard } from "./HeroShowcaseCard";
+import { PixelButton } from "@/components/ui/PixelButton";
+import { AdSlot } from "@/components/layout/AdSlot";
 
 interface ToolsDirectoryProps {
   tools: ToolConfig[];
@@ -164,68 +166,106 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
 
   return (
     <div className="w-full">
-      {/* ===================== HERO SECTION ===================== */}
-      <section className="pt-10 sm:pt-14 pb-4 text-center px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Trust Badge (Mobile Safe, Single Line) */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200/90 bg-zinc-50 px-3.5 py-1 text-xs font-semibold text-zinc-700 shadow-2xs mb-4 select-none">
-            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Official Rates Verified</span>
+      {/* ===================== HERO SECTION (MindCloud Authentic Radiant Blue Atmosphere) ===================== */}
+      <section 
+        className="pt-28 sm:pt-36 pb-24 sm:pb-32 text-center px-4 sm:px-6 min-h-[660px] sm:min-h-[720px] flex flex-col justify-center items-center relative overflow-hidden" 
+        style={{
+          backgroundColor: "#010918",
+          backgroundImage: `radial-gradient(ellipse 100% 60% at 50% 50%, rgba(22, 104, 254, 0.95) 0%, rgba(0, 50, 180, 0.45) 45%, transparent 75%), radial-gradient(ellipse 80% 35% at 50% 75%, rgba(255, 255, 255, 0.45) 0%, transparent 65%), linear-gradient(180deg, #010918 0%, #02123b 16%, #003294 34%, #0056ec 50%, #1a6efc 64%, #5ea2ff 78%, #b8d7ff 88%, #f2f7ff 95%, #ffffff 100%)`,
+          backgroundRepeat: "no-repeat",
+        }}
+        data-header-over-dark="true"
+      >
+        {/* MindCloud Authentic Background Flared Conic Light Shape */}
+        <div className="hero-background-shape" aria-hidden="true">
+          <svg viewBox="0 0 1440 850" fill="none" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#heroBackgroundShapeFilter)" style={{ mixBlendMode: "plus-lighter" }}>
+              <path d="M774.33 0C774.33 456.393 1186.78 682.164 1393 738H47C253.223 682.164 665.67 456.393 665.67 0H774.33Z" fill="url(#heroBackgroundShapeGradient)" fillOpacity="0.12" />
+            </g>
+            <defs>
+              <filter id="heroBackgroundShapeFilter" x="-65" y="-112" width="1570" height="962" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+                <feFlood floodOpacity="0" result="BackgroundImageFix" />
+                <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+                <feGaussianBlur stdDeviation="56" result="effect1_foregroundBlur" />
+              </filter>
+              <linearGradient id="heroBackgroundShapeGradient" x1="232.075" y1="100.869" x2="232.075" y2="735.916" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#4D90FD" stopOpacity="0" />
+                <stop offset="0.25" stopColor="#4D90FD" />
+                <stop offset="0.509615" stopColor="#76D0F4" />
+                <stop offset="0.759615" stopColor="#FF2C2C" />
+                <stop offset="1" stopColor="#FFE4D7" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <div className="max-w-3xl mx-auto relative z-10 w-full">
+          {/* Glassmorphic Pill Trust Badge (MindCloud Authentic Glow + Appearing Animation) */}
+          <div className="hero-mindcloud-badge animate-hero-badge mb-6 select-none cursor-default">
+            <span className="size-2 rounded-full bg-emerald-400 animate-pulse relative z-10" />
+            <span className="relative z-10 opacity-90 text-[11px] sm:text-xs text-white">Official Rates Verified</span>
+            <span className="w-px h-3.5 bg-white/20 relative z-10" />
+            <span className="relative z-10 text-blue-200 font-semibold text-[11px] sm:text-xs">2026 Updated</span>
           </div>
 
-          {/* Main Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.15] max-w-2xl mx-auto">
-            Know Your Real Profit Before You Sell.
+          {/* Main Headline (MindCloud Staggered Appearing Animation) */}
+          <h1 className="animate-hero-title text-3xl sm:text-[44px] md:text-[48px] font-medium tracking-[-1.5px] leading-[1.15] sm:leading-[52px] max-w-3xl mx-auto font-sans">
+            <span className="block text-white">Know Your Real Profit.</span>
+            <span className="block text-[#badfff]">Before You Sell.</span>
           </h1>
 
-          {/* Subtitle */}
-          <p className="mt-3.5 text-base sm:text-lg text-zinc-600 max-w-xl mx-auto leading-relaxed font-normal">
+          {/* Subtitle (MindCloud Smooth Fade-in Animation) */}
+          <p className="animate-hero-subtitle mt-3.5 sm:mt-4 text-[15px] sm:text-[16px] text-[#badfff]/90 max-w-[520px] mx-auto leading-[24px] tracking-[-0.16px] font-normal">
             Instant, client-side fee calculators for Etsy, Shopify, TikTok Shop &amp; Stripe with verified platform ratecards.
           </p>
 
-          {/* Search Bar Container */}
-          <div className="mt-6 max-w-2xl mx-auto">
+          {/* Floating Search Bar (MindCloud Style Smooth Surface Rise & Bloom Glow) */}
+          <div className="animate-hero-cta relative mt-7 sm:mt-8 max-w-lg mx-auto w-full px-2 sm:px-0">
+            {/* Ambient Bloom Aura */}
+            <div className="animate-hero-bloom pointer-events-none absolute inset-0 -z-10 rounded-2xl bg-blue-500/25 blur-xl transform-gpu" />
             <form
               onSubmit={(e) => e.preventDefault()}
-              className="relative flex items-center w-full group rounded-full bg-white shadow-[0_4px_24px_-4px_rgba(0,0,0,0.06)] border border-zinc-200/90 focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-200"
+              className="flex items-center w-full rounded-2xl bg-white shadow-[0_12px_32px_rgba(0,0,0,0.18)] border border-white/80 p-1.5 sm:p-2 pl-4 sm:pl-4.5 gap-2.5 transition-all focus-within:ring-4 focus-within:ring-blue-400/30"
             >
-              <Search className="absolute left-4 sm:left-5 size-5 text-zinc-400 group-focus-within:text-blue-600 transition-colors pointer-events-none" />
+              <Search className="size-4.5 text-zinc-400 shrink-0 pointer-events-none" />
               <input
                 id="hero-search-input"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search calculators (e.g. Etsy, TikTok, Shopify)..."
-                className="w-full rounded-full bg-transparent py-3.5 sm:py-4 pl-12 sm:pl-14 pr-14 text-sm sm:text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none font-sans"
+                placeholder="Search 80+ seller calculators (e.g. Etsy, Shopify, TikTok, Stripe)..."
+                className="flex-1 min-w-0 bg-transparent py-1.5 text-sm sm:text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none font-sans"
               />
-              <button
+              <PixelButton
                 type="submit"
-                className="absolute right-2 top-1/2 -translate-y-1/2 size-9 sm:size-10 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-xs hover:shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
+                className="size-9 sm:size-10 p-0 justify-center shrink-0 rounded-xl"
                 aria-label="Search"
               >
-                <Search className="size-4 sm:size-4.5 stroke-[2.5]" />
-              </button>
+                <Search className="size-4 stroke-[2.5]" />
+              </PixelButton>
             </form>
           </div>
-
-          {/* Stageshow-inspired Interactive Live Calculator Showcase */}
-          <HeroShowcaseCard />
         </div>
       </section>
 
+      {/* ===================== STANDALONE LIVE CALCULATOR SHOWCASE (Pulled Higher Up) ===================== */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 sm:-mt-28 relative z-20 mb-20 sm:mb-28">
+        <HeroShowcaseCard />
+      </section>
+
       {/* ===================== POPULAR CALCULATORS ===================== */}
-      <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-14 scroll-mt-20">
+      <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 sm:mb-24 scroll-mt-20">
         {/* Header Row: Title on Left, Filter Pills on Right */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3.5 mb-5 pb-3 border-b border-zinc-100">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 pb-4 border-b border-zinc-200/70">
           <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#2b5cfd] block mb-1">
               Instant Calculators
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
+            <h2 className="text-2xl sm:text-3xl font-medium tracking-[-0.8px] text-zinc-950 font-sans">
               Popular Seller Calculators
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-0.5">
-              Select your platform to calculate net payout, seller deductions, and break-even pricing.
+            <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-1 max-w-xl">
+              Select your platform to calculate net payout, seller deductions, and break-even pricing with verified 2026 ratecards.
             </p>
           </div>
 
@@ -238,10 +278,10 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
                   key={cat.id}
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer min-h-9 flex items-center justify-center ${
+                  className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-xs font-bold transition-all duration-150 cursor-pointer min-h-9 flex items-center justify-center ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-xs"
-                      : "bg-white text-zinc-600 border border-zinc-200/90 hover:bg-zinc-50 hover:text-zinc-950 hover:border-zinc-300"
+                      ? "bg-[#2b5cfd] text-white shadow-[inset_0_1px_0_0_rgb(255_255_255/0.35),0_2px_8px_rgb(43_92_253/0.4)] ring-1 ring-[#1b3cb5]"
+                      : "bg-white text-zinc-800 border border-zinc-200/90 hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300"
                   }`}
                 >
                   {cat.label}
@@ -252,7 +292,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
         </div>
 
         {/* 3 Columns x 2 Rows Clean Responsive Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 sm:gap-5">
           {filteredPopular.map((item) => (
             <CalculatorCard
               key={item.id}
@@ -265,17 +305,22 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
         </div>
       </section>
 
+      {/* ===================== SPONSOR / ADSENSE PLACEMENT (High Viewability Break) ===================== */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-10 sm:my-14">
+        <AdSlot position="in-content" />
+      </div>
+
       {/* ===================== GUIDES & RESOURCES ===================== */}
-      <section id="guides" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-14 scroll-mt-20">
+      <section id="guides" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20 sm:mb-24 scroll-mt-20">
         {/* Section Header */}
-        <div className="mb-5 pb-3 border-b border-zinc-100">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">
+        <div className="mb-6 pb-4 border-b border-zinc-200/70">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-[#2b5cfd] block mb-1">
             Seller Knowledge Base
           </span>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
+          <h2 className="text-2xl sm:text-3xl font-medium tracking-[-0.8px] text-zinc-950 font-sans">
             Seller Fee Guides &amp; Profit Strategies
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-0.5">
+          <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-1 max-w-xl">
             Understand platform algorithm deductions and protect your profit margins.
           </p>
         </div>
