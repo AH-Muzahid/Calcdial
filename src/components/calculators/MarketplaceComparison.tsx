@@ -1,16 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
 import { CustomSelect } from "@/components/common/CustomSelect";
 import { StickyResultBar } from "./StickyResultBar";
+import { PixelButton } from "@/components/ui/PixelButton";
 import {
   Calculator,
-  ChevronRight,
-  Info,
-  Check,
   RotateCcw,
   SlidersHorizontal,
+  Sparkles,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -246,8 +244,8 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
           </button>
         </div>
 
-        {/* Input Controls Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end">
+        {/* Input Controls Grid: Symmetrical 4-Column Layout */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {/* Item Price */}
           <div className="flex flex-col gap-1.5">
             <label htmlFor="cmp-item-price" className="text-xs font-bold text-zinc-900">
@@ -338,32 +336,30 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
               className="h-11 min-h-11"
             />
           </div>
-
-          {/* Blue Compare Platforms Action Button */}
-          <div>
-            <button
-              type="button"
-              onClick={scrollToResults}
-              className="h-11 min-h-11 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 px-4 text-xs sm:text-sm font-bold text-white shadow-xs transition-colors cursor-pointer select-none"
-            >
-              <Calculator className="size-4 shrink-0" />
-              <span>Compare Platforms</span>
-            </button>
-          </div>
         </div>
 
-        {/* Expandable Advanced Options (Offsite Ads, Volume) */}
-        <div className="mt-4 pt-3 border-t border-zinc-100">
+        {/* Action Row: Advanced Settings Toggle & Primary Pixel Button */}
+        <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3.5 border-t border-zinc-100">
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="min-h-11 inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 cursor-pointer"
+            className="min-h-11 inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-600 hover:text-zinc-950 cursor-pointer self-start sm:self-center"
           >
             <SlidersHorizontal className="size-3.5 text-zinc-500" />
             <span>{showAdvanced ? "Hide Advanced Settings" : "+ Advanced Settings (Offsite Ads, Creator Cut, Volume)"}</span>
           </button>
 
-          {showAdvanced && (
+          <PixelButton
+            type="button"
+            onClick={scrollToResults}
+            className="h-11 px-6 rounded-xl font-bold text-xs sm:text-sm shrink-0 justify-center shadow-xs"
+          >
+            <Calculator className="size-4 shrink-0 stroke-[2.2]" />
+            <span>Compare Platforms</span>
+          </PixelButton>
+        </div>
+
+        {showAdvanced && (
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-zinc-50 rounded-xl border border-zinc-200/80 animate-in fade-in duration-150">
               <label className="min-h-11 flex items-center gap-2 cursor-pointer text-xs font-medium text-zinc-800">
                 <input
@@ -401,7 +397,6 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
             </div>
           )}
         </div>
-      </div>
 
       {/* ========================================================= */}
       {/* SECTION 2: The 3 Platform Cards (Etsy, Shopify, TikTok)   */}
@@ -451,10 +446,10 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
             <div
               key={plat.id}
               className={cn(
-                "rounded-2xl bg-white p-5 sm:p-6 shadow-2xs space-y-4 transition-all relative",
+                "rounded-2xl bg-white p-5 sm:p-6 shadow-xs space-y-4 transition-all relative border",
                 isWinner
-                  ? "border-2 border-emerald-500 shadow-md ring-4 ring-emerald-500/10"
-                  : "border border-zinc-200"
+                  ? "border-emerald-500/60 bg-emerald-50/15 shadow-sm ring-1 ring-emerald-500/30"
+                  : "border-zinc-200/90 hover:border-zinc-300"
               )}
             >
               <div className="flex items-center justify-between">
@@ -464,12 +459,12 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                 </div>
 
                 {isWinner && (
-                  <span className="rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-2xs">
+                  <span className="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-2xs">
                     Highest Margin
                   </span>
                 )}
                 {isLoss && (
-                  <span className="rounded-full bg-rose-100 px-2 py-0.5 text-xs font-bold text-rose-700">
+                  <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-bold text-rose-700">
                     LOSS
                   </span>
                 )}
@@ -641,39 +636,44 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
           </div>
         </div>
 
-        {/* Right Column: Key Takeaways Card */}
-        <div className="lg:col-span-1 rounded-2xl border border-blue-200/80 bg-blue-50/60 p-5 sm:p-6 shadow-2xs flex flex-col justify-between">
+        {/* Right Column: Key Takeaways Card - Clean Fintech Style */}
+        <div className="lg:col-span-1 rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center gap-2 mb-3.5">
-              <Info className="size-5 text-blue-600 shrink-0" />
-              <h3 className="text-base font-bold text-zinc-950 tracking-tight">
-                Key Takeaways
-              </h3>
+            <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-zinc-100">
+              <div className="flex items-center gap-2">
+                <div className="flex size-7 items-center justify-center rounded-lg bg-blue-50 text-[#2b5cfd]">
+                  <Sparkles className="size-4" />
+                </div>
+                <h3 className="text-base font-bold text-zinc-950 tracking-tight">
+                  Key Takeaways
+                </h3>
+              </div>
+              <span className="text-[11px] font-medium text-zinc-400">Analysis</span>
             </div>
 
-            <ul className="space-y-3 text-xs sm:text-sm text-zinc-800 leading-relaxed">
+            <ul className="space-y-3.5 text-xs sm:text-sm text-zinc-800 leading-relaxed">
               <li className="flex items-start gap-2.5">
-                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold mt-0.5 select-none">✓</span>
                 <span>
                   {comparison.hasProfitablePlatform ? (
                     <>
-                      <strong>{comparison.winner.name} delivers the highest Net Profit ({curr.symbol}{comparison.winner.netProfit.toFixed(2)})</strong> in this comparison scenario.
+                      <strong className="text-zinc-950 font-bold">{comparison.winner.name} delivers the highest Net Profit ({curr.symbol}{comparison.winner.netProfit.toFixed(2)})</strong> in this comparison scenario.
                     </>
                   ) : (
                     <>
-                      <strong>All platforms operate at a loss with these cost inputs.</strong> Consider increasing your price or reducing product landed cost.
+                      <strong className="text-rose-600 font-bold">All platforms operate at a loss with these cost inputs.</strong> Consider increasing your price or reducing product landed cost.
                     </>
                   )}
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[#2b5cfd] text-[11px] font-bold mt-0.5 select-none">✓</span>
                 <span>
-                  Shopify Payments charges 0% marketplace commission with flat credit card interchange ({curr.symbol}{comparison.shopify.totalFees.toFixed(2)} total fee).
+                  Shopify Payments charges 0% marketplace commission with standard credit card interchange ({curr.symbol}{comparison.shopify.totalFees.toFixed(2)} total fee).
                 </span>
               </li>
               <li className="flex items-start gap-2.5">
-                <Check className="size-4 text-emerald-600 shrink-0 mt-0.5" />
+                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-purple-50 text-purple-700 text-[11px] font-bold mt-0.5 select-none">✓</span>
                 <span>
                   At {monthlyOrders} orders/month, selling via {comparison.winner.name} yields {curr.symbol}{comparison.winner.annualProfit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual net profit.
                 </span>
@@ -681,89 +681,9 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
             </ul>
           </div>
 
-          <div className="mt-5 pt-3 border-t border-blue-200/60 text-xs text-blue-900 font-medium">
-            💡 <em>Tip: Use marketplaces for customer discovery, and migrate repeat buyers to Shopify for maximum profit retention.</em>
+          <div className="mt-5 rounded-xl bg-zinc-50 border border-zinc-200/70 p-3 text-xs text-zinc-600 leading-relaxed">
+            <span className="font-semibold text-zinc-900">Pro Tip:</span> Use Etsy and TikTok Shop for organic marketplace discovery, and migrate repeat customers to a dedicated Shopify storefront for 100% margin retention.
           </div>
-        </div>
-      </div>
-
-      {/* ========================================================= */}
-      {/* SECTION 4: "Related Tools" 3-Card Navigation              */}
-      {/* ========================================================= */}
-      <div>
-        <h3 className="text-base sm:text-lg font-bold text-zinc-950 tracking-tight mb-3">
-          Related Tools
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          {/* Tool 1: Etsy */}
-          <Link
-            href="/tools/etsy-fee-calculator"
-            prefetch={false}
-            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all min-h-11"
-          >
-            <div className="flex items-center gap-3">
-              <div className="size-9 rounded-lg bg-orange-600 text-white font-serif font-black text-xl flex items-center justify-center shrink-0 shadow-2xs">
-                E
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
-                  Etsy Fee Calculator
-                </h4>
-                <p className="text-xs text-zinc-500">
-                  Calculate Etsy fees and net profit.
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
-          </Link>
-
-          {/* Tool 2: Shopify */}
-          <Link
-            href="/tools/shopify-profit-calculator"
-            prefetch={false}
-            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all min-h-11"
-          >
-            <div className="flex items-center gap-3">
-              <div className="size-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs p-1.5">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="size-5">
-                  <path d="M19.34 7.62a1 1 0 0 0-.89-.62h-2.73a4.5 4.5 0 0 0-8.44 0H4.55a1 1 0 0 0-.89.62L2.05 18.62A1 1 0 0 0 3.04 20h17.92a1 1 0 0 0 .99-1.38L19.34 7.62zM12 4.5a2.5 2.5 0 0 1 2.45 2h-4.9A2.5 2.5 0 0 1 12 4.5z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
-                  Shopify Profit Calculator
-                </h4>
-                <p className="text-xs text-zinc-500">
-                  Estimate Shopify margin and ROAS.
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
-          </Link>
-
-          {/* Tool 3: TikTok */}
-          <Link
-            href="/tools/tiktok-shop-fee-calculator"
-            prefetch={false}
-            className="group flex items-center justify-between p-4 rounded-xl border border-zinc-200 bg-white hover:border-zinc-400 hover:shadow-xs transition-all min-h-11"
-          >
-            <div className="flex items-center gap-3">
-              <div className="size-9 rounded-lg bg-black text-white flex items-center justify-center shrink-0 shadow-2xs p-1.5">
-                <svg viewBox="0 0 24 24" fill="currentColor" className="size-5 text-white">
-                  <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64c.29 0 .58.04.85.12V9.4a6.33 6.33 0 0 0-1-.08A6.34 6.34 0 0 0 3 15.66a6.34 6.34 0 0 0 10.82 4.49 6.27 6.27 0 0 0 1.95-4.49V8.82a8.28 8.28 0 0 0 4.82 1.54v-3.45a4.85 4.85 0 0 1-1-.22z" />
-                </svg>
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-zinc-950 group-hover:text-blue-600 transition-colors">
-                  TikTok Shop Calculator
-                </h4>
-                <p className="text-xs text-zinc-500">
-                  Estimate referral cuts and creator costs.
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="size-4 text-zinc-400 group-hover:text-zinc-950 group-hover:translate-x-0.5 transition-all" />
-          </Link>
         </div>
       </div>
 

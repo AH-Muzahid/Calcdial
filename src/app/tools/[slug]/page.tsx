@@ -200,10 +200,27 @@ export default async function ToolPage({
             )}
           </section>
 
-          {/* SECTION 3: Ad Slot 1 (Below Calculator Output - CLS-Safe 728 x 250) */}
-          <AdSlot position="below-calculator" />
+          {/* SECTION 3: 2-Column Responsive Section: Formula & Methodology (Left) | Worked Example (Right) */}
+          <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 my-5 sm:my-8">
+            <FormulaBreakdown
+              formulaMarkdown={tool.formulaMarkdown}
+              toolTitle={tool.title}
+              toolSlug={tool.slug}
+              config={tool.formulaConfig}
+            />
+            <WorkedExample
+              examples={tool.workedExamples}
+              config={tool.workedExampleConfig}
+            />
+          </section>
 
-          {/* Contextual Affiliate Recommendation Slot */}
+          {/* SECTION 4: Related Calculators (Compact minimal pills directly below formula & examples) */}
+          <RelatedTools relatedToolSlugs={tool.relatedTools} />
+
+          {/* SECTION 5: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
+          <InDepthGuide toolSlug={tool.slug} />
+
+          {/* Contextual Affiliate Recommendation Slot (Naturally placed following in-depth guide) */}
           {tool.affiliatePartner && tool.affiliateUrl && (
             <AffiliateCallout
               partner={tool.affiliatePartner}
@@ -231,33 +248,13 @@ export default async function ToolPage({
             />
           )}
 
-          {/* SECTION 4: 2-Column Responsive Section: Formula & Methodology (Left) | Worked Example (Right) */}
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 my-5 sm:my-8">
-            <FormulaBreakdown
-              formulaMarkdown={tool.formulaMarkdown}
-              toolTitle={tool.title}
-              toolSlug={tool.slug}
-              config={tool.formulaConfig}
-            />
-            <WorkedExample
-              examples={tool.workedExamples}
-              config={tool.workedExampleConfig}
-            />
-          </section>
-
-          {/* SECTION 5: Related Calculators (Compact minimal pills directly below formula & examples) */}
-          <RelatedTools relatedToolSlugs={tool.relatedTools} />
-
-          {/* SECTION 6: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
-          <InDepthGuide toolSlug={tool.slug} />
-
-          {/* SECTION 7: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
+          {/* SECTION 6: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
           <FeeScheduleTable toolSlug={tool.slug} />
 
-          {/* SECTION 8: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
+          {/* SECTION 7: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
           <AdSlot position="in-content" />
 
-          {/* SECTION 9: FAQ Accordion + JSON-LD Schema */}
+          {/* SECTION 8: FAQ Accordion + JSON-LD Schema */}
           <FAQAccordion faqs={tool.faqs} />
 
           {/* SECTION 10: Related Seller Guides (Clean minimal pills at the bottom) */}

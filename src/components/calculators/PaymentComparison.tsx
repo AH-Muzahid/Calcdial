@@ -9,9 +9,9 @@ import {
 import { PAYMENT_CURRENCY_PRESETS } from "@/data/fee-presets";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { StickyResultBar } from "./StickyResultBar";
-import { ContextualToolBridge } from "./ContextualToolBridge";
 import { trackEvent } from "@/lib/analytics";
 import { formatCurrency, cn } from "@/lib/utils";
+import { PixelButton } from "@/components/ui/PixelButton";
 import {
   RotateCcw,
   Copy,
@@ -150,46 +150,46 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         {/* ========================================================= */}
         {/* LEFT CARD: Interactive Input Controls                     */}
         {/* ========================================================= */}
-        <div className="lg:col-span-7 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-3.5 sm:p-5 shadow-xs space-y-4">
+        <div className="lg:col-span-6 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-6 shadow-xs space-y-4">
           {/* Header & Mode Switcher */}
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-100 gap-2">
+          <div className="flex items-center justify-between pb-3.5 border-b border-zinc-100 gap-3">
             {/* Segmented Pill Tab Switcher */}
-            <div className="inline-flex rounded-lg bg-zinc-100 p-1 text-xs font-sans">
+            <div className="inline-flex flex-1 sm:flex-initial rounded-xl bg-zinc-100 p-1 text-xs font-sans">
               <button
                 type="button"
                 onClick={() => setMode("direct")}
                 className={cn(
-                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  "flex-1 sm:flex-initial px-3 sm:px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "direct"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    ? "bg-white text-zinc-950 shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
-                Direct Payment Fee
+                Direct Fee
               </button>
               <button
                 type="button"
                 onClick={() => setMode("gross-up")}
                 className={cn(
-                  "px-3 py-2 min-h-11 rounded-md font-semibold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  "flex-1 sm:flex-initial px-3 sm:px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "gross-up"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    ? "bg-white text-zinc-950 shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
-                Invoice Gross-Up (Cover Fees)
+                Invoice Gross-Up
               </button>
             </div>
 
-            {/* Reset Button */}
+            {/* Reset Button with proper breathing room */}
             <button
               type="button"
               onClick={handleReset}
-              className="inline-flex items-center justify-center size-8 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
+              className="inline-flex items-center justify-center size-9 rounded-xl text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100 transition-colors cursor-pointer shrink-0"
               title="Reset values to defaults"
               aria-label="Reset values to defaults"
             >
-              <RotateCcw className="size-3.5" />
+              <RotateCcw className="size-4" />
             </button>
           </div>
 
@@ -452,7 +452,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         {/* ========================================================= */}
         {/* RIGHT CARD: Results (Standalone Hero Card, sticky desktop)*/}
         {/* ========================================================= */}
-        <div className="lg:col-span-5 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-5 shadow-xs lg:sticky lg:top-20 space-y-4">
+        <div className="lg:col-span-6 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-5 shadow-xs lg:sticky lg:top-20 space-y-4">
           {/* Header & Copy Button */}
           <div className="flex items-center justify-between pb-2.5 border-b border-zinc-100">
             <h3 className="text-sm sm:text-base font-bold tracking-tight text-zinc-950">
@@ -520,8 +520,8 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               className={cn(
                 "rounded-xl border p-3.5 space-y-2.5 transition-all",
                 result.recommended === "Stripe"
-                  ? "border-zinc-950 bg-zinc-50/70 shadow-2xs ring-1 ring-zinc-950/10"
-                  : "border-zinc-200 bg-white"
+                  ? "border-emerald-500/70 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-500/30"
+                  : "border-zinc-200/90 bg-white hover:border-zinc-300"
               )}
             >
               <div className="flex items-center justify-between gap-1.5">
@@ -539,20 +539,22 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Invoice Amount
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                  <div className="text-lg sm:text-xl font-extrabold font-mono text-zinc-950 tracking-tight truncate">
                     {formatCurrency(result.stripe.invoiceToReceiveTarget, result.currency)}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
-                    <span>Stripe fee:</span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      -{formatCurrency(result.stripe.feeOnGrossUp, result.currency)}
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-emerald-700 font-semibold flex justify-between pt-0.5">
-                    <span>You receive:</span>
-                    <span className="font-mono font-bold">
-                      {formatCurrency(result.stripe.targetPayout, result.currency)}
-                    </span>
+                  <div className="mt-2 pt-2 border-t border-zinc-100 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-600">
+                      <span>Fee on invoice:</span>
+                      <span className="font-mono font-semibold text-zinc-900">
+                        -{formatCurrency(result.stripe.feeOnGrossUp, result.currency)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-emerald-700 font-semibold">
+                      <span>You receive:</span>
+                      <span className="font-mono font-bold">
+                        {formatCurrency(result.stripe.targetPayout, result.currency)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -560,20 +562,28 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Net Deposit
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                  <div className="text-lg sm:text-xl font-extrabold font-mono text-zinc-950 tracking-tight truncate">
                     {formatCurrency(result.stripe.netPayoutOnCharge, result.currency)}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
-                    <span>Stripe cut:</span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      -{formatCurrency(result.stripe.feeOnCharge, result.currency)} ({result.stripe.effectiveFeePct}%)
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-zinc-500 flex justify-between pt-0.5">
-                    <span>Charged:</span>
-                    <span className="font-mono">
-                      {formatCurrency(amount, result.currency)}
-                    </span>
+                  <div className="mt-2 pt-2 border-t border-zinc-100 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-600">
+                      <span>Fee cut:</span>
+                      <span className="font-mono font-semibold text-rose-600">
+                        -{formatCurrency(result.stripe.feeOnCharge, result.currency)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500">
+                      <span>Effective rate:</span>
+                      <span className="font-mono font-medium text-zinc-800">
+                        {result.stripe.effectiveFeePct}%
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500">
+                      <span>Gross charged:</span>
+                      <span className="font-mono text-zinc-700">
+                        {formatCurrency(amount, result.currency)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -584,8 +594,8 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               className={cn(
                 "rounded-xl border p-3.5 space-y-2.5 transition-all",
                 result.recommended === "PayPal"
-                  ? "border-zinc-950 bg-zinc-50/70 shadow-2xs ring-1 ring-zinc-950/10"
-                  : "border-zinc-200 bg-white"
+                  ? "border-emerald-500/70 bg-emerald-50/20 shadow-xs ring-1 ring-emerald-500/30"
+                  : "border-zinc-200/90 bg-white hover:border-zinc-300"
               )}
             >
               <div className="flex items-center justify-between gap-1.5">
@@ -603,20 +613,22 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Invoice Amount
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                  <div className="text-lg sm:text-xl font-extrabold font-mono text-zinc-950 tracking-tight truncate">
                     {formatCurrency(result.paypal.invoiceToReceiveTarget, result.currency)}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
-                    <span>PayPal fee:</span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      -{formatCurrency(result.paypal.feeOnGrossUp, result.currency)}
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-emerald-700 font-semibold flex justify-between pt-0.5">
-                    <span>You receive:</span>
-                    <span className="font-mono font-bold">
-                      {formatCurrency(result.paypal.targetPayout, result.currency)}
-                    </span>
+                  <div className="mt-2 pt-2 border-t border-zinc-100 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-600">
+                      <span>Fee on invoice:</span>
+                      <span className="font-mono font-semibold text-zinc-900">
+                        -{formatCurrency(result.paypal.feeOnGrossUp, result.currency)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-emerald-700 font-semibold">
+                      <span>You receive:</span>
+                      <span className="font-mono font-bold">
+                        {formatCurrency(result.paypal.targetPayout, result.currency)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -624,20 +636,28 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                   <span className="block text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
                     Net Deposit
                   </span>
-                  <div className="text-xl sm:text-2xl font-extrabold font-mono text-zinc-950 tracking-tight">
+                  <div className="text-lg sm:text-xl font-extrabold font-mono text-zinc-950 tracking-tight truncate">
                     {formatCurrency(result.paypal.netPayoutOnCharge, result.currency)}
                   </div>
-                  <div className="mt-1 text-[11px] text-zinc-600 flex justify-between pt-1 border-t border-zinc-100">
-                    <span>PayPal cut:</span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      -{formatCurrency(result.paypal.feeOnCharge, result.currency)} ({result.paypal.effectiveFeePct}%)
-                    </span>
-                  </div>
-                  <div className="text-[11px] text-zinc-500 flex justify-between pt-0.5">
-                    <span>Charged:</span>
-                    <span className="font-mono">
-                      {formatCurrency(amount, result.currency)}
-                    </span>
+                  <div className="mt-2 pt-2 border-t border-zinc-100 space-y-1">
+                    <div className="flex items-center justify-between text-[11px] text-zinc-600">
+                      <span>Fee cut:</span>
+                      <span className="font-mono font-semibold text-rose-600">
+                        -{formatCurrency(result.paypal.feeOnCharge, result.currency)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500">
+                      <span>Effective rate:</span>
+                      <span className="font-mono font-medium text-zinc-800">
+                        {result.paypal.effectiveFeePct}%
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-zinc-500">
+                      <span>Gross charged:</span>
+                      <span className="font-mono text-zinc-700">
+                        {formatCurrency(amount, result.currency)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
@@ -733,16 +753,16 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               turnover.
             </p>
 
-            <div className="pt-2 border-t border-zinc-200/80 grid grid-cols-2 gap-2 text-[11px]">
-              <div>
-                <span className="text-zinc-500 block">Stripe Monthly Cut:</span>
-                <span className="font-mono font-bold text-zinc-900">
+            <div className="pt-2 border-t border-zinc-200/70 grid grid-cols-2 gap-2 text-[11px]">
+              <div className="rounded-lg bg-white/80 p-2 border border-zinc-200/60 shadow-2xs">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block">Stripe Fee / Mo</span>
+                <span className="text-xs sm:text-sm font-mono font-bold text-zinc-950">
                   {formatCurrency(result.stripe.monthlyFees, result.currency)}
                 </span>
               </div>
-              <div className="text-right">
-                <span className="text-zinc-500 block">PayPal Monthly Cut:</span>
-                <span className="font-mono font-bold text-zinc-900">
+              <div className="rounded-lg bg-white/80 p-2 border border-zinc-200/60 shadow-2xs text-right">
+                <span className="text-[10px] font-mono uppercase text-zinc-500 block">PayPal Fee / Mo</span>
+                <span className="text-xs sm:text-sm font-mono font-bold text-zinc-950">
                   {formatCurrency(result.paypal.monthlyFees, result.currency)}
                 </span>
               </div>
@@ -804,18 +824,29 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               </div>
             )}
           </div>
+
+          {/* Action: Copy Comparison Summary with Signature PixelButton */}
+          <div className="pt-2">
+            <PixelButton
+              type="button"
+              onClick={handleCopySummary}
+              className="w-full h-11 justify-center rounded-xl font-bold text-xs sm:text-sm shadow-xs"
+            >
+              {copiedSummary ? (
+                <>
+                  <Check className="size-4 stroke-[2.5]" />
+                  <span>Comparison Summary Copied!</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  <span>Copy Full Breakdown Summary</span>
+                </>
+              )}
+            </PixelButton>
+          </div>
         </div>
       </div>
-
-      {/* Contextual Next Tool Bridge */}
-      {!isEmbed && (
-        <div className="mt-6">
-          <ContextualToolBridge
-            currentTool="stripe-vs-paypal-fee-calculator"
-            price={amount}
-          />
-        </div>
-      )}
 
       {/* Mobile Sticky Result Bar */}
       {!isEmbed && (
