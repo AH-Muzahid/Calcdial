@@ -248,11 +248,11 @@ export default async function ToolPage({
           {/* SECTION 5: Related Calculators (Compact minimal pills directly below formula & examples) */}
           <RelatedTools relatedToolSlugs={tool.relatedTools} />
 
-          {/* SECTION 6: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
-          <FeeScheduleTable toolSlug={tool.slug} />
-
-          {/* SECTION 7: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
+          {/* SECTION 6: In-Depth Authoritative Seller Guide & Hidden Traps Breakdown */}
           <InDepthGuide toolSlug={tool.slug} />
+
+          {/* SECTION 7: Comprehensive Platform Fee Reference Tables (Calculator.net style) */}
+          <FeeScheduleTable toolSlug={tool.slug} />
 
           {/* SECTION 8: High-Yield In-Content Ad Slot (Pre-FAQ Engagement) */}
           <AdSlot position="in-content" />
