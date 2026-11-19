@@ -95,12 +95,15 @@ export default function HomePage() {
 
         {/* Fintech Insights: Hidden Platform Fee Traps (High SEO Value & Authority) */}
         <section className="my-14 sm:my-16">
-          <div className="mb-6 sm:mb-8">
+          <div className="mb-6 sm:mb-8 pb-3 border-b border-zinc-100">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 block mb-0.5">
+              Margin Protections
+            </span>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
-              Hidden Platform Fee Traps to Watch in 2026
+              Hidden Platform Fee Traps
             </h2>
-            <p className="mt-1.5 text-sm sm:text-base text-zinc-500 font-normal">
-              Critical fee nuances and deduction models to keep your profit margins safe.
+            <p className="mt-0.5 text-xs sm:text-sm text-zinc-500 font-normal">
+              Critical fee nuances and stealth deductions to watch before pricing your items.
             </p>
           </div>
 

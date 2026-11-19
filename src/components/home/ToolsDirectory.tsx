@@ -6,6 +6,7 @@ import { Search, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { ToolConfig } from "@/data/tools-registry";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
+import { HeroShowcaseCard } from "./HeroShowcaseCard";
 
 interface ToolsDirectoryProps {
   tools: ToolConfig[];
@@ -164,28 +165,26 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
   return (
     <div className="w-full">
       {/* ===================== HERO SECTION ===================== */}
-      <section className="pt-10 sm:pt-14 pb-6 text-center px-4 sm:px-6">
+      <section className="pt-10 sm:pt-14 pb-4 text-center px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
-          {/* Trust Badges */}
+          {/* Trust Badge (Mobile Safe, Single Line) */}
           <div className="inline-flex items-center gap-2 rounded-full border border-zinc-200/90 bg-zinc-50 px-3.5 py-1 text-xs font-semibold text-zinc-700 shadow-2xs mb-4 select-none">
-            <span className="size-2 rounded-full bg-emerald-500" />
-            <span>Updated for 2026 Fee Schedules</span>
-            <span className="text-zinc-300">•</span>
-            <span className="text-zinc-500 font-normal">Official Rates Verified</span>
+            <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Official Rates Verified</span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-[46px] font-extrabold tracking-tight text-zinc-950 leading-[1.18] max-w-2xl mx-auto">
-            Calculate Fees, Profit &amp; Compare Platforms
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-zinc-950 leading-[1.15] max-w-2xl mx-auto">
+            Know Your Real Profit Before You Sell.
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-3 text-sm sm:text-base text-zinc-500 max-w-xl mx-auto leading-normal font-normal">
-            Instant, accurate fee calculators for Etsy, Shopify, TikTok Shop &amp; Stripe.
+          <p className="mt-3.5 text-base sm:text-lg text-zinc-600 max-w-xl mx-auto leading-relaxed font-normal">
+            Instant, client-side fee calculators for Etsy, Shopify, TikTok Shop &amp; Stripe with verified platform ratecards.
           </p>
 
-          {/* Search Bar Container - Pill rounded-full like before */}
-          <div className="mt-7 max-w-2xl mx-auto">
+          {/* Search Bar Container */}
+          <div className="mt-6 max-w-2xl mx-auto">
             <form
               onSubmit={(e) => e.preventDefault()}
               className="relative flex items-center w-full group rounded-full bg-white shadow-[0_4px_24px_-4px_rgba(0,0,0,0.06)] border border-zinc-200/90 focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all duration-200"
@@ -196,7 +195,7 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search calculators..."
+                placeholder="Search calculators (e.g. Etsy, TikTok, Shopify)..."
                 className="w-full rounded-full bg-transparent py-3.5 sm:py-4 pl-12 sm:pl-14 pr-14 text-sm sm:text-base text-zinc-900 placeholder:text-zinc-400 focus:outline-none font-sans"
               />
               <button
@@ -208,19 +207,30 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
               </button>
             </form>
           </div>
+
+          {/* Stageshow-inspired Interactive Live Calculator Showcase */}
+          <HeroShowcaseCard />
         </div>
       </section>
 
-      {/* ===================== POPULAR CALCULATORS (3 Columns x 2 Rows) ===================== */}
-      <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-14 scroll-mt-20">
+      {/* ===================== POPULAR CALCULATORS ===================== */}
+      <section id="tools" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-14 scroll-mt-20">
         {/* Header Row: Title on Left, Filter Pills on Right */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 mb-5">
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
-            Popular Calculators
-          </h2>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3.5 mb-5 pb-3 border-b border-zinc-100">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">
+              Instant Calculators
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
+              Popular Seller Calculators
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-0.5">
+              Select your platform to calculate net payout, seller deductions, and break-even pricing.
+            </p>
+          </div>
 
           {/* Filter Pills with compact rounded-lg Border Radius */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
@@ -228,9 +238,9 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
                   key={cat.id}
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-xs font-medium transition-all duration-150 cursor-pointer ${
+                  className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-xs font-semibold transition-all duration-150 cursor-pointer min-h-9 flex items-center justify-center ${
                     isActive
-                      ? "bg-blue-600 text-white shadow-xs font-semibold"
+                      ? "bg-blue-600 text-white shadow-xs"
                       : "bg-white text-zinc-600 border border-zinc-200/90 hover:bg-zinc-50 hover:text-zinc-950 hover:border-zinc-300"
                   }`}
                 >
@@ -253,38 +263,24 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
             />
           ))}
         </div>
-
-        {/* View All Calculators Button */}
-        <div className="mt-8 flex justify-center">
-          <Link
-            href="/#tools"
-            onClick={(e) => {
-              setActiveCategory("all");
-              setSearchQuery("");
-              const el = document.getElementById("tools");
-              if (el) {
-                e.preventDefault();
-                el.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-            className="group inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 text-sm font-medium shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-          >
-            <span>View All Calculators</span>
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
-        </div>
       </section>
 
-      {/* ===================== GUIDES & RESOURCES (4 Columns) ===================== */}
+      {/* ===================== GUIDES & RESOURCES ===================== */}
       <section id="guides" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-14 scroll-mt-20">
         {/* Section Header */}
-        <div className="mb-5">
+        <div className="mb-5 pb-3 border-b border-zinc-100">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">
+            Seller Knowledge Base
+          </span>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-950 font-sans">
-            Guides &amp; Resources
+            Seller Fee Guides &amp; Profit Strategies
           </h2>
+          <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-0.5">
+            Understand platform algorithm deductions and protect your profit margins.
+          </p>
         </div>
 
-        {/* 4 Columns Grid using Reusable GuideCard with matching rounded-xl */}
+        {/* 4 Columns Grid using Reusable GuideCard */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5 sm:gap-5">
           {guides.map((guide) => (
             <GuideCard
@@ -295,24 +291,6 @@ export function ToolsDirectory({ tools }: ToolsDirectoryProps) {
               type={guide.type}
             />
           ))}
-        </div>
-
-        {/* View All Guides Button: Scrolls smoothly to #guides */}
-        <div className="mt-8 flex justify-center">
-          <Link
-            href="/#guides"
-            onClick={(e) => {
-              const el = document.getElementById("guides");
-              if (el) {
-                e.preventDefault();
-                el.scrollIntoView({ behavior: "smooth" });
-              }
-            }}
-            className="group inline-flex items-center gap-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white px-7 py-2.5 text-sm font-medium shadow-sm shadow-blue-600/20 hover:shadow-md hover:shadow-blue-600/30 transition-all hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-          >
-            <span>View All Guides</span>
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
         </div>
       </section>
 

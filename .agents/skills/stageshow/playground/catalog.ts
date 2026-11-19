@@ -2,6 +2,7 @@
 // under Real products, Specimen and reference sheets under Kit. Keep the
 // names and notes in step with SKILL.md when either changes.
 const curated = [
+  { id: 'calcdial-hero', name: 'CalcDial Hero', kind: 'Scene', note: 'Interactive Etsy fee calculation with animated typing, Offsite Ads toggle, and live rolling net profit.' },
   { id: 'static-card', name: 'Static card', kind: 'Scene', note: 'Quiet hierarchy, a hard crop, one satellite, real words only on the selected customer, its neighbors and the total.' },
   { id: 'dark-bento', name: 'Dark card', kind: 'Scene', note: 'One signal said once; album art keeps it a music app.' },
   { id: 'hero-demo', name: 'Hero demo', kind: 'Scene', note: 'Five beats, named targets, an annotation, a terminal coming forward.' },
