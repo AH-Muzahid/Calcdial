@@ -102,17 +102,17 @@ export function EmailCapture({
           </div>
         </div>
 
-        {/* Right Side: Clean 3D Robot Sprite */}
+        {/* Right Side: 3D Robot Sprite with Full Motion Tracking & Zero Clipping */}
         <div className="relative flex items-center justify-center shrink-0 w-full lg:w-auto self-center">
-          <div className="relative size-36 sm:size-44 flex items-center justify-center">
+          <div className="relative w-48 h-48 sm:w-56 sm:h-56 lg:w-60 lg:h-60 flex items-center justify-center">
             <CobaltSprite
               transparent
               background="transparent"
               follow="page"
-              scale={100}
-              reach={8}
-              lean={6}
-              float={4}
+              scale={120}
+              reach={10}
+              lean={8}
+              float={6}
               blink={10}
             />
           </div>
