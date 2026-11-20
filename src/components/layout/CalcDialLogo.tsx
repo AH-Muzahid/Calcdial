@@ -6,7 +6,7 @@ export function CalcDialLogo({ className = "", isDark = false }: { className?: s
     <Link href="/" className={`group inline-flex items-center gap-2.5 ${className}`}>
       <div className="relative size-9 flex-shrink-0 transition-transform duration-200 group-hover:scale-105">
         <Image
-          src="/calcdial-app-icon-1024.png"
+          src="/apple-touch-icon.png?v=2"
           alt="CalcDial App Icon"
           width={36}
           height={36}
