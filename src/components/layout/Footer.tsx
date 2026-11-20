@@ -11,9 +11,16 @@ export function Footer() {
           {/* Column 1: Calculators */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-950 font-sans">
-              Calculators
+              <Link href="/calculators" className="hover:text-blue-600 transition-colors">
+                Calculators
+              </Link>
             </h4>
             <ul className="mt-4 space-y-2.5 text-sm">
+              <li>
+                <Link href="/calculators" prefetch={false} className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                  All Calculators Directory →
+                </Link>
+              </li>
               <li>
                 <Link href="/tools/etsy-fee-calculator" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
                   Etsy Fee Calculator
@@ -40,8 +47,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
-                  Marketplace Comparison
+                <Link href="/comparisons" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
+                  All Comparisons Hub
                 </Link>
               </li>
             </ul>
@@ -50,9 +57,16 @@ export function Footer() {
           {/* Column 2: Seller Guides */}
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-950 font-sans">
-              Seller Guides
+              <Link href="/guides" className="hover:text-blue-600 transition-colors">
+                Seller Guides
+              </Link>
             </h4>
             <ul className="mt-4 space-y-2.5 text-sm">
+              <li>
+                <Link href="/guides" prefetch={false} className="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                  All Guides Directory →
+                </Link>
+              </li>
               <li>
                 <Link href="/guides/how-to-calculate-etsy-fees-2026" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
                   Etsy Fees in 2026

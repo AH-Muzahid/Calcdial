@@ -184,12 +184,12 @@ export function Header() {
                 </div>
                 <div className="mt-1.5 pt-1.5 border-t border-zinc-100 px-2 pb-1">
                   <Link
-                    href="/#all-tools-grid"
+                    href="/calculators"
                     prefetch={false}
                     onClick={() => setCalcMenuOpen(false)}
-                    className="flex items-center justify-between text-xs font-medium text-blue-600 hover:text-blue-700 px-2 py-1 rounded transition-colors"
+                    className="flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 px-2 py-1 rounded transition-colors"
                   >
-                    <span>Explore all tools</span>
+                    <span>View all calculators</span>
                     <ArrowRight className="size-3.5" />
                   </Link>
                 </div>
@@ -199,11 +199,12 @@ export function Header() {
 
           {/* Comparisons Link */}
           <Link
-            href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator"
+            href="/comparisons"
             prefetch={false}
             className={cn(
               "transition-colors",
-              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950"
+              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950",
+              pathname === "/comparisons" && (isDarkNavbar ? "text-white font-semibold" : "text-zinc-950 font-semibold")
             )}
           >
             Comparisons
@@ -211,11 +212,12 @@ export function Header() {
 
           {/* Guides Link */}
           <Link
-            href="/guides/how-to-calculate-etsy-fees-2026"
+            href="/guides"
             prefetch={false}
             className={cn(
               "transition-colors",
-              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950"
+              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950",
+              pathname === "/guides" && (isDarkNavbar ? "text-white font-semibold" : "text-zinc-950 font-semibold")
             )}
           >
             Guides
@@ -277,6 +279,14 @@ export function Header() {
 
               {mobileCalcOpen && (
                 <div className="ml-3 my-1 border-l-2 border-zinc-150 pl-2 space-y-1">
+                  <Link
+                    href="/calculators"
+                    prefetch={false}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block rounded-md px-2.5 py-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50/50 transition-colors"
+                  >
+                    All Calculators Directory →
+                  </Link>
                   {NAV_CALCULATORS.map((item) => (
                     <Link
                       key={item.href}
@@ -294,20 +304,20 @@ export function Header() {
 
             {/* Comparisons */}
             <Link
-              href="/tools/etsy-vs-shopify-vs-tiktok-shop-calculator"
+              href="/comparisons"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors"
+              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors font-medium"
             >
               Comparisons
             </Link>
 
             {/* Guides */}
             <Link
-              href="/guides/how-to-calculate-etsy-fees-2026"
+              href="/guides"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors"
+              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors font-medium"
             >
               Guides
             </Link>

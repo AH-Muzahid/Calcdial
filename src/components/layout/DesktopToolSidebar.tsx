@@ -73,9 +73,9 @@ export function DesktopToolSidebar({ currentSlug }: DesktopToolSidebarProps) {
             Seller Calculators
           </h4>
           <Link
-            href="/#tools"
+            href="/calculators"
             prefetch={false}
-            className="text-[11px] font-bold text-zinc-700 hover:text-zinc-950 transition-colors"
+            className="text-[11px] font-bold text-zinc-700 hover:text-blue-600 transition-colors"
           >
             All &rarr;
           </Link>

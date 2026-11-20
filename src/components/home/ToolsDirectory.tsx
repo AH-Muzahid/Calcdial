@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Search, Shirt, ArrowLeftRight } from "lucide-react";
+import Link from "next/link";
+import { Search, Shirt, ArrowLeftRight, ArrowRight } from "lucide-react";
 import { CalculatorCard } from "./CalculatorCard";
 import { GuideCard } from "./GuideCard";
 import { HeroShowcaseCard } from "./HeroShowcaseCard";
@@ -251,6 +252,14 @@ export function ToolsDirectory() {
             <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-1 max-w-xl">
               Select your platform to calculate net payout, seller deductions, and break-even pricing with verified 2026 ratecards.
             </p>
+            <Link
+              href="/calculators"
+              prefetch={false}
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 mt-2 transition-colors"
+            >
+              <span>Explore full calculators directory</span>
+              <ArrowRight className="size-3.5" />
+            </Link>
           </div>
 
           {/* Filter Pills with compact rounded-lg Border Radius */}
@@ -307,6 +316,14 @@ export function ToolsDirectory() {
           <p className="text-xs sm:text-sm text-zinc-500 font-normal mt-1 max-w-xl">
             Understand platform algorithm deductions and protect your profit margins.
           </p>
+          <Link
+            href="/guides"
+            prefetch={false}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 mt-2 transition-colors"
+          >
+            <span>Explore all seller guides</span>
+            <ArrowRight className="size-3.5" />
+          </Link>
         </div>
 
         {/* 4 Columns Grid using Reusable GuideCard */}

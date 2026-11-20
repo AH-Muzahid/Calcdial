@@ -141,7 +141,10 @@ export default async function ToolPage({
 
       <Breadcrumbs
         items={[
-          { label: tool.isComparison ? "Comparisons" : "Calculators", href: "/#tools" },
+          {
+            label: tool.isComparison ? "Comparisons" : "Calculators",
+            href: tool.isComparison ? "/comparisons" : "/calculators",
+          },
           { label: tool.isComparison ? tool.title.replace(" Fee Comparison", "") : tool.title },
         ]}
       />

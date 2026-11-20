@@ -109,7 +109,7 @@ export default async function GuidePage({
 
       <Breadcrumbs
         items={[
-          { label: "Guides", href: "/#guides" },
+          { label: "Guides", href: "/guides" },
           { label: guide.title },
         ]}
       />
