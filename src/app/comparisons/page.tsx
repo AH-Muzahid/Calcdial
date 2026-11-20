@@ -80,8 +80,8 @@ export default function ComparisonsPage() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 font-sans">
             Platform & Gateway Comparisons
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-zinc-600 font-normal leading-relaxed max-w-3xl">
-            Simulate actual order revenues across competing channels. Discover real net take-home differences between marketplaces and independent storefronts, and compare payment gateway fee structures before you send client invoices.
+          <p className="mt-1.5 text-sm sm:text-base text-zinc-500 font-normal leading-relaxed max-w-2xl">
+            Side-by-side fee take rates, tiered margins, and net seller profit across competing channels and payment gateways.
           </p>
         </header>
 

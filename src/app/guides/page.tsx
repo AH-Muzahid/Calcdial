@@ -80,8 +80,8 @@ export default function GuidesPage() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 font-sans">
             Seller Guides & Fee Strategies
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-zinc-600 font-normal leading-relaxed max-w-3xl">
-            Practical, math-backed guides to help online merchants and creators navigate platform take rates, avoid unexpected fees, and protect take-home profit margins.
+          <p className="mt-1.5 text-sm sm:text-base text-zinc-500 font-normal leading-relaxed max-w-2xl">
+            Verified fee schedules, margin defense playbooks, and payment gross-up tutorials for online merchants.
           </p>
         </header>
 

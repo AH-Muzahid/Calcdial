@@ -13,7 +13,6 @@ import { trackEvent } from "@/lib/analytics";
 import { formatCurrency, cn } from "@/lib/utils";
 import { PixelButton } from "@/components/ui/PixelButton";
 import {
-  RotateCcw,
   Copy,
   Check,
   ChevronDown,
@@ -87,16 +86,6 @@ export function PaymentComparison({ isEmbed = false }: { isEmbed?: boolean }) {
     }));
   }, []);
 
-  const handleReset = () => {
-    setMode("direct");
-    setAmountStr("100.00");
-    setCurrency("usd");
-    setTransactionType("checkout");
-    setIsInternational(false);
-    setCurrencyConversion(false);
-    setMonthlyVolumeStr("5000");
-  };
-
   const handleCopySummary = () => {
     const summary =
       mode === "gross-up"
@@ -152,14 +141,14 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
         {/* ========================================================= */}
         <div className="lg:col-span-6 rounded-xl sm:rounded-2xl border border-zinc-200/90 bg-white p-4 sm:p-6 shadow-xs space-y-4">
           {/* Header & Mode Switcher */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-zinc-100 gap-3">
+          <div className="flex items-center justify-between pb-3.5 border-b border-zinc-100">
             {/* Segmented Pill Tab Switcher */}
-            <div className="inline-flex flex-1 sm:flex-initial rounded-xl bg-zinc-100 p-1 text-xs font-sans">
+            <div className="inline-flex w-full sm:w-auto rounded-xl bg-zinc-100 p-1 text-xs font-sans">
               <button
                 type="button"
                 onClick={() => setMode("direct")}
                 className={cn(
-                  "flex-1 sm:flex-initial px-3 sm:px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  "flex-1 sm:flex-initial px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "direct"
                     ? "bg-white text-zinc-950 shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -171,7 +160,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 type="button"
                 onClick={() => setMode("gross-up")}
                 className={cn(
-                  "flex-1 sm:flex-initial px-3 sm:px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
+                  "flex-1 sm:flex-initial px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "gross-up"
                     ? "bg-white text-zinc-950 shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -180,17 +169,6 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 Invoice Gross-Up
               </button>
             </div>
-
-            {/* Reset Button with proper breathing room */}
-            <button
-              type="button"
-              onClick={handleReset}
-              className="inline-flex items-center justify-center size-9 rounded-xl text-zinc-400 hover:text-zinc-950 hover:bg-zinc-100 transition-colors cursor-pointer shrink-0"
-              title="Reset values to defaults"
-              aria-label="Reset values to defaults"
-            >
-              <RotateCcw className="size-4" />
-            </button>
           </div>
 
           {/* Settlement Currency Selector */}

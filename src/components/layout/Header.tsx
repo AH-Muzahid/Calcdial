@@ -135,30 +135,50 @@ export function Header() {
           )}
         >
           {/* Calculators Dropdown */}
-          <div className="relative flex items-center h-full" ref={dropdownRef}>
-            <button
-              type="button"
-              onClick={() => setCalcMenuOpen(!calcMenuOpen)}
+          <div
+            className="relative flex items-center h-full"
+            ref={dropdownRef}
+            onMouseEnter={() => setCalcMenuOpen(true)}
+            onMouseLeave={() => setCalcMenuOpen(false)}
+          >
+            <div
               className={cn(
-                "flex items-center gap-1.5 py-1 transition-colors cursor-pointer",
+                "flex items-center gap-1 py-1 transition-colors group",
                 isDarkNavbar
-                  ? calcMenuOpen
+                  ? calcMenuOpen || pathname === "/calculators"
                     ? "text-white font-semibold"
                     : "text-white/80 hover:text-white"
-                  : calcMenuOpen
+                  : calcMenuOpen || pathname === "/calculators"
                   ? "text-zinc-950 font-semibold"
                   : "text-zinc-600 hover:text-zinc-950"
               )}
             >
-              <span>Calculators</span>
-              <ChevronDown
-                className={cn(
-                  "size-3.5 transition-transform duration-200",
-                  isDarkNavbar ? "text-white/60 group-hover:text-white" : "text-zinc-400",
-                  calcMenuOpen ? "rotate-180 text-blue-500" : ""
-                )}
-              />
-            </button>
+              <Link
+                href="/calculators"
+                prefetch={false}
+                onClick={() => setCalcMenuOpen(false)}
+                className="hover:underline transition-colors"
+              >
+                Calculators
+              </Link>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCalcMenuOpen(!calcMenuOpen);
+                }}
+                className="p-0.5 rounded cursor-pointer hover:bg-white/10"
+                aria-label="Toggle calculators dropdown"
+              >
+                <ChevronDown
+                  className={cn(
+                    "size-3.5 transition-transform duration-200",
+                    isDarkNavbar ? "text-white/60 group-hover:text-white" : "text-zinc-400",
+                    calcMenuOpen ? "rotate-180 text-blue-500" : ""
+                  )}
+                />
+              </button>
+            </div>
 
             {/* Flyout Dropdown Menu - Clean Single-Line Items */}
             {calcMenuOpen && (
@@ -264,18 +284,28 @@ export function Header() {
           <nav className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
             {/* Calculators Accordion */}
             <div>
-              <button
-                type="button"
-                onClick={() => setMobileCalcOpen(!mobileCalcOpen)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors"
-              >
-                <span>Calculators</span>
-                <ChevronDown
-                  className={`size-4 text-zinc-400 transition-transform ${
-                    mobileCalcOpen ? "rotate-180" : ""
-                  }`}
-                />
-              </button>
+              <div className="flex w-full items-center justify-between rounded-lg hover:bg-zinc-50 transition-colors">
+                <Link
+                  href="/calculators"
+                  prefetch={false}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 px-3 py-2 text-zinc-800 font-medium hover:text-blue-600 transition-colors"
+                >
+                  Calculators
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setMobileCalcOpen(!mobileCalcOpen)}
+                  className="p-2 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
+                  aria-label="Toggle calculators submenu"
+                >
+                  <ChevronDown
+                    className={`size-4 transition-transform duration-200 ${
+                      mobileCalcOpen ? "rotate-180 text-blue-600" : ""
+                    }`}
+                  />
+                </button>
+              </div>
 
               {mobileCalcOpen && (
                 <div className="ml-3 my-1 border-l-2 border-zinc-150 pl-2 space-y-1">

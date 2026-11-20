@@ -80,8 +80,8 @@ export default function CalculatorsPage() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 font-sans">
             Seller Profit & Fee Calculators
           </h1>
-          <p className="mt-2 text-sm sm:text-base text-zinc-600 font-normal leading-relaxed max-w-3xl">
-            Precision financial calculators designed for e-commerce store owners, marketplace sellers, and creators. Model transaction cuts, platform referral commissions, and hidden deductions before you price.
+          <p className="mt-1.5 text-sm sm:text-base text-zinc-500 font-normal leading-relaxed max-w-2xl">
+            Precision financial calculators for marketplace sellers and e-commerce stores. Model transaction cuts and margins before you price.
           </p>
         </header>
 

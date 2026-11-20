@@ -6,7 +6,6 @@ import { StickyResultBar } from "./StickyResultBar";
 import { PixelButton } from "@/components/ui/PixelButton";
 import {
   Calculator,
-  RotateCcw,
   SlidersHorizontal,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
@@ -201,16 +200,6 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
     };
   }, [price, cost, shippingBuyer, includeOffsiteAds, includeTikTokAffiliate, monthlyOrders]);
 
-  const handleReset = () => {
-    setItemPriceStr("50.00");
-    setProductCostStr("20.00");
-    setShippingBuyerStr("5.00");
-    setCurrency("usd");
-    setIncludeOffsiteAds(false);
-    setIncludeTikTokAffiliate(false);
-    setMonthlyOrdersStr("100");
-  };
-
   const scrollToResults = () => {
     trackEvent({
       name: "calculator_used",
@@ -232,15 +221,6 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
           <h2 className="text-base sm:text-lg font-bold text-zinc-950 tracking-tight">
             Your Product Details
           </h2>
-          <button
-            type="button"
-            onClick={handleReset}
-            className="inline-flex items-center justify-center size-8 text-zinc-400 hover:text-zinc-950 transition-colors cursor-pointer rounded-lg hover:bg-zinc-100"
-            title="Reset to default $50 example"
-            aria-label="Reset calculator inputs"
-          >
-            <RotateCcw className="size-3.5" />
-          </button>
         </div>
 
         {/* Input Controls Grid: Symmetrical 4-Column Layout */}
@@ -638,45 +618,60 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
         {/* Right Column: Key Takeaways Card - Clean Fintech Style */}
         <div className="lg:col-span-1 rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-zinc-100">
+            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-100">
               <h3 className="text-base font-bold text-zinc-950 tracking-tight">
-                Key Takeaways
+                Platform Takeaways
               </h3>
-              <span className="text-[11px] font-medium text-zinc-400">Analysis</span>
+              <span className="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-600">
+                Verified
+              </span>
             </div>
 
-            <ul className="space-y-3.5 text-xs sm:text-sm text-zinc-800 leading-relaxed">
-              <li className="flex items-start gap-2.5">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold mt-0.5 select-none">✓</span>
-                <span>
+            <div className="space-y-3.5 text-xs sm:text-sm text-zinc-800">
+              <div className="rounded-xl border border-zinc-150 bg-zinc-50/60 p-3">
+                <span className="text-[10px] font-mono uppercase font-bold text-zinc-500 block mb-1">
+                  Profit Winner
+                </span>
+                <p className="text-xs leading-relaxed text-zinc-800">
                   {comparison.hasProfitablePlatform ? (
                     <>
-                      <strong className="text-zinc-950 font-bold">{comparison.winner.name} delivers the highest Net Profit ({curr.symbol}{comparison.winner.netProfit.toFixed(2)})</strong> in this comparison scenario.
+                      <strong className="text-zinc-950 font-bold">{comparison.winner.name}</strong> delivers the highest net profit at{" "}
+                      <span className="font-mono font-bold text-emerald-700">{curr.symbol}{comparison.winner.netProfit.toFixed(2)}</span> ({comparison.winner.margin.toFixed(1)}% margin) per order.
                     </>
                   ) : (
                     <>
-                      <strong className="text-rose-600 font-bold">All platforms operate at a loss with these cost inputs.</strong> Consider increasing your price or reducing product landed cost.
+                      <strong className="text-rose-600 font-bold">Negative Margin Scenario:</strong> All channels result in a loss. Consider raising price or reducing cost.
                     </>
                   )}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-zinc-150 bg-zinc-50/60 p-3">
+                <span className="text-[10px] font-mono uppercase font-bold text-zinc-500 block mb-1">
+                  Fee Efficiency
                 </span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[#2b5cfd] text-[11px] font-bold mt-0.5 select-none">✓</span>
-                <span>
-                  Shopify Payments charges 0% marketplace commission with standard credit card interchange ({curr.symbol}{comparison.shopify.totalFees.toFixed(2)} total fee).
+                <p className="text-xs leading-relaxed text-zinc-800">
+                  Shopify keeps 100% of marketplace take-rate (0% referral fee), deducting only standard merchant processing ({curr.symbol}{comparison.shopify.totalFees.toFixed(2)} total).
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-zinc-150 bg-zinc-50/60 p-3">
+                <span className="text-[10px] font-mono uppercase font-bold text-zinc-500 block mb-1">
+                  Volume Projection ({monthlyOrders} orders/mo)
                 </span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-purple-50 text-purple-700 text-[11px] font-bold mt-0.5 select-none">✓</span>
-                <span>
-                  At {monthlyOrders} orders/month, selling via {comparison.winner.name} yields {curr.symbol}{comparison.winner.annualProfit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} annual net profit.
-                </span>
-              </li>
-            </ul>
+                <p className="text-xs font-mono font-bold text-zinc-950">
+                  {curr.symbol}{comparison.winner.annualProfit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / year
+                  <span className="font-sans font-normal text-zinc-500 block text-[11px] mt-0.5">
+                    Estimated annual net profit when prioritizing {comparison.winner.name}.
+                  </span>
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="mt-5 rounded-xl bg-zinc-50 border border-zinc-200/70 p-3 text-xs text-zinc-600 leading-relaxed">
-            <span className="font-semibold text-zinc-900">Pro Tip:</span> Use Etsy and TikTok Shop for organic marketplace discovery, and migrate repeat customers to a dedicated Shopify storefront for 100% margin retention.
+          <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-500">
+            <span>Marketplace strategy:</span>
+            <span className="font-medium text-zinc-800">Multi-channel diversification</span>
           </div>
         </div>
       </div>

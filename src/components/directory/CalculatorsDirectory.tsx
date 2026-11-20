@@ -2,61 +2,47 @@
 
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import {
-  Search,
-  X,
-  ArrowRight,
-  Shirt,
-  ArrowLeftRight,
-} from "lucide-react";
+import { Search, X, Shirt, ArrowLeftRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CalculatorCard } from "@/components/home/CalculatorCard";
+import { AdSlot } from "@/components/layout/AdSlot";
 
 export interface CalculatorItem {
   id: string;
   slug: string;
   title: string;
-  shortDescription: string;
-  category: "marketplace" | "ecommerce" | "payments" | "pod";
+  subtitle: string;
+  category: "all" | "marketplace" | "ecommerce" | "pod" | "payments";
   categoryLabel: string;
-  rateSummary: string;
+  href: string;
   icon: React.ReactNode;
-  presets: { label: string; href: string }[];
 }
 
-export const ALL_CALCULATORS: CalculatorItem[] = [
+export const CALCULATORS: CalculatorItem[] = [
   {
     id: "etsy",
     slug: "etsy-fee-calculator",
     title: "Etsy Fee Calculator",
-    shortDescription:
-      "Calculate 6.5% transaction cuts, listing renewal fees ($0.20), country-specific payment processing, and mandatory Offsite Ads profit margins.",
+    subtitle: "Calculate 6.5% transaction cut, listing renewals, payment processing, and net profit.",
     category: "marketplace",
     categoryLabel: "Marketplace",
-    rateSummary: "6.5% + 3% + $0.25",
+    href: "/tools/etsy-fee-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-[#F1641E] text-white shadow-2xs font-serif font-black text-xl select-none shrink-0">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#F1641E] text-white shrink-0 shadow-2xs font-serif font-black text-lg sm:text-xl select-none">
         E
       </div>
     ),
-    presets: [
-      { label: "US Domestic", href: "/tools/etsy-fee-calculator-us" },
-      { label: "UK (4% + £0.20)", href: "/tools/etsy-fee-calculator-uk" },
-      { label: "Canada (CA$)", href: "/tools/etsy-fee-calculator-ca" },
-      { label: "Australia", href: "/tools/etsy-fee-calculator-au" },
-      { label: "Germany (EUR)", href: "/tools/etsy-fee-calculator-de" },
-    ],
   },
   {
     id: "shopify",
     slug: "shopify-profit-calculator",
     title: "Shopify Profit & ROAS Calculator",
-    shortDescription:
-      "Calculate net profit margins, credit card processing rates, third-party payment gateway penalty surcharges, and break-even advertising ROAS.",
+    subtitle: "Model credit card processing rates, third-party fees, and break-even advertising ROAS.",
     category: "ecommerce",
     categoryLabel: "E-Commerce",
-    rateSummary: "2.9% + $0.30 (Basic)",
+    href: "/tools/shopify-profit-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-white border border-zinc-200/90 shadow-2xs shrink-0 p-2">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-white border border-zinc-200/90 shadow-2xs shrink-0 p-1.5 sm:p-2">
         <svg viewBox="0 0 109 123" fill="none" className="size-full">
           <path
             d="M74.7 15.6c-.3-1.4-1.2-6.5-4.8-9.4C66.1 3.2 61.2 3 59.4 3c-.7 0-1.2.1-1.3.1-.9.2-2.3.8-3.7 2-3.1 2.8-5.3 7.8-6.4 13.9l-19.4 6c-2.3.7-2.3.9-2.6 3.1L12.5 106.6l54.8 13.4 39.8-13.4-32.4-91z"
@@ -77,24 +63,17 @@ export const ALL_CALCULATORS: CalculatorItem[] = [
         </svg>
       </div>
     ),
-    presets: [
-      { label: "Basic Plan (2.9%)", href: "/tools/shopify-profit-calculator-basic" },
-      { label: "Shopify Plan (2.7%)", href: "/tools/shopify-profit-calculator-shopify" },
-      { label: "Advanced Plan (2.5%)", href: "/tools/shopify-profit-calculator-advanced" },
-      { label: "External Gateway (+2%)", href: "/tools/shopify-profit-calculator-external" },
-    ],
   },
   {
     id: "tiktok",
     slug: "tiktok-shop-fee-calculator",
     title: "TikTok Shop Fee Calculator",
-    shortDescription:
-      "Estimate TikTok Shop referral fees (6%), fixed transaction fee ($0.30), creator affiliate commissions, and customer shipping subsidy deductions.",
+    subtitle: "Estimate referral fees (6%), fixed cuts ($0.30), creator affiliate commissions, and margins.",
     category: "marketplace",
     categoryLabel: "Social Commerce",
-    rateSummary: "6% Referral + $0.30",
+    href: "/tools/tiktok-shop-fee-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-black text-white shadow-2xs p-2 shrink-0">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-black text-white shrink-0 shadow-2xs p-1.5 sm:p-2">
         <svg viewBox="0 0 24 24" fill="none" className="size-full">
           <path
             d="M19.589 6.686a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.672a2.896 2.896 0 0 1-5.209 1.747 2.89 2.89 0 0 1 2.313-4.639c.314 0 .619.05.904.144V9.42a6.33 6.33 0 0 0-.904-.067 6.337 6.337 0 0 0-6.337 6.338 6.337 6.337 0 0 0 10.82 4.48 6.29 6.29 0 0 0 1.854-4.48V8.97a8.21 8.21 0 0 0 5.01 1.706V7.234a4.836 4.836 0 0 1-1.236-.548z"
@@ -113,82 +92,88 @@ export const ALL_CALCULATORS: CalculatorItem[] = [
         </svg>
       </div>
     ),
-    presets: [
-      { label: "Beauty & Health (6%)", href: "/tools/tiktok-shop-fee-calculator-beauty" },
-      { label: "Electronics (5%)", href: "/tools/tiktok-shop-fee-calculator-electronics" },
-      { label: "Apparel & Shoes (6%)", href: "/tools/tiktok-shop-fee-calculator-apparel" },
-      { label: "Home Goods (6%)", href: "/tools/tiktok-shop-fee-calculator-home" },
-    ],
   },
   {
     id: "pod",
     slug: "pod-profit-calculator",
-    title: "Print-on-Demand (POD) Profit Calculator",
-    shortDescription:
-      "Calculate real margins on Printify, Gelato, and custom apparel. Compare base manufacturing, buyer shipping, platform fees, and target markup.",
+    title: "Print-on-Demand (POD) Calculator",
+    subtitle: "Calculate Printify base cost vs. retail markup and realistic take-home profit margin.",
     category: "pod",
-    categoryLabel: "Print-on-Demand",
-    rateSummary: "Base Cost + Markup",
+    categoryLabel: "POD",
+    href: "/tools/pod-profit-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-purple-600 text-white shadow-2xs shrink-0">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-purple-600 text-white shrink-0 shadow-2xs">
         <Shirt className="size-5" />
       </div>
     ),
-    presets: [
-      { label: "Bella+Canvas 3001", href: "/tools/pod-profit-calculator-tshirt" },
-      { label: "Gildan 18500 Hoodie", href: "/tools/pod-profit-calculator-hoodie" },
-      { label: "Ceramic Mug 11oz", href: "/tools/pod-profit-calculator-mug" },
-      { label: "Matte Canvas Poster", href: "/tools/pod-profit-calculator-poster" },
-    ],
   },
   {
     id: "comparison",
     slug: "etsy-vs-shopify-vs-tiktok-shop-calculator",
-    title: "3-Way Marketplace Profit Comparison",
-    shortDescription:
-      "Head-to-head comparison across Etsy, Shopify, and TikTok Shop. See who takes the biggest cut, stacked fee percentages, and winner profit margin.",
+    title: "Marketplace Fee Compare",
+    subtitle: "Side-by-side fee take rates and net profit for Etsy vs. Shopify vs. TikTok Shop.",
     category: "marketplace",
-    categoryLabel: "Comparison Engine",
-    rateSummary: "Multi-Channel Take Rates",
+    categoryLabel: "Comparison",
+    href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-2xs shrink-0">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-indigo-600 text-white shrink-0 shadow-2xs">
         <ArrowLeftRight className="size-5" />
       </div>
     ),
-    presets: [
-      { label: "$25 Scenario", href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" },
-      { label: "$50 Scenario", href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" },
-      { label: "$100 Scenario", href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator" },
-    ],
   },
   {
     id: "stripe-paypal",
     slug: "stripe-vs-paypal-fee-calculator",
-    title: "Stripe vs. PayPal Fee Comparison & Gross-Up",
-    shortDescription:
-      "Direct processing fee comparison, annual volume projection savings, and exact client invoice reverse gross-up calculator so you keep 100% of your earnings.",
+    title: "Stripe vs. PayPal Calculator",
+    subtitle: "Compare processor fees and calculate client invoice gross-up amounts.",
     category: "payments",
-    categoryLabel: "Payment Gateways",
-    rateSummary: "2.9% vs. 3.49% + Gross-Up",
+    categoryLabel: "Payments",
+    href: "/tools/stripe-vs-paypal-fee-calculator",
     icon: (
-      <div className="flex size-10 items-center justify-center rounded-xl bg-[#635BFF] text-white shadow-2xs font-bold text-xl select-none shrink-0">
+      <div className="flex size-9 sm:size-10 items-center justify-center rounded-xl bg-[#635BFF] text-white shrink-0 shadow-2xs font-bold text-lg select-none">
         S
       </div>
     ),
-    presets: [
-      { label: "Direct Payment Fee", href: "/tools/stripe-vs-paypal-fee-calculator" },
-      { label: "Invoice Gross-Up (Cover Fees)", href: "/tools/stripe-vs-paypal-fee-calculator" },
-      { label: "International Cards", href: "/tools/stripe-vs-paypal-fee-calculator" },
-    ],
   },
 ];
 
 const CATEGORIES = [
   { id: "all", label: "All Calculators" },
   { id: "marketplace", label: "Marketplaces (Etsy, TikTok)" },
-  { id: "ecommerce", label: "E-Commerce Stores (Shopify)" },
+  { id: "ecommerce", label: "E-Commerce (Shopify)" },
   { id: "pod", label: "Print-on-Demand (POD)" },
-  { id: "payments", label: "Payments & Invoicing" },
+  { id: "payments", label: "Payment Gateways" },
+];
+
+const POPULAR_PRESETS = [
+  {
+    platform: "Etsy Presets",
+    items: [
+      { label: "US Domestic (6.5% + 3% + $0.25)", href: "/tools/etsy-fee-calculator-us" },
+      { label: "UK (4% + £0.20)", href: "/tools/etsy-fee-calculator-uk" },
+      { label: "Canada (CA$)", href: "/tools/etsy-fee-calculator-ca" },
+      { label: "Australia (A$)", href: "/tools/etsy-fee-calculator-au" },
+      { label: "Germany (EUR)", href: "/tools/etsy-fee-calculator-de" },
+    ],
+  },
+  {
+    platform: "Shopify Presets",
+    items: [
+      { label: "Basic Plan (2.9% + $0.30)", href: "/tools/shopify-profit-calculator-basic" },
+      { label: "Shopify Plan (2.7% + $0.30)", href: "/tools/shopify-profit-calculator-shopify" },
+      { label: "Advanced Plan (2.5% + $0.30)", href: "/tools/shopify-profit-calculator-advanced" },
+      { label: "External Gateway (+2% Surcharge)", href: "/tools/shopify-profit-calculator-external" },
+    ],
+  },
+  {
+    platform: "TikTok & Payment Presets",
+    items: [
+      { label: "TikTok Beauty & Health (6%)", href: "/tools/tiktok-shop-fee-calculator-beauty" },
+      { label: "TikTok Electronics (5%)", href: "/tools/tiktok-shop-fee-calculator-electronics" },
+      { label: "Stripe vs PayPal Direct Fee", href: "/tools/stripe-vs-paypal-fee-calculator" },
+      { label: "Invoice Gross-Up Target", href: "/tools/stripe-vs-paypal-fee-calculator" },
+    ],
+  },
 ];
 
 export function CalculatorsDirectory() {
@@ -196,7 +181,7 @@ export function CalculatorsDirectory() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const filteredCalculators = useMemo(() => {
-    return ALL_CALCULATORS.filter((calc) => {
+    return CALCULATORS.filter((calc) => {
       const matchesCategory =
         selectedCategory === "all" || calc.category === selectedCategory;
 
@@ -204,47 +189,41 @@ export function CalculatorsDirectory() {
       const matchesSearch =
         !q ||
         calc.title.toLowerCase().includes(q) ||
-        calc.shortDescription.toLowerCase().includes(q) ||
-        calc.categoryLabel.toLowerCase().includes(q) ||
-        calc.presets.some((p) => p.label.toLowerCase().includes(q));
+        calc.subtitle.toLowerCase().includes(q) ||
+        calc.categoryLabel.toLowerCase().includes(q);
 
       return matchesCategory && matchesSearch;
     });
   }, [searchQuery, selectedCategory]);
 
-  const handleClearFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("all");
-  };
-
   return (
     <div className="w-full">
       {/* Search & Filter Toolbar */}
-      <div className="mb-8 space-y-4">
+      <div className="mb-6 sm:mb-8 space-y-4">
         {/* Search Bar */}
-        <div className="relative max-w-2xl">
+        <div className="relative max-w-xl">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by calculator name, platform, rate, or feature..."
-            className="w-full h-12 rounded-xl border border-zinc-200/90 bg-white pl-11 pr-10 text-sm font-medium text-zinc-950 placeholder:text-zinc-400 focus:outline-hidden focus:border-blue-500 focus:ring-3 focus:ring-blue-500/10 shadow-xs transition-all"
+            placeholder="Search by platform, payment rate, or fee type..."
+            className="w-full h-11 sm:h-12 rounded-xl border border-zinc-200/90 bg-white pl-10 pr-9 text-xs sm:text-sm font-medium text-zinc-950 placeholder:text-zinc-400 focus:outline-hidden focus:border-blue-500 focus:ring-3 focus:ring-blue-500/10 shadow-xs transition-all"
           />
-          <Search className="absolute left-3.5 top-3.5 size-5 text-zinc-400 pointer-events-none" />
+          <Search className="absolute left-3.5 top-3.5 size-4 sm:size-4.5 text-zinc-400 pointer-events-none" />
           {searchQuery && (
             <button
               type="button"
               onClick={() => setSearchQuery("")}
-              className="absolute right-3.5 top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer"
+              className="absolute right-3 top-3 sm:top-3.5 text-zinc-400 hover:text-zinc-700 cursor-pointer p-0.5"
               aria-label="Clear search query"
             >
-              <X className="size-5" />
+              <X className="size-4" />
             </button>
           )}
         </div>
 
         {/* Category Pills & Count */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-0.5">
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             {CATEGORIES.map((cat) => {
               const isActive = selectedCategory === cat.id;
@@ -254,7 +233,7 @@ export function CalculatorsDirectory() {
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
                   className={cn(
-                    "px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer select-none",
+                    "px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer select-none",
                     isActive
                       ? "bg-zinc-950 text-white shadow-2xs"
                       : "bg-white text-zinc-600 border border-zinc-200/80 hover:border-zinc-300 hover:text-zinc-950"
@@ -267,102 +246,93 @@ export function CalculatorsDirectory() {
           </div>
 
           <span className="text-xs font-medium text-zinc-500 shrink-0">
-            Showing <strong className="text-zinc-900 font-semibold">{filteredCalculators.length}</strong> of {ALL_CALCULATORS.length} calculators
+            Showing <strong className="text-zinc-900 font-semibold">{filteredCalculators.length}</strong> calculators
           </span>
         </div>
       </div>
 
-      {/* Calculator Grid */}
+      {/* Clean Calculator Cards Grid */}
       {filteredCalculators.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4.5 sm:gap-5">
           {filteredCalculators.map((calc) => (
-            <div
+            <CalculatorCard
               key={calc.id}
-              className="group flex flex-col justify-between rounded-xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs hover:border-blue-400/60 hover:shadow-[0_12px_32px_-8px_rgba(43,92,253,0.12),0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-200"
-            >
-              {/* Card Header & Body */}
-              <div>
-                <div className="flex items-start justify-between gap-3 mb-3.5">
-                  <div className="transition-transform duration-200 group-hover:scale-105">
-                    {calc.icon}
-                  </div>
-                  <span className="rounded-full bg-zinc-100 border border-zinc-200/80 px-2.5 py-0.5 text-[10px] font-mono font-bold text-zinc-700 uppercase tracking-wider shrink-0">
-                    {calc.rateSummary}
-                  </span>
-                </div>
-
-                <div className="mb-2">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 block mb-0.5">
-                    {calc.categoryLabel}
-                  </span>
-                  <h3 className="text-lg font-bold text-zinc-950 group-hover:text-blue-600 transition-colors tracking-tight leading-snug">
-                    <Link href={`/tools/${calc.slug}`} prefetch={false}>
-                      {calc.title}
-                    </Link>
-                  </h3>
-                </div>
-
-                <p className="text-xs sm:text-[13px] text-zinc-600 leading-relaxed font-normal mb-4">
-                  {calc.shortDescription}
-                </p>
-              </div>
-
-              {/* Bottom Presets & CTA */}
-              <div className="pt-3 border-t border-zinc-100 space-y-3">
-                {/* Popular Scenarios / Country Presets */}
-                <div>
-                  <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block mb-1.5">
-                    Quick Presets
-                  </span>
-                  <div className="flex flex-wrap gap-1">
-                    {calc.presets.map((preset) => (
-                      <Link
-                        key={preset.label}
-                        href={preset.href}
-                        prefetch={false}
-                        className="text-[11px] font-medium text-zinc-600 hover:text-blue-600 bg-zinc-50 hover:bg-blue-50/60 border border-zinc-200/70 hover:border-blue-200 rounded-md px-2 py-0.5 transition-colors"
-                      >
-                        {preset.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Primary CTA Link */}
-                <Link
-                  href={`/tools/${calc.slug}`}
-                  prefetch={false}
-                  className="w-full inline-flex items-center justify-between pt-1 text-xs font-bold text-zinc-900 group-hover:text-blue-600 transition-colors"
-                >
-                  <span>Open Calculator</span>
-                  <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-                </Link>
-              </div>
-            </div>
+              id={calc.id}
+              title={calc.title}
+              subtitle={calc.subtitle}
+              href={calc.href}
+              icon={calc.icon}
+            />
           ))}
         </div>
       ) : (
         /* Empty State */
-        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center max-w-lg mx-auto">
-          <div className="flex size-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 mx-auto mb-3">
-            <Search className="size-6" />
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center max-w-md mx-auto my-8">
+          <div className="flex size-10 items-center justify-center rounded-full bg-zinc-100 text-zinc-400 mx-auto mb-2.5">
+            <Search className="size-5" />
           </div>
-          <h3 className="text-base font-bold text-zinc-950 mb-1">
+          <h3 className="text-sm font-bold text-zinc-950 mb-1">
             No calculators found
           </h3>
-          <p className="text-xs text-zinc-500 mb-4">
-            We couldn&apos;t find any calculator matching &quot;{searchQuery}&quot;. Try adjusting your search query or reset filters.
+          <p className="text-xs text-zinc-500 mb-3.5">
+            No calculators matched &quot;{searchQuery}&quot;. Try adjusting your search or reset filters.
           </p>
           <button
             type="button"
-            onClick={handleClearFilters}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
+            onClick={() => {
+              setSearchQuery("");
+              setSelectedCategory("all");
+            }}
+            className="inline-flex items-center text-xs font-bold text-blue-600 hover:text-blue-700 cursor-pointer"
           >
-            <span>Reset search & filters</span>
-            <ArrowRight className="size-3.5" />
+            Clear filters
           </button>
         </div>
       )}
+
+      {/* High-Yield In-Content Ad Placement (CLS Safe) */}
+      <div className="my-8 sm:my-10">
+        <AdSlot position="in-content" />
+      </div>
+
+      {/* Popular Scenarios & Country Presets Jump Chips */}
+      <section className="rounded-xl border border-zinc-200/80 bg-white p-4.5 sm:p-6 shadow-xs">
+        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-100">
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
+              Popular Presets & Quick Scenarios
+            </h2>
+            <p className="text-xs text-zinc-500 mt-0.5">
+              Instant shortcuts to pre-configured regional rates, category rules, and payment modes.
+            </p>
+          </div>
+          <span className="hidden sm:inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-semibold text-zinc-600 uppercase tracking-wider">
+            Shortcuts
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4.5">
+          {POPULAR_PRESETS.map((group) => (
+            <div key={group.platform} className="space-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block font-mono">
+                {group.platform}
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {group.items.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    prefetch={false}
+                    className="text-[11px] font-medium text-zinc-700 hover:text-blue-600 bg-zinc-50 hover:bg-blue-50/70 border border-zinc-200/70 hover:border-blue-200 rounded-lg px-2.5 py-1 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
