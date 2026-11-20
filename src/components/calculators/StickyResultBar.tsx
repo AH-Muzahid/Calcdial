@@ -116,8 +116,8 @@ export function StickyResultBar({
               <span className={`size-2.5 rounded-full ${isLoss ? "bg-rose-500" : "bg-emerald-500"}`} />
               <h4 className="text-sm font-bold text-zinc-950">Calculation Breakdown</h4>
               {isLoss && (
-                <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-bold text-rose-700 uppercase">
-                  Loss
+                <span className="text-xs font-mono font-bold text-rose-600">
+                  (Loss)
                 </span>
               )}
             </div>

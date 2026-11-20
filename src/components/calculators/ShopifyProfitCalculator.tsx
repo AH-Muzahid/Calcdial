@@ -528,10 +528,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                   </span>
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono border",
-                      result.netProfit >= 0
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200/70"
-                        : "bg-rose-50 text-rose-700 border-rose-200/70"
+                      "text-xs font-mono font-bold",
+                      result.netProfit >= 0 ? "text-emerald-700" : "text-rose-600"
                     )}
                   >
                     {result.netMarginPct.toFixed(1)}% margin
@@ -678,7 +676,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
                     Recommended Retail Price
                   </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200/70">
+                  <span className="text-xs font-mono font-bold text-[#2b5cfd]">
                     Target {reverseAnalysis.netMarginPct.toFixed(1)}% margin
                   </span>
                 </div>

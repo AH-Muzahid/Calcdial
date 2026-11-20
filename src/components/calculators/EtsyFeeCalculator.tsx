@@ -561,8 +561,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                         type="button"
                         onClick={() => setAdsTier(0.15)}
                         className={cn(
-                          "px-2 py-0.5 text-[10px] font-bold rounded",
-                          adsTier === 0.15 ? "bg-white text-zinc-950 shadow-2xs" : "text-zinc-500"
+                          "px-2 py-0.5 text-[10px] font-bold rounded cursor-pointer transition-all",
+                          adsTier === 0.15 ? "bg-[#2b5cfd] text-white shadow-2xs" : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
                         15% (Under $10k)
@@ -571,8 +571,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                         type="button"
                         onClick={() => setAdsTier(0.12)}
                         className={cn(
-                          "px-2 py-0.5 text-[10px] font-bold rounded",
-                          adsTier === 0.12 ? "bg-white text-zinc-950 shadow-2xs" : "text-zinc-500"
+                          "px-2 py-0.5 text-[10px] font-bold rounded cursor-pointer transition-all",
+                          adsTier === 0.12 ? "bg-[#2b5cfd] text-white shadow-2xs" : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
                         12% (Over $10k)
@@ -670,10 +670,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                   </span>
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono border",
-                      result.netProfit >= 0
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200/70"
-                        : "bg-rose-50 text-rose-700 border-rose-200/70"
+                      "text-xs font-mono font-bold",
+                      result.netProfit >= 0 ? "text-emerald-700" : "text-rose-600"
                     )}
                   >
                     {result.netMarginPct.toFixed(1)}% margin
@@ -820,7 +818,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                   <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700">
                     Recommended Listing Price
                   </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono bg-blue-50 text-blue-700 border border-blue-200/70">
+                  <span className="text-xs font-mono font-bold text-[#2b5cfd]">
                     Target {reverseResult.estimatedMarginPct.toFixed(1)}% margin
                   </span>
                 </div>

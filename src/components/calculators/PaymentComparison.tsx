@@ -457,13 +457,13 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
           </div>
 
           {/* Winner Highlight Banner */}
-          <div className="rounded-xl bg-zinc-50 border border-zinc-200/80 p-3 space-y-1">
+          <div className="rounded-xl bg-zinc-50/80 border border-zinc-200/80 p-3 space-y-1">
             <div className="flex items-center justify-between gap-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
+              <span className="text-xs font-bold text-zinc-900">
                 Gateway Recommendation
               </span>
-              <span className="text-xs font-bold text-emerald-700">
-                {result.recommended} Recommended
+              <span className="text-xs font-bold text-emerald-700 font-mono">
+                {result.recommended} Preferred
               </span>
             </div>
 
@@ -505,7 +505,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <span className="text-sm font-extrabold text-zinc-950 tracking-tight">
                   Stripe
                 </span>
-                <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-700 whitespace-nowrap shrink-0">
+                <span className="text-xs font-mono font-semibold text-zinc-500 whitespace-nowrap shrink-0">
                   {result.stripe.ratePct}% + {result.currencySymbol}
                   {result.stripe.fixedFee.toFixed(2)}
                 </span>
@@ -579,7 +579,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <span className="text-sm font-extrabold text-zinc-950 tracking-tight">
                   PayPal
                 </span>
-                <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-bold text-zinc-700 whitespace-nowrap shrink-0">
+                <span className="text-xs font-mono font-semibold text-zinc-500 whitespace-nowrap shrink-0">
                   {result.paypal.ratePct}% + {result.currencySymbol}
                   {result.paypal.fixedFee.toFixed(2)}
                 </span>

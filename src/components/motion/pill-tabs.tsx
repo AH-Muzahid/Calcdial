@@ -189,15 +189,15 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
         }}
       >
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white shadow-xs border border-zinc-200/50"
+          className="absolute left-0 top-0 rounded-full bg-[#2b5cfd] shadow-sm shadow-blue-500/25"
           style={{ x: left, width: height, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 w-px origin-left bg-white"
+          className="absolute left-0 top-0 w-px origin-left bg-[#2b5cfd]"
           style={{ x: midX, scaleX: midScale, height }}
         />
         <motion.span
-          className="absolute left-0 top-0 rounded-full bg-white shadow-xs border border-zinc-200/50"
+          className="absolute left-0 top-0 rounded-full bg-[#2b5cfd] shadow-sm shadow-blue-500/25"
           style={{ x: capX, width: height, height }}
         />
       </motion.span>
@@ -218,13 +218,13 @@ export const PillTabs = React.forwardRef<HTMLDivElement, PillTabsProps>(function
             className={cn(
               "relative z-10 inline-flex h-8 sm:h-9 cursor-pointer items-center gap-1.5 rounded-full px-2.5 sm:px-4 text-[11px] sm:text-xs font-semibold outline-none transition-colors duration-200 whitespace-nowrap",
               active
-                ? "text-zinc-950 font-bold"
-                : "text-zinc-500 hover:text-zinc-900"
+                ? "text-white font-bold"
+                : "text-zinc-600 hover:text-zinc-950 font-medium"
             )}
           >
             {tab.label}
             {tab.badge !== undefined && (
-              <span className="ml-1 rounded-full bg-zinc-900 text-white px-2 py-0.5 text-[10px] font-mono font-medium">
+              <span className="ml-1 rounded-full bg-white/20 text-white px-2 py-0.5 text-[10px] font-mono font-medium">
                 {tab.badge}
               </span>
             )}

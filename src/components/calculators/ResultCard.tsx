@@ -106,10 +106,8 @@ export function ResultCard({
           <div className="flex items-center gap-2">
             {marginPct !== undefined && (
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs font-mono font-bold ${
-                  isProfitPositive
-                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                    : "bg-zinc-100 text-zinc-700 border border-zinc-200"
+                className={`text-xs font-mono font-bold ${
+                  isProfitPositive ? "text-emerald-700" : "text-zinc-600"
                 }`}
               >
                 {formatPercent(marginPct)} Margin
@@ -118,7 +116,7 @@ export function ResultCard({
             <button
               type="button"
               onClick={handleCopy}
-              className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-mono font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 transition-colors"
+              className="inline-flex items-center gap-1 rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-mono font-medium text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
               title="Copy calculation summary"
             >
               {copied ? (
@@ -127,10 +125,7 @@ export function ResultCard({
                   <span className="text-emerald-700 font-semibold">Copied</span>
                 </>
               ) : (
-                <>
-                  <span>📋</span>
-                  <span>Copy</span>
-                </>
+                <span>Copy</span>
               )}
             </button>
           </div>

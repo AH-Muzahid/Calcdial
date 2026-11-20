@@ -87,7 +87,7 @@ export function HeroDialDemo() {
             Interactive Fee Dial · Live Demo
           </span>
         </div>
-        <span className="rounded-full bg-zinc-100 border border-zinc-200/60 px-2.5 py-0.5 text-[11px] font-mono font-medium text-zinc-900">
+        <span className="text-xs font-mono font-medium text-zinc-600">
           $35.00 Model Order
         </span>
       </div>

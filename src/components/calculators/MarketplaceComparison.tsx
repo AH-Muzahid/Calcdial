@@ -438,13 +438,13 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                 </div>
 
                 {isWinner && (
-                  <span className="inline-flex items-center rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white shadow-2xs">
+                  <span className="text-xs font-bold text-emerald-700 font-mono">
                     Highest Margin
                   </span>
                 )}
                 {isLoss && (
-                  <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-bold text-rose-700">
-                    LOSS
+                  <span className="text-xs font-bold text-rose-600 font-mono">
+                    (Loss)
                   </span>
                 )}
               </div>

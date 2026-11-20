@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles, Scale, TrendingUp, ShoppingBag, CreditCard } from "lucide-react";
+import { ArrowRight, Scale, TrendingUp, ShoppingBag, CreditCard } from "lucide-react";
 
 interface ContextualToolBridgeProps {
   currentTool: string;
@@ -21,7 +21,7 @@ export function ContextualToolBridge({
   let description = "Check how this product performs on other channels.";
   let href = "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator";
   let ctaText = "Compare Channels";
-  let Icon = Sparkles;
+  let Icon = TrendingUp;
 
   switch (currentTool) {
     case "etsy-fee-calculator":

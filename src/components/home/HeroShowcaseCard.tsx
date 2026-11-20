@@ -139,7 +139,7 @@ export function HeroShowcaseCard() {
                   className={cn(
                     "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
                     activePlatform === id
-                      ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                      ? "bg-[#2b5cfd] text-white font-bold shadow-xs"
                       : "text-zinc-600 hover:text-zinc-950"
                   )}
                 >
@@ -263,7 +263,7 @@ export function HeroShowcaseCard() {
                   <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                     Net Take-Home
                   </span>
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold font-mono bg-emerald-50 text-emerald-700 border border-emerald-200/70">
+                  <span className="text-xs font-mono font-bold text-emerald-700">
                     {marginPct.toFixed(1)}% margin
                   </span>
                 </div>
