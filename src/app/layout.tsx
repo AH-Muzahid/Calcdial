@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   },
 };
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-VHNNXPTG88";
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID;
 const AD_NETWORK = process.env.NEXT_PUBLIC_AD_NETWORK || "adsense";
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
