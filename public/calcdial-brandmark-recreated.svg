@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%" fill="none">
+    <defs>
+      <linearGradient id="pNavy" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0a1d44" />
+        <stop offset="60%" stop-color="#030e26" />
+        <stop offset="100%" stop-color="#010918" />
+      </linearGradient>
+      <linearGradient id="pBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38bdf8" />
+        <stop offset="40%" stop-color="#2b5cfd" />
+        <stop offset="100%" stop-color="#0052e0" />
+      </linearGradient>
+    </defs>
+
+    <g transform="translate(50, 50)">
+      <!-- Top Navy Arm -->
+      <path d="M 235 50 L 320 50 C 345 50 365 65 375 88 L 260 200 L 175 200 C 160 200 150 210 150 225 L 150 280 L 78 352 L 78 200 C 78 175 92 152 112 135 L 202 62 C 212 54 223 50 235 50 Z" fill="url(#pNavy)" />
+      
+      <!-- Bottom-Left Navy Base (cut by diagonal negative space slash) -->
+      <path d="M 82 396 L 154 324 L 235 405 C 225 418 210 426 192 426 L 115 426 C 96 426 82 412 82 396 Z" fill="url(#pNavy)" />
+
+      <!-- Right Electric Blue Wing -->
+      <path d="M 295 145 L 368 218 C 390 240 402 265 402 295 L 402 342 C 402 365 392 385 376 398 L 342 426 L 250 426 L 332 344 L 332 245 L 260 175 Z" fill="url(#pBlue)" />
+
+      <!-- Center Negative Space Precision Dial Needle -->
+      <!-- Ring with central negative space hole -->
+      <path d="M 245 285 m -32, 0 a 32,32 0 1,0 64,0 a 32,32 0 1,0 -64,0 M 245 285 m -16, 0 a 16,16 0 1,1 32,0 a 16,16 0 1,1 -32,0" fill="url(#pNavy)" fill-rule="evenodd" />
+      
+      <!-- Sharp Dynamic Pointer -->
+      <path d="M 252 268 L 316 200 C 319 197 322 201 319 204 L 272 276 Z" fill="url(#pNavy)" />
+      <circle cx="316" cy="202" r="5" fill="#10b981" />
+    </g>
+  </svg>
