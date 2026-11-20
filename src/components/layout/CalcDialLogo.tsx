@@ -10,7 +10,7 @@ export function CalcDialLogo({ className = "", isDark = false }: { className?: s
           alt="CalcDial App Icon"
           width={36}
           height={36}
-          className="size-9 rounded-xl object-contain shadow-md ring-1 ring-white/15 drop-shadow-[0_2px_10px_rgba(43,92,253,0.4)]"
+          className="size-9 object-contain"
           priority
         />
       </div>
