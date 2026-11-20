@@ -1,79 +1,19 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, ChevronDown, ShoppingBag, Video, Shirt, ArrowLeftRight, CreditCard, ArrowRight } from "lucide-react";
+import { Search, Menu, X, ArrowRight } from "lucide-react";
 import { CalcDialLogo } from "./CalcDialLogo";
 import { cn } from "@/lib/utils";
-
-const NAV_CALCULATORS = [
-  {
-    name: "Etsy Fee Calculator",
-    href: "/tools/etsy-fee-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-[#F1641E]/10 text-[#F1641E] shrink-0 font-serif font-black text-xs">
-        E
-      </div>
-    ),
-  },
-  {
-    name: "Shopify Profit & ROAS",
-    href: "/tools/shopify-profit-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 shrink-0">
-        <ShoppingBag className="size-3.5" />
-      </div>
-    ),
-  },
-  {
-    name: "TikTok Shop Fees",
-    href: "/tools/tiktok-shop-fee-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-black text-white shrink-0">
-        <Video className="size-3" />
-      </div>
-    ),
-  },
-  {
-    name: "Print-on-Demand (POD)",
-    href: "/tools/pod-profit-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-purple-50 text-purple-600 shrink-0">
-        <Shirt className="size-3.5" />
-      </div>
-    ),
-  },
-  {
-    name: "3-Way Platform Compare",
-    href: "/tools/etsy-vs-shopify-vs-tiktok-shop-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 shrink-0">
-        <ArrowLeftRight className="size-3.5" />
-      </div>
-    ),
-  },
-  {
-    name: "Stripe vs. PayPal Calculator",
-    href: "/tools/stripe-vs-paypal-fee-calculator",
-    icon: (
-      <div className="flex size-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
-        <CreditCard className="size-3.5" />
-      </div>
-    ),
-  },
-];
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
-  const [calcMenuOpen, setCalcMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileCalcOpen, setMobileCalcOpen] = useState(false);
   const [scrollState, setScrollState] = useState<"top" | "dark-scrolled" | "light">("top");
   const effectiveScrollState = !isHome ? "light" : scrollState;
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isHome) return;
@@ -93,16 +33,6 @@ export function Header() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHome]);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setCalcMenuOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const triggerGlobalSearch = () => {
     if (typeof window !== "undefined") {
@@ -134,88 +64,18 @@ export function Header() {
             isDarkNavbar ? "text-white/80" : "text-zinc-600"
           )}
         >
-          {/* Calculators Dropdown */}
-          <div
-            className="relative flex items-center h-full"
-            ref={dropdownRef}
-            onMouseEnter={() => setCalcMenuOpen(true)}
-            onMouseLeave={() => setCalcMenuOpen(false)}
-          >
-            <div
-              className={cn(
-                "flex items-center gap-1 py-1 transition-colors group",
-                isDarkNavbar
-                  ? calcMenuOpen || pathname === "/calculators"
-                    ? "text-white font-semibold"
-                    : "text-white/80 hover:text-white"
-                  : calcMenuOpen || pathname === "/calculators"
-                  ? "text-zinc-950 font-semibold"
-                  : "text-zinc-600 hover:text-zinc-950"
-              )}
-            >
-              <Link
-                href="/calculators"
-                prefetch={false}
-                onClick={() => setCalcMenuOpen(false)}
-                className="hover:underline transition-colors"
-              >
-                Calculators
-              </Link>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCalcMenuOpen(!calcMenuOpen);
-                }}
-                className="p-0.5 rounded cursor-pointer hover:bg-white/10"
-                aria-label="Toggle calculators dropdown"
-              >
-                <ChevronDown
-                  className={cn(
-                    "size-3.5 transition-transform duration-200",
-                    isDarkNavbar ? "text-white/60 group-hover:text-white" : "text-zinc-400",
-                    calcMenuOpen ? "rotate-180 text-blue-500" : ""
-                  )}
-                />
-              </button>
-            </div>
-
-            {/* Flyout Dropdown Menu - Clean Single-Line Items */}
-            {calcMenuOpen && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-72 rounded-xl border border-zinc-200/90 bg-white/98 backdrop-blur-xl p-2 shadow-[0_12px_36px_rgba(0,0,0,0.08)] animate-in fade-in slide-in-from-top-2 duration-150 z-50 font-sans">
-                <div className="px-3 pt-1.5 pb-1 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                  Calculators
-                </div>
-                <div className="space-y-0.5">
-                  {NAV_CALCULATORS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      prefetch={false}
-                      onClick={() => setCalcMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-lg px-2.5 py-2 transition-colors hover:bg-zinc-50 group"
-                    >
-                      {item.icon}
-                      <span className="font-medium text-[13px] text-zinc-800 group-hover:text-blue-600 transition-colors truncate">
-                        {item.name}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-                <div className="mt-1.5 pt-1.5 border-t border-zinc-100 px-2 pb-1">
-                  <Link
-                    href="/calculators"
-                    prefetch={false}
-                    onClick={() => setCalcMenuOpen(false)}
-                    className="flex items-center justify-between text-xs font-semibold text-blue-600 hover:text-blue-700 px-2 py-1 rounded transition-colors"
-                  >
-                    <span>View all calculators</span>
-                    <ArrowRight className="size-3.5" />
-                  </Link>
-                </div>
-              </div>
+          {/* Calculators Direct Link */}
+          <Link
+            href="/calculators"
+            prefetch={false}
+            className={cn(
+              "transition-colors",
+              isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950",
+              pathname === "/calculators" && (isDarkNavbar ? "text-white font-semibold" : "text-[#2b5cfd] font-semibold")
             )}
-          </div>
+          >
+            Calculators
+          </Link>
 
           {/* Comparisons Link */}
           <Link
@@ -224,7 +84,7 @@ export function Header() {
             className={cn(
               "transition-colors",
               isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950",
-              pathname === "/comparisons" && (isDarkNavbar ? "text-white font-semibold" : "text-zinc-950 font-semibold")
+              pathname === "/comparisons" && (isDarkNavbar ? "text-white font-semibold" : "text-[#2b5cfd] font-semibold")
             )}
           >
             Comparisons
@@ -237,7 +97,7 @@ export function Header() {
             className={cn(
               "transition-colors",
               isDarkNavbar ? "text-white/80 hover:text-white" : "text-zinc-600 hover:text-zinc-950",
-              pathname === "/guides" && (isDarkNavbar ? "text-white font-semibold" : "text-zinc-950 font-semibold")
+              pathname === "/guides" && (isDarkNavbar ? "text-white font-semibold" : "text-[#2b5cfd] font-semibold")
             )}
           >
             Guides
@@ -246,7 +106,7 @@ export function Header() {
 
         {/* Right Actions: Minimalist Ghost Icon Buttons */}
         <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Minimal Search Icon Button (No Box, No Border, Pure Icon) */}
+          {/* Minimal Search Icon Button */}
           <button
             type="button"
             onClick={triggerGlobalSearch}
@@ -254,104 +114,133 @@ export function Header() {
               "flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
-                : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
+                : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
             )}
-            aria-label="Search calculators"
+            title="Search calculators (⌘K / Ctrl+K)"
+            aria-label="Open global search modal"
           >
             <Search className="size-5" />
           </button>
 
-          {/* Mobile Menu Toggle (Pure Icon, No Border, No Background) */}
+          {/* Mobile Menu Hamburger Button */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={cn(
-              "flex md:hidden items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              "md:hidden flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
                 : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
             )}
-            aria-label="Toggle navigation"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+            {mobileMenuOpen ? (
+              <X className="size-5" />
+            ) : (
+              <Menu className="size-5" />
+            )}
           </button>
         </div>
       </div>
 
-      {/* Mobile Responsive Navigation Dropdown */}
+      {/* Redesigned Mobile Responsive Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-zinc-200/80 bg-white px-4 py-3.5 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          <nav className="flex flex-col gap-1 text-sm font-medium text-zinc-700">
-            {/* Calculators Accordion */}
-            <div>
-              <div className="flex w-full items-center justify-between rounded-lg hover:bg-zinc-50 transition-colors">
-                <Link
-                  href="/calculators"
-                  prefetch={false}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 px-3 py-2 text-zinc-800 font-medium hover:text-blue-600 transition-colors"
-                >
-                  Calculators
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => setMobileCalcOpen(!mobileCalcOpen)}
-                  className="p-2 text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer"
-                  aria-label="Toggle calculators submenu"
-                >
-                  <ChevronDown
-                    className={`size-4 transition-transform duration-200 ${
-                      mobileCalcOpen ? "rotate-180 text-blue-600" : ""
-                    }`}
-                  />
-                </button>
+        <div className="md:hidden border-t border-zinc-200/90 bg-white/98 backdrop-blur-xl px-4 py-4 shadow-xl animate-in slide-in-from-top-2 duration-200 font-sans">
+          {/* Quick Search Button in Mobile Menu */}
+          <div className="mb-3">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileMenuOpen(false);
+                triggerGlobalSearch();
+              }}
+              className="flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 py-2.5 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
+            >
+              <div className="flex items-center gap-2.5">
+                <Search className="size-4 text-zinc-400" />
+                <span>Search tools, fees, guides...</span>
               </div>
+              <span className="rounded-md border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">
+                ⌘K
+              </span>
+            </button>
+          </div>
 
-              {mobileCalcOpen && (
-                <div className="ml-3 my-1 border-l-2 border-zinc-150 pl-2 space-y-1">
-                  <Link
-                    href="/calculators"
-                    prefetch={false}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-md px-2.5 py-1.5 text-xs font-bold text-blue-600 hover:bg-blue-50/50 transition-colors"
-                  >
-                    All Calculators Directory →
-                  </Link>
-                  {NAV_CALCULATORS.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      prefetch={false}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block rounded-md px-2.5 py-1.5 text-xs text-zinc-600 hover:text-blue-600 hover:bg-zinc-50 transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
+          {/* Main Navigation Items */}
+          <nav className="flex flex-col gap-1">
+            <Link
+              href="/calculators"
+              prefetch={false}
+              onClick={() => setMobileMenuOpen(false)}
+              className={cn(
+                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                pathname === "/calculators"
+                  ? "bg-blue-50/70 text-[#2b5cfd]"
+                  : "text-zinc-800 hover:bg-zinc-50"
               )}
-            </div>
+            >
+              <span>Calculators</span>
+              <ArrowRight className="size-4 text-zinc-400" />
+            </Link>
 
-            {/* Comparisons */}
             <Link
               href="/comparisons"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors font-medium"
+              className={cn(
+                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                pathname === "/comparisons"
+                  ? "bg-blue-50/70 text-[#2b5cfd]"
+                  : "text-zinc-800 hover:bg-zinc-50"
+              )}
             >
-              Comparisons
+              <span>Comparisons</span>
+              <ArrowRight className="size-4 text-zinc-400" />
             </Link>
 
-            {/* Guides */}
             <Link
               href="/guides"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="rounded-lg px-3 py-2 text-zinc-800 hover:bg-zinc-50 transition-colors font-medium"
+              className={cn(
+                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                pathname === "/guides"
+                  ? "bg-blue-50/70 text-[#2b5cfd]"
+                  : "text-zinc-800 hover:bg-zinc-50"
+              )}
             >
-              Guides
+              <span>Guides</span>
+              <ArrowRight className="size-4 text-zinc-400" />
             </Link>
           </nav>
+
+          {/* Secondary Footer Links in Drawer */}
+          <div className="mt-4 pt-3.5 border-t border-zinc-150 flex items-center justify-between text-xs text-zinc-500 font-medium px-2">
+            <Link
+              href="/about"
+              prefetch={false}
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-zinc-950 transition-colors"
+            >
+              About
+            </Link>
+            <Link
+              href="/contact"
+              prefetch={false}
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-zinc-950 transition-colors"
+            >
+              Contact
+            </Link>
+            <Link
+              href="/privacy-policy"
+              prefetch={false}
+              onClick={() => setMobileMenuOpen(false)}
+              className="hover:text-zinc-950 transition-colors"
+            >
+              Privacy
+            </Link>
+          </div>
         </div>
       )}
     </header>

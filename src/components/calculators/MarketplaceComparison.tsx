@@ -618,13 +618,10 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
         {/* Right Column: Key Takeaways Card - Clean Fintech Style */}
         <div className="lg:col-span-1 rounded-2xl border border-zinc-200/90 bg-white p-5 sm:p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-100">
+            <div className="pb-3.5 mb-4 border-b border-zinc-100">
               <h3 className="text-base font-bold text-zinc-950 tracking-tight">
                 Platform Takeaways
               </h3>
-              <span className="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-600">
-                Verified
-              </span>
             </div>
 
             <div className="space-y-3.5 text-xs sm:text-sm text-zinc-800">

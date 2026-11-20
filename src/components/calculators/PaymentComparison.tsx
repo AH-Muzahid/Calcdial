@@ -150,7 +150,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 className={cn(
                   "flex-1 sm:flex-initial px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "direct"
-                    ? "bg-white text-zinc-950 shadow-2xs"
+                    ? "bg-[#2b5cfd] text-white shadow-sm shadow-blue-500/25"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
@@ -162,7 +162,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 className={cn(
                   "flex-1 sm:flex-initial px-4 py-2 rounded-lg font-bold transition-all cursor-pointer text-xs whitespace-nowrap inline-flex items-center justify-center",
                   mode === "gross-up"
-                    ? "bg-white text-zinc-950 shadow-2xs"
+                    ? "bg-[#2b5cfd] text-white shadow-sm shadow-blue-500/25"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
@@ -269,7 +269,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 className={cn(
                   "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                   transactionType === "checkout"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
@@ -282,7 +282,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 className={cn(
                   "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                   transactionType === "invoice"
-                    ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                    ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
                 )}
               >
@@ -462,9 +462,8 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-600">
                 Gateway Recommendation
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100/80 border border-emerald-300/60 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 whitespace-nowrap shrink-0">
-                <Check className="size-3 shrink-0" />
-                <span>{result.recommended} Recommended</span>
+              <span className="text-xs font-bold text-emerald-700">
+                {result.recommended} Recommended
               </span>
             </div>
 

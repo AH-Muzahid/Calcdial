@@ -197,7 +197,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
               className={cn(
                 "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
                 calcMode === "standard"
-                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
               )}
             >
@@ -209,7 +209,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
               className={cn(
                 "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
                 calcMode === "reverse"
-                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
               )}
             >
@@ -382,7 +382,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                           onClick={() => setTargetType("margin")}
                           className={cn(
                             "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
-                            targetType === "margin" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                            targetType === "margin" ? "bg-[#2b5cfd] text-white shadow-2xs font-bold" : "text-zinc-600"
                           )}
                         >
                           Margin (%)
@@ -392,7 +392,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                           onClick={() => setTargetType("dollar")}
                           className={cn(
                             "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
-                            targetType === "dollar" ? "bg-white text-zinc-950 shadow-2xs font-bold" : "text-zinc-600"
+                            targetType === "dollar" ? "bg-[#2b5cfd] text-white shadow-2xs font-bold" : "text-zinc-600"
                           )}
                         >
                           Net Profit ({curr.symbol})

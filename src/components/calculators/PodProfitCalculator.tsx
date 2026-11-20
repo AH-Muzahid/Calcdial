@@ -212,7 +212,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
               className={cn(
                 "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
                 calcMode === "standard"
-                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
               )}
             >
@@ -224,7 +224,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
               className={cn(
                 "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
                 calcMode === "target"
-                  ? "bg-white text-zinc-950 font-bold shadow-2xs"
+                  ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
               )}
             >

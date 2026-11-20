@@ -41,14 +41,9 @@ export function AffiliateCallout({
             )}
           </div>
           <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <h4 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
-                {headline}
-              </h4>
-              <span className="rounded-full bg-zinc-100 border border-zinc-200 text-zinc-600 px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider">
-                Partner
-              </span>
-            </div>
+            <h4 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
+              {headline}
+            </h4>
             <p className="mt-1 text-xs sm:text-sm text-zinc-600 leading-normal max-w-xl font-normal">
               {description}
             </p>

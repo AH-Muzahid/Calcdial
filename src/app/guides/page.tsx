@@ -66,17 +66,6 @@ export default function GuidesPage() {
 
         {/* Page Hero Header */}
         <header className="mb-8 pt-2">
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 border border-emerald-200/80">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              Editorial Research & Playbooks
-            </span>
-            <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-medium text-zinc-600 border border-zinc-200/70">
-              Updated for 2026 Policies
-            </span>
-          </div>
-
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 font-sans">
             Seller Guides & Fee Strategies
           </h1>

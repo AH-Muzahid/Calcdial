@@ -51,7 +51,7 @@ export function ComparisonTable({
                   <div className="flex items-center gap-2">
                     <span>{res.platform}</span>
                     {isWinner && (
-                      <span className="rounded-full bg-zinc-950 px-2 py-0.5 text-[10px] font-bold font-mono text-white uppercase tracking-wider">
+                      <span className="text-[11px] font-mono font-bold text-emerald-700">
                         Top Margin
                       </span>
                     )}

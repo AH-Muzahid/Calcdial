@@ -66,17 +66,6 @@ export default function CalculatorsPage() {
 
         {/* Page Hero Header */}
         <header className="mb-8 pt-2">
-          {/* Trust Badges */}
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 border border-emerald-200/80">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              2026 Rate Schedules Verified
-            </span>
-            <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-medium text-zinc-600 border border-zinc-200/70">
-              Zero Data Logging • 100% Client-Side
-            </span>
-          </div>
-
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-950 font-sans">
             Seller Profit & Fee Calculators
           </h1>

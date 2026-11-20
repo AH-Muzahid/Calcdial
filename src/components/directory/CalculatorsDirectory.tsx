@@ -233,10 +233,10 @@ export function CalculatorsDirectory() {
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
                   className={cn(
-                    "px-3 sm:px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer select-none",
+                    "px-3.5 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none",
                     isActive
-                      ? "bg-zinc-950 text-white shadow-2xs"
-                      : "bg-white text-zinc-600 border border-zinc-200/80 hover:border-zinc-300 hover:text-zinc-950"
+                      ? "bg-[#2b5cfd] text-white shadow-sm shadow-blue-500/25 ring-1 ring-[#1b3cb5]"
+                      : "bg-white text-zinc-700 border border-zinc-200/90 hover:bg-zinc-50 hover:text-zinc-950 hover:border-zinc-300"
                   )}
                 >
                   {cat.label}
@@ -297,18 +297,13 @@ export function CalculatorsDirectory() {
 
       {/* Popular Scenarios & Country Presets Jump Chips */}
       <section className="rounded-xl border border-zinc-200/80 bg-white p-4.5 sm:p-6 shadow-xs">
-        <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-100">
-          <div>
-            <h2 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
-              Popular Presets & Quick Scenarios
-            </h2>
-            <p className="text-xs text-zinc-500 mt-0.5">
-              Instant shortcuts to pre-configured regional rates, category rules, and payment modes.
-            </p>
-          </div>
-          <span className="hidden sm:inline-flex items-center rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-mono font-semibold text-zinc-600 uppercase tracking-wider">
-            Shortcuts
-          </span>
+        <div className="pb-3.5 mb-4 border-b border-zinc-100">
+          <h2 className="text-sm sm:text-base font-bold text-zinc-950 tracking-tight">
+            Popular Presets & Quick Scenarios
+          </h2>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Instant shortcuts to pre-configured regional rates, category rules, and payment modes.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4.5">

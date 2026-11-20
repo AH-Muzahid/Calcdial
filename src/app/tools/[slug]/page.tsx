@@ -156,16 +156,6 @@ export default async function ToolPage({
           <header className="mb-4">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
               <div>
-                {/* 2026 Verified Trust Badges */}
-                <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-700 border border-emerald-200/80">
-                    <span className="size-1.5 rounded-full bg-emerald-500" />
-                    Updated for 2026 Fee Schedules
-                  </span>
-                  <span className="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-medium text-zinc-600 border border-zinc-200/70">
-                    Official Rate Verified
-                  </span>
-                </div>
                 <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-950">
                   {tool.title} {matchedPreset && `(${matchedPreset.toUpperCase()})`}
                 </h1>
