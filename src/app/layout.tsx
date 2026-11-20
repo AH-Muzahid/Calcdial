@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
 import { AppShell } from "@/components/layout/AppShell";
 import "./globals.css";
@@ -60,7 +59,8 @@ export const metadata: Metadata = {
 };
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-VHNNXPTG88";
-const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID;
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-TL8KG9ZG";
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || "zgp4pbvmi1";
 const AD_NETWORK = process.env.NEXT_PUBLIC_AD_NETWORK || "adsense";
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
 const GROW_SITE_ID = process.env.NEXT_PUBLIC_GROW_SITE_ID;
@@ -81,8 +81,36 @@ export default function RootLayout({
         className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white"
         suppressHydrationWarning
       >
-        {/* Google Analytics 4 */}
-        {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
+        {/* Google Analytics 4 (gtag.js) */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script
+              id="google-analytics"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}');
+                `,
+              }}
+            />
+          </>
+        )}
+
+        {/* Google Tag Manager Container */}
+        {GTM_ID && (
+          <Script
+            id="gtm-container"
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+          />
+        )}
 
         {/* Microsoft Clarity */}
         {CLARITY_ID && (
