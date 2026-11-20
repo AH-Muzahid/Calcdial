@@ -22,7 +22,8 @@ async function recreateBrandLogo() {
   // - Vibrant Electric Blue: #2b5cfd
   // - Radiant Cyan / Horizon: #0056ec / #38bdf8
   // - Profit Emerald Accent: #10b981
-  const masterSvg = `
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _masterSvg = `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
     <defs>
       <!-- Subtle premium depth gradients aligned with DESIGN.md -->

@@ -77,14 +77,14 @@ export default async function GuidePage({
       name: "CalcDial",
       logo: {
         "@type": "ImageObject",
-        url: "https://calcdial.pages.dev/favicon.ico",
+        url: "https://calcdial.com/favicon.ico",
       },
     },
     datePublished: guide.publishedAt,
     dateModified: guide.updatedAt,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://calcdial.pages.dev/guides/${slug}`,
+      "@id": `https://calcdial.com/guides/${slug}`,
     },
   };
 

@@ -79,9 +79,9 @@ export function InputField({
                 key={preset}
                 type="button"
                 onClick={() => onChange(preset)}
-                className={`h-6 px-2 rounded-md text-[11px] font-mono transition-colors cursor-pointer ${
+                className={`min-h-11 min-w-11 px-3 py-2 rounded-lg text-xs font-mono transition-colors cursor-pointer flex items-center justify-center ${
                   isSelected
-                    ? "bg-blue-600 text-white font-semibold"
+                    ? "bg-blue-600 text-white font-semibold shadow-xs"
                     : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200 hover:text-zinc-950"
                 }`}
               >

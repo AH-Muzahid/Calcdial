@@ -101,7 +101,7 @@ PayPal Required Bill:  ${result.currencySymbol}${result.paypal.invoiceToReceiveT
 Recommended Gateway:   ${result.recommended} (Saves ${result.currencySymbol}${result.savingsOnGrossUp.toFixed(2)} per invoice)
 Annual Volume Savings: ${result.currencySymbol}${result.annualSavings.toLocaleString()} on ${result.currencySymbol}${monthlyVolume.toLocaleString()}/mo turnover
 ----------------------------------------
-Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/stripe-vs-paypal-fee-calculator"}`
+Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.com/tools/stripe-vs-paypal-fee-calculator"}`
         : `Stripe vs PayPal Fee Comparison (2026)
 ----------------------------------------
 Transaction Amount:    ${result.currencySymbol}${amount.toFixed(2)}
@@ -114,7 +114,7 @@ PayPal Processing Fee: -${result.currencySymbol}${result.paypal.feeOnCharge.toFi
 Recommended Gateway:   ${result.recommended} (Keeps ${result.currencySymbol}${result.savingsOnDirectCharge.toFixed(2)} more)
 Annual Advantage:      ${result.currencySymbol}${result.annualSavings.toLocaleString()} on ${result.currencySymbol}${monthlyVolume.toLocaleString()}/mo turnover
 ----------------------------------------
-Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.pages.dev/tools/stripe-vs-paypal-fee-calculator"}`;
+Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href : "https://calcdial.com/tools/stripe-vs-paypal-fee-calculator"}`;
 
     navigator.clipboard.writeText(summary);
     setCopiedSummary(true);
@@ -227,7 +227,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
             </div>
 
             {/* Quick Presets — Single line horizontal row without wrapping */}
-            <div className="overflow-x-auto no-scrollbar py-0.5">
+            <div className="overflow-x-auto no-scrollbar py-1">
               <div className="flex items-center gap-1.5 whitespace-nowrap">
                 {amountPresets.map((preset) => (
                   <button
@@ -235,7 +235,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                     type="button"
                     onClick={() => setAmountStr(preset.toFixed(2))}
                     className={cn(
-                      "px-2.5 py-1 min-h-7 rounded-lg border text-[11px] font-mono transition-all cursor-pointer shrink-0",
+                      "px-3 py-2 min-h-11 min-w-11 rounded-lg border text-xs font-mono transition-all cursor-pointer shrink-0 flex items-center justify-center",
                       Math.abs(amount - preset) < 0.01
                         ? "border-[#2b5cfd] bg-[#2b5cfd] text-white font-bold shadow-xs"
                         : "border-zinc-200/90 bg-white text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -267,7 +267,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 type="button"
                 onClick={() => setTransactionType("checkout")}
                 className={cn(
-                  "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
+                  "min-h-11 py-2 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                   transactionType === "checkout"
                     ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -280,7 +280,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 type="button"
                 onClick={() => setTransactionType("invoice")}
                 className={cn(
-                  "py-1.5 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
+                  "min-h-11 py-2 px-3 rounded-md transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                   transactionType === "invoice"
                     ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                     : "text-zinc-600 hover:text-zinc-950"
@@ -472,8 +472,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <>
                   Billing via <strong className="text-zinc-950">{result.recommended}</strong> saves{" "}
                   <strong className="text-emerald-700 font-mono font-bold">
-                    {result.currencySymbol}
-                    {result.savingsOnGrossUp.toFixed(2)}
+                    {formatCurrency(result.savingsOnGrossUp, result.currency)}
                   </strong>{" "}
                   on this invoice to deliver your target net payout.
                 </>
@@ -481,8 +480,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
                 <>
                   Processing with <strong className="text-zinc-950">{result.recommended}</strong> keeps an extra{" "}
                   <strong className="text-emerald-700 font-mono font-bold">
-                    {result.currencySymbol}
-                    {result.savingsOnDirectCharge.toFixed(2)}
+                    {formatCurrency(result.savingsOnDirectCharge, result.currency)}
                   </strong>{" "}
                   in your bank account on this payment.
                 </>
@@ -648,7 +646,7 @@ Calculated on CalcDial: ${typeof window !== "undefined" ? window.location.href :
               <span className="font-mono text-zinc-950">
                 {mode === "gross-up"
                   ? `${result.recommended} requires less gross`
-                  : `${result.recommended} keeps ${result.savingsOnDirectCharge > 0 ? `+${result.currencySymbol}${result.savingsOnDirectCharge.toFixed(2)}` : "equal"}`}
+                  : `${result.recommended} keeps ${result.savingsOnDirectCharge > 0 ? `+${formatCurrency(result.savingsOnDirectCharge, result.currency)}` : "equal"}`}
               </span>
             </div>
 

@@ -6,7 +6,7 @@ import { POD_ITEM_PRESETS } from "@/data/fee-presets";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { StickyResultBar } from "./StickyResultBar";
 import { trackEvent } from "@/lib/analytics";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 import {
   RotateCcw,
   Copy,
@@ -169,30 +169,30 @@ export function PodProfitCalculator({
     const text = isStandard
       ? `Print-on-Demand (POD) Profit Breakdown:
 ----------------------------------------
-Retail Price:           $${salePrice.toFixed(2)}
-Buyer Shipping:         $${shippingCharged.toFixed(2)}
-Gross Revenue:          $${result.grossRevenue.toFixed(2)}
+Retail Price:           ${formatMoney(salePrice, "$")}
+Buyer Shipping:         ${formatMoney(shippingCharged, "$")}
+Gross Revenue:          ${formatMoney(result.grossRevenue, "$")}
 ----------------------------------------
 Sales Channel:          ${salesChannel.toUpperCase()}
-Platform Fee:           $${result.marketplaceFee.toFixed(2)}
-Base Print Cost:        $${baseCost.toFixed(2)}
-Provider Shipping:      $${providerShipping.toFixed(2)}
-Ad Spend:               $${adSpend.toFixed(2)}
+Platform Fee:           ${formatMoney(result.marketplaceFee, "$")}
+Base Print Cost:        ${formatMoney(baseCost, "$")}
+Provider Shipping:      ${formatMoney(providerShipping, "$")}
+Ad Spend:               ${formatMoney(adSpend, "$")}
 ----------------------------------------
-Total Direct Expenses:  $${(result.marketplaceFee + baseCost + providerShipping + adSpend).toFixed(2)}
-REAL NET PROFIT:        $${result.netProfit.toFixed(2)} (${result.netMarginPct.toFixed(1)}% margin)
-Break-Even Floor Price: $${result.breakEvenPrice.toFixed(2)}
+Total Direct Expenses:  ${formatMoney(result.marketplaceFee + baseCost + providerShipping + adSpend, "$")}
+REAL NET PROFIT:        ${formatMoney(result.netProfit, "$")} (${result.netMarginPct.toFixed(1)}% margin)
+Break-Even Floor Price: ${formatMoney(result.breakEvenPrice, "$")}
 ----------------------------------------
-Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)`
+Calculated via CalcDial (https://calcdial.com/tools/pod-profit-calculator)`
       : `POD Target Price Recommendation:
 ----------------------------------------
 Target Margin:          ${targetMargin}%
-Recommended Price:      $${recommendedPrice.toFixed(2)}
-Estimated Net Profit:   $${reverseAnalysis.netProfit.toFixed(2)} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
-Platform Fee:           $${reverseAnalysis.marketplaceFee.toFixed(2)}
-Total POD Unit Cost:    $${(baseCost + providerShipping + adSpend).toFixed(2)}
+Recommended Price:      ${formatMoney(recommendedPrice, "$")}
+Estimated Net Profit:   ${formatMoney(reverseAnalysis.netProfit, "$")} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
+Platform Fee:           ${formatMoney(reverseAnalysis.marketplaceFee, "$")}
+Total POD Unit Cost:    ${formatMoney(baseCost + providerShipping + adSpend, "$")}
 ----------------------------------------
-Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)`;
+Calculated via CalcDial (https://calcdial.com/tools/pod-profit-calculator)`;
 
     navigator.clipboard.writeText(text);
     setCopiedSummary(true);
@@ -210,7 +210,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
               type="button"
               onClick={() => setCalcMode("standard")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "standard"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -222,7 +222,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
               type="button"
               onClick={() => setCalcMode("target")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "target"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -253,7 +253,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="size-7 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
+                  className="size-11 min-h-11 min-w-11 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
                   title="Reset to defaults"
                   aria-label="Reset to defaults"
                 >
@@ -338,7 +338,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                   </div>
 
                   {/* Presets — Single line horizontal row without wrapping, NO redundant "Presets:" label */}
-                  <div className="overflow-x-auto no-scrollbar py-0.5">
+                  <div className="overflow-x-auto no-scrollbar py-1">
                     <div className="flex items-center gap-1.5 whitespace-nowrap">
                       {PRESETS.map((p) => (
                         <button
@@ -346,7 +346,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                           type="button"
                           onClick={() => setPriceStr(p.toString())}
                           className={cn(
-                            "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer shrink-0",
+                            "px-3 py-2 min-h-11 min-w-11 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer shrink-0 flex items-center justify-center",
                             salePrice === p
                               ? "bg-[#2b5cfd] text-white shadow-xs font-bold"
                               : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -521,14 +521,14 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                 <div>
                   <div
                     className={cn(
-                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight",
+                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight tabular-nums",
                       result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     )}
                   >
-                    ${result.netProfit.toFixed(2)}
+                    {formatMoney(result.netProfit, "$")}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. bank payout after fees: ${result.marketplacePayout.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. bank payout after fees: {formatMoney(result.marketplacePayout, "$")}
                   </span>
                 </div>
 
@@ -576,8 +576,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Gross Revenue:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      ${result.grossRevenue.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.grossRevenue, "$")}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -585,8 +585,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                       <span className="size-1.5 rounded-full bg-rose-500" />
                       Platform Fee ({salesChannel.toUpperCase()}):
                     </span>
-                    <span className="font-mono font-semibold text-rose-600">
-                      -${result.marketplaceFee.toFixed(2)}
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">
+                      -{formatMoney(result.marketplaceFee, "$")}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -594,8 +594,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Base Print Cost:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-700">
-                      -${baseCost.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                      -{formatMoney(baseCost, "$")}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -603,8 +603,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Break-Even Floor Price:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      ${result.breakEvenPrice.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.breakEvenPrice, "$")}
                     </span>
                   </div>
                 </div>
@@ -614,30 +614,30 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                   <button
                     type="button"
                     onClick={() => setShowItemized(!showItemized)}
-                    className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
+                    className="w-full min-h-11 flex items-center justify-between py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
                   >
                     <span>Itemized Cost Details</span>
-                    {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                    {showItemized ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
                   </button>
 
                   {showItemized && (
                     <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Base Item Print Cost</span>
-                        <span className="font-semibold text-zinc-900">${baseCost.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(baseCost, "$")}</span>
                       </div>
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Provider Carrier Shipping</span>
-                        <span className="font-semibold text-zinc-900">${providerShipping.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(providerShipping, "$")}</span>
                       </div>
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Platform Selling Fee</span>
-                        <span className="font-semibold text-zinc-900">${result.marketplaceFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.marketplaceFee, "$")}</span>
                       </div>
                       {includeAds && adSpend > 0 && (
-                        <div className="flex justify-between py-1 text-zinc-600">
+                        <div className="flex justify-between py-1.5 text-zinc-600">
                           <span>Paid Ad Spend (CAC)</span>
-                          <span className="font-semibold text-zinc-900">${adSpend.toFixed(2)}</span>
+                          <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(adSpend, "$")}</span>
                         </div>
                       )}
                     </div>
@@ -657,22 +657,22 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                 </div>
 
                 <div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
-                    ${recommendedPrice.toFixed(2)}
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600 tabular-nums">
+                    {formatMoney(recommendedPrice, "$")}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. net profit: ${reverseAnalysis.netProfit.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. net profit: {formatMoney(reverseAnalysis.netProfit, "$")}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
                   <div className="flex justify-between text-zinc-600">
                     <span>Platform Fee ({salesChannel.toUpperCase()}):</span>
-                    <span className="font-mono font-semibold text-rose-600">-${reverseAnalysis.marketplaceFee.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(reverseAnalysis.marketplaceFee, "$")}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>POD Production Expenses:</span>
-                    <span className="font-mono font-semibold text-zinc-700">-${(baseCost + providerShipping + adSpend).toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(baseCost + providerShipping + adSpend, "$")}</span>
                   </div>
                 </div>
 
@@ -682,20 +682,20 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
                     setPriceStr(recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full py-2 px-3 min-h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2.5 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply ${recommendedPrice.toFixed(2)} to Standard View</span>
+                  <span>Apply {formatMoney(recommendedPrice, "$")} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
             )}
 
-            {/* Pixel Button Action for Copy Summary */}
+            {/* Pixel Button Action for Copy Summary (min 44px ergonomics) */}
             <div className="mt-4 pt-3 border-t border-zinc-200/70">
               <PixelButton
                 type="button"
                 onClick={handleCopySummary}
-                className="w-full h-10 px-4 text-xs font-semibold font-sans justify-center"
+                className="w-full min-h-11 h-11 px-4 text-xs font-semibold font-sans justify-center"
               >
                 {copiedSummary ? (
                   <span className="flex items-center gap-1.5 text-emerald-200">
@@ -723,6 +723,15 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/pod-profit-calculator)
           subValue={calcMode === "standard" ? result.netMarginPct : undefined}
           productCost={baseCost + providerShipping + adSpend}
           totalFees={calcMode === "standard" ? result.marketplaceFee : reverseAnalysis.marketplaceFee}
+          payout={calcMode === "standard" ? result.marketplacePayout : reverseAnalysis.marketplacePayout}
+          breakEven={calcMode === "standard" ? result.breakEvenPrice : recommendedPrice}
+          currencySymbol="$"
+          itemizedFees={[
+            { label: "Base Item Print Cost", amount: baseCost },
+            { label: "Provider Shipping", amount: providerShipping },
+            { label: `Platform Fee (${salesChannel.toUpperCase()})`, amount: calcMode === "standard" ? result.marketplaceFee : reverseAnalysis.marketplaceFee },
+            ...(includeAds && adSpend > 0 ? [{ label: "Paid Ad Spend (CAC)", amount: adSpend }] : []),
+          ]}
         />
       )}
     </div>

@@ -3,7 +3,10 @@
 import React, { useState, useMemo } from "react";
 import { ArrowRight } from "lucide-react";
 import { PixelLink } from "@/components/ui/PixelButton";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
+import { calculateEtsyFees } from "@/lib/formulas/etsy-fees";
+import { calculateTikTokFees } from "@/lib/formulas/tiktok-fees";
+import { calculateShopifyProfit } from "@/lib/formulas/shopify-profit";
 
 type PlatformId = "etsy" | "tiktok" | "shopify";
 
@@ -36,18 +39,19 @@ const PLATFORMS: Record<PlatformId, PlatformPreset> = {
     defaultCost: 8.0,
     presets: [15, 25, 35, 50],
     calc: (price, cost, offsiteAds) => {
-      const listing = 0.2;
-      const txn = price * 0.065;
-      const proc = price * 0.03 + 0.25;
-      const ads = offsiteAds ? price * 0.15 : 0;
-      const totalFees = listing + txn + proc + ads;
-      const netProfit = Math.max(0, price - totalFees - cost);
-      const marginPct = price > 0 ? (netProfit / price) * 100 : 0;
+      const res = calculateEtsyFees({
+        itemPrice: price,
+        shippingCharge: 0,
+        itemCost: cost,
+        offsiteAdsOptIn: offsiteAds,
+        offsiteAdsRate: 0.15,
+        country: "us",
+      });
       return {
-        totalFees,
-        netProfit,
-        marginPct,
-        payout: price - totalFees,
+        totalFees: res.totalFees,
+        netProfit: res.netProfit,
+        marginPct: res.netMarginPct,
+        payout: res.etsyPayout,
         feeDetails: offsiteAds ? "6.5% txn + 3% proc + 15% ads + $0.45" : "6.5% txn + 3% proc + $0.45 fixed",
       };
     },
@@ -62,19 +66,20 @@ const PLATFORMS: Record<PlatformId, PlatformPreset> = {
     defaultCost: 8.5,
     presets: [20, 30, 45, 60],
     calc: (price, cost, creatorAffiliate) => {
-      const referral = price * 0.06;
-      const proc = price * 0.018;
-      const affiliate = creatorAffiliate ? price * 0.1 : 0;
-      const postage = 4.0;
-      const totalFees = referral + proc + affiliate;
-      const netProfit = Math.max(0, price - totalFees - cost - postage);
-      const marginPct = price > 0 ? (netProfit / price) * 100 : 0;
+      const res = calculateTikTokFees({
+        salePrice: price,
+        shippingCharged: 0,
+        cogs: cost,
+        shippingCost: 4.0,
+        category: "beauty",
+        creatorAffiliatePct: creatorAffiliate ? 10 : 0,
+      });
       return {
-        totalFees,
-        netProfit,
-        marginPct,
-        payout: price - totalFees,
-        feeDetails: creatorAffiliate ? "6% referral + 1.8% proc + 10% affiliate" : "6% referral + 1.8% processing",
+        totalFees: res.totalFees,
+        netProfit: res.netProfit,
+        marginPct: res.netMarginPct,
+        payout: res.netPayout,
+        feeDetails: creatorAffiliate ? "6% referral + 1.8% proc + 10% affiliate + $0.30" : "6% referral + 1.8% proc + $0.30",
       };
     },
   },
@@ -88,17 +93,20 @@ const PLATFORMS: Record<PlatformId, PlatformPreset> = {
     defaultCost: 12.5,
     presets: [35, 48, 65, 90],
     calc: (price, cost, adSpend) => {
-      const gateway = price * 0.029 + 0.3;
-      const ads = adSpend ? 14.0 : 0;
-      const shipping = 4.8;
-      const totalFees = gateway + ads;
-      const netProfit = Math.max(0, price - totalFees - cost - shipping);
-      const marginPct = price > 0 ? (netProfit / price) * 100 : 0;
+      const res = calculateShopifyProfit({
+        itemPrice: price,
+        shippingCharged: 0,
+        cogs: cost,
+        shippingCost: 4.8,
+        adSpend: adSpend ? 14.0 : 0,
+        shopifyPlan: "basic",
+        gateway: "shopify-payments",
+      });
       return {
-        totalFees,
-        netProfit,
-        marginPct,
-        payout: price - gateway,
+        totalFees: res.totalPlatformFees,
+        netProfit: res.netProfit,
+        marginPct: res.netMarginPct,
+        payout: res.netPayout,
         feeDetails: adSpend ? "2.9% + $0.30 gateway + $14 CAC" : "2.9% + $0.30 standard gateway",
       };
     },
@@ -137,7 +145,7 @@ export function HeroShowcaseCard() {
                   type="button"
                   onClick={() => handleSelectPlatform(id)}
                   className={cn(
-                    "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                    "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                     activePlatform === id
                       ? "bg-[#2b5cfd] text-white font-bold shadow-xs"
                       : "text-zinc-600 hover:text-zinc-950"
@@ -169,7 +177,7 @@ export function HeroShowcaseCard() {
                     <label className="text-xs font-bold text-zinc-900 block mb-1">
                       Sale Price
                     </label>
-                    <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                    <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                       <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
                       <input
                         type="number"
@@ -184,7 +192,7 @@ export function HeroShowcaseCard() {
                     <label className="text-xs font-bold text-zinc-900 block mb-1">
                       Item Cost
                     </label>
-                    <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                    <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                       <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
                       <input
                         type="number"
@@ -208,7 +216,7 @@ export function HeroShowcaseCard() {
                         type="button"
                         onClick={() => setPrice(p)}
                         className={cn(
-                          "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer",
+                          "px-3 py-2 min-h-11 min-w-11 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer flex items-center justify-center",
                           price === p
                             ? "bg-[#2b5cfd] text-white shadow-[inset_0_1px_0_0_rgb(255_255_255/0.35),inset_0_-1px_0_0_rgb(10_30_120/0.35),0_3px_8px_-2px_rgb(43_92_253/0.45)] ring-1 ring-[#1b3cb5]"
                             : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -270,11 +278,11 @@ export function HeroShowcaseCard() {
 
                 {/* Big Profit Hero Display */}
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600 tracking-tight">
-                    ${netProfit.toFixed(2)}
+                  <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-600 tracking-tight tabular-nums">
+                    {formatMoney(netProfit, "$")}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. payout after cuts: ${payout.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. payout after cuts: {formatMoney(payout, "$")}
                   </span>
                 </div>
 
@@ -319,29 +327,29 @@ export function HeroShowcaseCard() {
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Gross Revenue:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">${price.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">{formatMoney(price, "$")}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-rose-500" />
                       Platform Fees:
                     </span>
-                    <span className="font-mono font-semibold text-rose-600">-${totalFees.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(totalFees, "$")}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Est. Item Cost:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-700">-${cost.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(cost, "$")}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Action Link to Full Calculator with Exact vibrant.design Pixel Matrix & Shadow */}
+              {/* Action Link to Full Calculator with Exact vibrant.design Pixel Matrix & Shadow (min 44px ergonomics) */}
               <PixelLink
                 href={platform.toolHref}
-                className="mt-3 w-full h-10 px-4 text-xs font-semibold font-sans justify-between"
+                className="mt-3 w-full min-h-11 h-11 px-4 text-xs font-semibold font-sans justify-between"
               >
                 <span className="truncate">Open Full {platform.name} Calculator</span>
                 <ArrowRight className="size-4 text-white shrink-0 group-hover/pixel:translate-x-0.5 transition-transform" />

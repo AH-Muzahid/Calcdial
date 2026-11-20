@@ -67,7 +67,7 @@ export default async function EmbedPage({
       <footer className="mt-4 pt-2 border-t border-zinc-200/80 flex items-center justify-between text-[11px] text-zinc-500">
         <span>Updated for 2026</span>
         <Link
-          href={`https://calcdial.pages.dev/tools/${tool.slug}`}
+          href={`https://calcdial.com/tools/${tool.slug}`}
           target="_blank"
           rel="noopener"
           className="font-medium text-zinc-900 hover:text-blue-600 hover:underline transition-colors"

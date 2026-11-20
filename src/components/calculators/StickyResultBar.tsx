@@ -39,13 +39,21 @@ export function StickyResultBar({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Body scroll lock when mobile breakdown drawer is open (CRITIQUE-06)
+  // Body scroll lock when mobile breakdown drawer is open (CRITIQUE-06 & P0-2)
   useEffect(() => {
     if (!isDrawerOpen) return;
-    const prevOverflow = document.body.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevTouchAction = document.body.style.touchAction;
+
     document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.touchAction = prevTouchAction;
     };
   }, [isDrawerOpen]);
 
@@ -97,7 +105,8 @@ export function StickyResultBar({
       {isDrawerOpen && (
         <div
           onClick={() => setIsDrawerOpen(false)}
-          className="fixed inset-0 bg-black/50 backdrop-blur-2xs z-40 lg:hidden animate-in fade-in duration-200"
+          onTouchMove={(e) => e.preventDefault()}
+          className="fixed inset-0 bg-black/50 backdrop-blur-2xs z-40 lg:hidden animate-in fade-in duration-200 touch-none"
           aria-hidden="true"
         />
       )}
@@ -105,7 +114,7 @@ export function StickyResultBar({
       {/* Slide-Up Drawer for Mobile Fee Breakdown */}
       {isDrawerOpen && (
         <div
-          className="fixed bottom-[64px] left-0 right-0 z-50 max-h-[75vh] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-t-2xl border-t border-zinc-200 bg-white p-4 sm:p-5 shadow-2xl lg:hidden animate-in slide-in-from-bottom duration-200"
+          className="fixed bottom-[64px] left-0 right-0 z-50 max-h-[75vh] overflow-y-auto overscroll-contain no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-t-2xl border-t border-zinc-200 bg-white p-4 sm:p-5 shadow-2xl lg:hidden animate-in slide-in-from-bottom duration-200"
           role="dialog"
           aria-modal="true"
           aria-label="Fee Breakdown"

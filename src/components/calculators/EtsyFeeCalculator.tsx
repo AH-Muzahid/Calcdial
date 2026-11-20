@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { calculateEtsyFees, calculateReverseEtsyPrice } from "@/lib/formulas/etsy-fees";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 import { StickyResultBar } from "./StickyResultBar";
 import { CustomSelect } from "@/components/common/CustomSelect";
 import { ChevronDown, ChevronUp, Copy, Check, RotateCcw, ArrowRight } from "lucide-react";
@@ -200,17 +200,17 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
 
     const summary = `Etsy Calculation Summary (${country.toUpperCase()}):
 ---------------------------------
-Item Price:      ${curr.symbol}${price.toFixed(2)}
-Item Cost:       ${curr.symbol}${itemCost.toFixed(2)}
-Buyer Shipping:  ${curr.symbol}${shippingCharged.toFixed(2)}
+Item Price:      ${formatMoney(price, curr.symbol)}
+Item Cost:       ${formatMoney(itemCost, curr.symbol)}
+Buyer Shipping:  ${formatMoney(shippingCharged, curr.symbol)}
 Offsite Ads:     ${offsiteAds ? adsTier * 100 + "%" : "Off"}
 ---------------------------------
-Total Fees:      ${curr.symbol}${result.totalFees.toFixed(2)} (${result.effectiveFeePct.toFixed(1)}%)
-Etsy Payout:     ${curr.symbol}${result.etsyPayout.toFixed(2)}
-NET PROFIT:      ${curr.symbol}${result.netProfit.toFixed(2)} (${result.netMarginPct.toFixed(1)}% margin)
-Break-Even:      ${curr.symbol}${result.breakEvenPrice.toFixed(2)}
+Total Fees:      ${formatMoney(result.totalFees, curr.symbol)} (${result.effectiveFeePct.toFixed(1)}%)
+Etsy Payout:     ${formatMoney(result.etsyPayout, curr.symbol)}
+NET PROFIT:      ${formatMoney(result.netProfit, curr.symbol)} (${result.netMarginPct.toFixed(1)}% margin)
+Break-Even:      ${formatMoney(result.breakEvenPrice, curr.symbol)}
 ---------------------------------
-Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
+Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
 
     navigator.clipboard.writeText(summary);
     setCopiedSummary(true);
@@ -247,7 +247,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
               type="button"
               onClick={() => setCalcMode("standard")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "standard"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -259,7 +259,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
               type="button"
               onClick={() => setCalcMode("reverse")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "reverse"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -292,7 +292,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="size-7 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
+                  className="size-11 min-h-11 min-w-11 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
                   title="Reset to defaults"
                   aria-label="Reset to defaults"
                 >
@@ -366,7 +366,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                   </div>
 
                   {/* Quick Preset Buttons — Single line horizontal row without wrapping, NO redundant "Presets:" label */}
-                  <div className="overflow-x-auto no-scrollbar py-0.5">
+                  <div className="overflow-x-auto no-scrollbar py-1">
                     <div className="flex items-center gap-1.5 whitespace-nowrap">
                       {PRESETS.map((p) => (
                         <button
@@ -374,7 +374,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                           type="button"
                           onClick={() => setPriceStr(p.toFixed(2))}
                           className={cn(
-                            "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer shrink-0",
+                            "px-3 py-2 min-h-11 min-w-11 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer shrink-0 flex items-center justify-center",
                             price === p
                               ? "bg-[#2b5cfd] text-white shadow-xs font-bold"
                               : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -682,14 +682,14 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                 <div>
                   <div
                     className={cn(
-                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight",
+                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight tabular-nums",
                       result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     )}
                   >
-                    {curr.symbol}{result.netProfit.toFixed(2)}
+                    {formatMoney(result.netProfit, curr.symbol)}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. Etsy payout after cuts: {curr.symbol}{result.etsyPayout.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. Etsy payout after cuts: {formatMoney(result.etsyPayout, curr.symbol)}
                   </span>
                 </div>
 
@@ -737,8 +737,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Gross Revenue:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      {curr.symbol}{result.grossRevenue.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.grossRevenue, curr.symbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -746,8 +746,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                       <span className="size-1.5 rounded-full bg-rose-500" />
                       Total Etsy Fees:
                     </span>
-                    <span className="font-mono font-semibold text-rose-600">
-                      -{curr.symbol}{result.totalFees.toFixed(2)}
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">
+                      -{formatMoney(result.totalFees, curr.symbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -755,8 +755,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Product Costs:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-700">
-                      -{curr.symbol}{result.totalProductCosts.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                      -{formatMoney(result.totalProductCosts, curr.symbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -764,8 +764,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Break-Even Floor:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      {curr.symbol}{result.breakEvenPrice.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.breakEvenPrice, curr.symbol)}
                     </span>
                   </div>
                 </div>
@@ -775,36 +775,36 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                   <button
                     type="button"
                     onClick={() => setShowItemized(!showItemized)}
-                    className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
+                    className="w-full min-h-11 flex items-center justify-between py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
                   >
                     <span>Itemized Fee Details</span>
-                    {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                    {showItemized ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
                   </button>
 
                   {showItemized && (
                     <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Listing Fee ($0.20)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.listingFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.listingFee, curr.symbol)}</span>
                       </div>
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Transaction Fee (6.5%)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.transactionFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.transactionFee, curr.symbol)}</span>
                       </div>
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Payment Processing</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.paymentProcessingFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.paymentProcessingFee, curr.symbol)}</span>
                       </div>
                       {offsiteAds && result.offsiteAdsFee > 0 && (
-                        <div className="flex justify-between py-1 text-zinc-600">
+                        <div className="flex justify-between py-1.5 text-zinc-600">
                           <span>Offsite Ads ({(adsTier * 100).toFixed(0)}%)</span>
-                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.offsiteAdsFee.toFixed(2)}</span>
+                          <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.offsiteAdsFee, curr.symbol)}</span>
                         </div>
                       )}
                       {result.regulatoryFee > 0 && (
-                        <div className="flex justify-between py-1 text-zinc-600">
+                        <div className="flex justify-between py-1.5 text-zinc-600">
                           <span>Regulatory Fee</span>
-                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.regulatoryFee.toFixed(2)}</span>
+                          <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.regulatoryFee, curr.symbol)}</span>
                         </div>
                       )}
                     </div>
@@ -824,26 +824,26 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                 </div>
 
                 <div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
-                    {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)}
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600 tabular-nums">
+                    {formatMoney(reverseResult.recommendedPrice, curr.symbol)}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. net profit: {curr.symbol}{reverseResult.estimatedNetProfit.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. net profit: {formatMoney(reverseResult.estimatedNetProfit, curr.symbol)}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
                   <div className="flex justify-between text-zinc-600">
                     <span>Total Etsy Fees:</span>
-                    <span className="font-mono font-semibold text-rose-600">-{curr.symbol}{reverseResult.totalFees.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(reverseResult.totalFees, curr.symbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>Etsy Deposit:</span>
-                    <span className="font-mono font-semibold text-zinc-900">{curr.symbol}{reverseResult.etsyPayout.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">{formatMoney(reverseResult.etsyPayout, curr.symbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>Total Direct Costs:</span>
-                    <span className="font-mono font-semibold text-zinc-700">-{curr.symbol}{(itemCost + shippingCost).toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(itemCost + shippingCost, curr.symbol)}</span>
                   </div>
                 </div>
 
@@ -853,20 +853,20 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
                     setPriceStr(reverseResult.recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full py-2 px-3 min-h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2.5 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {curr.symbol}{reverseResult.recommendedPrice.toFixed(2)} to Standard View</span>
+                  <span>Apply {formatMoney(reverseResult.recommendedPrice, curr.symbol)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
             )}
 
-            {/* Pixel Button Action for Copy / Export */}
+            {/* Pixel Button Action for Copy / Export (min 44px ergonomics) */}
             <div className="mt-4 pt-3 border-t border-zinc-200/70">
               <PixelButton
                 type="button"
                 onClick={handleCopySummary}
-                className="w-full h-10 px-4 text-xs font-semibold font-sans justify-center"
+                className="w-full min-h-11 h-11 px-4 text-xs font-semibold font-sans justify-center"
               >
                 {copiedSummary ? (
                   <span className="flex items-center gap-1.5 text-emerald-200">
@@ -894,6 +894,16 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/etsy-fee-calculator)`;
           subValue={calcMode === "standard" ? result.netMarginPct : undefined}
           productCost={calcMode === "standard" ? result.totalProductCosts : itemCost + shippingCost}
           totalFees={calcMode === "standard" ? result.totalFees : reverseResult.totalFees}
+          payout={calcMode === "standard" ? result.etsyPayout : reverseResult.etsyPayout}
+          breakEven={calcMode === "standard" ? result.breakEvenPrice : reverseResult.recommendedPrice}
+          currencySymbol={curr.symbol}
+          itemizedFees={[
+            { label: "Listing Fee ($0.20)", amount: result.listingFee },
+            { label: "Transaction Fee (6.5%)", amount: result.transactionFee },
+            { label: "Payment Processing", amount: result.paymentProcessingFee },
+            ...(offsiteAds && result.offsiteAdsFee > 0 ? [{ label: `Offsite Ads (${(adsTier * 100).toFixed(0)}%)`, amount: result.offsiteAdsFee }] : []),
+            ...(result.regulatoryFee > 0 ? [{ label: "Regulatory Fee", amount: result.regulatoryFee }] : []),
+          ]}
         />
       )}
     </div>

@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
         <section className="rounded-2xl border border-zinc-200/90 bg-white p-6 sm:p-7 shadow-xs">
           <h2 className="text-lg font-bold text-zinc-950">1. Overview &amp; Core Philosophy</h2>
           <p className="mt-2.5 text-zinc-600 leading-relaxed">
-            CalcDial (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) operates the website at https://calcdial.pages.dev. We believe seller financial data should remain strictly confidential. Our interactive calculator engines operate entirely in client-side JavaScript within your web browser. When you input item prices, production costs, shipping rates, or ad spends, that financial information is never uploaded, recorded, or stored on our servers.
+            CalcDial (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) operates the website at https://calcdial.com. We believe seller financial data should remain strictly confidential. Our interactive calculator engines operate entirely in client-side JavaScript within your web browser. When you input item prices, production costs, shipping rates, or ad spends, that financial information is never uploaded, recorded, or stored on our servers.
           </p>
         </section>
 
@@ -95,7 +95,7 @@ export default function PrivacyPolicyPage() {
         <section className="rounded-2xl border border-zinc-200/90 bg-white p-6 sm:p-7 shadow-xs">
           <h2 className="text-lg font-bold text-zinc-950">7. GDPR and CCPA Rights</h2>
           <p className="mt-2.5 text-zinc-600 leading-relaxed">
-            Depending on your location, you have rights regarding your personal information, including the right to request access, correction, or deletion of any email data you have provided to us. To exercise your rights, please reach out via our contact page or at support@calcdial.pages.dev.
+            Depending on your location, you have rights regarding your personal information, including the right to request access, correction, or deletion of any email data you have provided to us. To exercise your rights, please reach out via our contact page or at support@calcdial.com.
           </p>
         </section>
       </div>

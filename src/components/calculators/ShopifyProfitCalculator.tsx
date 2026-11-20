@@ -9,7 +9,7 @@ import {
 import { StickyResultBar } from "./StickyResultBar";
 import { CustomSelect, CustomSelectOption } from "@/components/common/CustomSelect";
 import { trackEvent } from "@/lib/analytics";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 import {
   Copy,
   Check,
@@ -151,33 +151,33 @@ export function ShopifyProfitCalculator({
     const text = isStandard
       ? `Shopify Profit & ROAS Analysis (2026):
 ----------------------------------------
-Retail Price:           ${curr.symbol}${itemPrice.toFixed(2)}
-Buyer Shipping:         ${curr.symbol}${shippingCharged.toFixed(2)}
-Gross Revenue:          ${curr.symbol}${result.revenue.toFixed(2)}
+Retail Price:           ${formatMoney(itemPrice, curr.symbol)}
+Buyer Shipping:         ${formatMoney(shippingCharged, curr.symbol)}
+Gross Revenue:          ${formatMoney(result.revenue, curr.symbol)}
 ----------------------------------------
 Shopify Plan:           ${activePlanConfig.name}
 Gateway:                ${gateway.toUpperCase()}
-Platform & Gateway Fee: ${curr.symbol}${result.totalPlatformFees.toFixed(2)}
-Product Landed Cost:    ${curr.symbol}${cogs.toFixed(2)}
-Carrier Postage:        ${curr.symbol}${shippingCost.toFixed(2)}
-Ad Spend (CAC):         ${curr.symbol}${adSpend.toFixed(2)}
+Platform & Gateway Fee: ${formatMoney(result.totalPlatformFees, curr.symbol)}
+Product Landed Cost:    ${formatMoney(cogs, curr.symbol)}
+Carrier Postage:        ${formatMoney(shippingCost, curr.symbol)}
+Ad Spend (CAC):         ${formatMoney(adSpend, curr.symbol)}
 ----------------------------------------
-Shopify Bank Deposit:   ${curr.symbol}${result.netPayout.toFixed(2)}
-REAL NET PROFIT:        ${curr.symbol}${result.netProfit.toFixed(2)} (${result.netMarginPct.toFixed(1)}% margin)
+Shopify Bank Deposit:   ${formatMoney(result.netPayout, curr.symbol)}
+REAL NET PROFIT:        ${formatMoney(result.netProfit, curr.symbol)} (${result.netMarginPct.toFixed(1)}% margin)
 Break-Even ROAS:        ${result.breakEvenRoas}x
-Break-Even Price:       ${curr.symbol}${result.breakEvenPrice.toFixed(2)}
+Break-Even Price:       ${formatMoney(result.breakEvenPrice, curr.symbol)}
 ----------------------------------------
-Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calculator)`
+Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`
       : `Shopify Target Price Finder (2026):
 ----------------------------------------
-Target Goal:            ${targetType === "margin" ? `${targetVal}% Margin` : `${curr.symbol}${targetVal.toFixed(2)} Profit`}
-Recommended Price:      ${curr.symbol}${recommendedPrice.toFixed(2)}
-Estimated Net Profit:   ${curr.symbol}${reverseAnalysis.netProfit.toFixed(2)} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
-Shopify Bank Deposit:   ${curr.symbol}${reverseAnalysis.netPayout.toFixed(2)}
-Total Platform Fees:    ${curr.symbol}${reverseAnalysis.totalPlatformFees.toFixed(2)}
-Total Direct Costs:     ${curr.symbol}${(cogs + shippingCost + adSpend).toFixed(2)}
+Target Goal:            ${targetType === "margin" ? `${targetVal}% Margin` : `${formatMoney(targetVal, curr.symbol)} Profit`}
+Recommended Price:      ${formatMoney(recommendedPrice, curr.symbol)}
+Estimated Net Profit:   ${formatMoney(reverseAnalysis.netProfit, curr.symbol)} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
+Shopify Bank Deposit:   ${formatMoney(reverseAnalysis.netPayout, curr.symbol)}
+Total Platform Fees:    ${formatMoney(reverseAnalysis.totalPlatformFees, curr.symbol)}
+Total Direct Costs:     ${formatMoney(cogs + shippingCost + adSpend, curr.symbol)}
 ----------------------------------------
-Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calculator)`;
+Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
 
     navigator.clipboard.writeText(text);
     setCopiedSummary(true);
@@ -195,7 +195,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
               type="button"
               onClick={() => setCalcMode("standard")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "standard"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -207,7 +207,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
               type="button"
               onClick={() => setCalcMode("reverse")}
               className={cn(
-                "px-3.5 py-1.5 rounded-md transition-all cursor-pointer text-xs flex items-center gap-1.5",
+                "min-h-11 px-3.5 py-2 rounded-md transition-all cursor-pointer text-xs flex items-center justify-center gap-1.5",
                 calcMode === "reverse"
                   ? "bg-[#2b5cfd] text-white font-bold shadow-2xs"
                   : "text-zinc-600 hover:text-zinc-950"
@@ -243,7 +243,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="size-7 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
+                  className="size-11 min-h-11 min-w-11 inline-flex items-center justify-center rounded-md text-zinc-400 hover:text-zinc-900 hover:bg-zinc-200/60 transition-colors cursor-pointer"
                   title="Reset to defaults"
                   aria-label="Reset to defaults"
                 >
@@ -259,7 +259,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <label htmlFor="shopify-price" className="text-xs font-bold text-zinc-900 block mb-1">
                         Retail Price
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                         <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
                         <input
                           id="shopify-price"
@@ -284,7 +284,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <label htmlFor="shopify-cogs" className="text-xs font-bold text-zinc-900 block mb-1">
                         Item Cost (COGS)
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                         <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
                         <input
                           id="shopify-cogs"
@@ -307,7 +307,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                   </div>
 
                   {/* Presets — Single line horizontal row without wrapping, NO redundant "Presets:" label */}
-                  <div className="overflow-x-auto no-scrollbar py-0.5">
+                  <div className="overflow-x-auto no-scrollbar py-1">
                     <div className="flex items-center gap-1.5 whitespace-nowrap">
                       {PRESETS.map((p) => (
                         <button
@@ -315,7 +315,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                           type="button"
                           onClick={() => setPriceStr(p.toFixed(2))}
                           className={cn(
-                            "px-2.5 py-1 min-h-7 rounded-lg text-[11px] font-mono font-semibold transition-all cursor-pointer shrink-0",
+                            "px-3 py-2 min-h-11 min-w-11 rounded-lg text-xs font-mono font-semibold transition-all cursor-pointer shrink-0 flex items-center justify-center",
                             itemPrice === p
                               ? "bg-[#2b5cfd] text-white shadow-xs font-bold"
                               : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
@@ -333,7 +333,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <label htmlFor="shopify-shipping-charged" className="text-xs font-bold text-zinc-900 block mb-1">
                         Buyer Shipping Fee
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                         <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
                         <input
                           id="shopify-shipping-charged"
@@ -353,7 +353,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <label htmlFor="shopify-shipping-cost" className="text-xs font-bold text-zinc-900 block mb-1">
                         Carrier Cost Paid
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
                         <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{curr.symbol}</span>
                         <input
                           id="shopify-shipping-cost"
@@ -381,7 +381,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                           type="button"
                           onClick={() => setTargetType("margin")}
                           className={cn(
-                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            "min-h-11 px-3 py-2 rounded text-xs transition-all cursor-pointer flex items-center justify-center",
                             targetType === "margin" ? "bg-[#2b5cfd] text-white shadow-2xs font-bold" : "text-zinc-600"
                           )}
                         >
@@ -391,7 +391,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                           type="button"
                           onClick={() => setTargetType("dollar")}
                           className={cn(
-                            "px-2.5 py-1 rounded text-[11px] transition-all cursor-pointer",
+                            "min-h-11 px-3 py-2 rounded text-xs transition-all cursor-pointer flex items-center justify-center",
                             targetType === "dollar" ? "bg-[#2b5cfd] text-white shadow-2xs font-bold" : "text-zinc-600"
                           )}
                         >
@@ -540,14 +540,14 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                 <div>
                   <div
                     className={cn(
-                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight",
+                      "text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight tabular-nums",
                       result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     )}
                   >
-                    {curr.symbol}{result.netProfit.toFixed(2)}
+                    {formatMoney(result.netProfit, curr.symbol)}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. bank payout after gateway: {curr.symbol}{result.netPayout.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. bank payout after gateway: {formatMoney(result.netPayout, curr.symbol)}
                   </span>
                 </div>
 
@@ -595,8 +595,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Gross Revenue:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      {curr.symbol}{result.revenue.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.revenue, curr.symbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -604,8 +604,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <span className="size-1.5 rounded-full bg-rose-500" />
                       Gateway &amp; Platform Fees:
                     </span>
-                    <span className="font-mono font-semibold text-rose-600">
-                      -{curr.symbol}{result.totalPlatformFees.toFixed(2)}
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">
+                      -{formatMoney(result.totalPlatformFees, curr.symbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
@@ -613,7 +613,7 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Break-Even ROAS Target:
                     </span>
-                    <span className="font-mono font-bold text-blue-700">
+                    <span className="font-mono font-bold text-blue-700 tabular-nums">
                       {result.breakEvenRoas}x
                     </span>
                   </div>
@@ -622,8 +622,8 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Break-Even Floor Price:
                     </span>
-                    <span className="font-mono font-semibold text-zinc-900">
-                      {curr.symbol}{result.breakEvenPrice.toFixed(2)}
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">
+                      {formatMoney(result.breakEvenPrice, curr.symbol)}
                     </span>
                   </div>
                 </div>
@@ -633,36 +633,36 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                   <button
                     type="button"
                     onClick={() => setShowItemized(!showItemized)}
-                    className="w-full flex items-center justify-between py-1.5 text-[11px] font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
+                    className="w-full min-h-11 flex items-center justify-between py-2 text-xs font-semibold text-zinc-500 hover:text-zinc-950 transition-colors cursor-pointer border-t border-zinc-200/60"
                   >
                     <span>Itemized Fee Breakdown</span>
-                    {showItemized ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+                    {showItemized ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
                   </button>
 
                   {showItemized && (
                     <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Payment Processing Fee</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{result.paymentFee.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.paymentFee, curr.symbol)}</span>
                       </div>
                       {result.thirdPartyTransactionFee > 0 && (
-                        <div className="flex justify-between py-1 text-zinc-600">
+                        <div className="flex justify-between py-1.5 text-zinc-600">
                           <span>3rd-Party Gateway Surcharge</span>
-                          <span className="font-semibold text-zinc-900">{curr.symbol}{result.thirdPartyTransactionFee.toFixed(2)}</span>
+                          <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.thirdPartyTransactionFee, curr.symbol)}</span>
                         </div>
                       )}
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Product Landed Cost (COGS)</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{cogs.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(cogs, curr.symbol)}</span>
                       </div>
-                      <div className="flex justify-between py-1 text-zinc-600">
+                      <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Postage Paid to Carrier</span>
-                        <span className="font-semibold text-zinc-900">{curr.symbol}{shippingCost.toFixed(2)}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(shippingCost, curr.symbol)}</span>
                       </div>
                       {includeAds && adSpend > 0 && (
-                        <div className="flex justify-between py-1 text-zinc-600">
+                        <div className="flex justify-between py-1.5 text-zinc-600">
                           <span>Ad Acquisition (CAC)</span>
-                          <span className="font-semibold text-zinc-900">{curr.symbol}{adSpend.toFixed(2)}</span>
+                          <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(adSpend, curr.symbol)}</span>
                         </div>
                       )}
                     </div>
@@ -682,26 +682,26 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                 </div>
 
                 <div>
-                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600">
-                    {curr.symbol}{recommendedPrice.toFixed(2)}
+                  <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600 tabular-nums">
+                    {formatMoney(recommendedPrice, curr.symbol)}
                   </div>
-                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5">
-                    Est. net profit: {curr.symbol}{reverseAnalysis.netProfit.toFixed(2)}
+                  <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
+                    Est. net profit: {formatMoney(reverseAnalysis.netProfit, curr.symbol)}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
                   <div className="flex justify-between text-zinc-600">
                     <span>Shopify &amp; Gateway Fees:</span>
-                    <span className="font-mono font-semibold text-rose-600">-{curr.symbol}{reverseAnalysis.totalPlatformFees.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(reverseAnalysis.totalPlatformFees, curr.symbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>Shopify Bank Deposit:</span>
-                    <span className="font-mono font-semibold text-zinc-900">{curr.symbol}{reverseAnalysis.netPayout.toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">{formatMoney(reverseAnalysis.netPayout, curr.symbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>Total Direct Expenses:</span>
-                    <span className="font-mono font-semibold text-zinc-700">-{curr.symbol}{(cogs + shippingCost + adSpend).toFixed(2)}</span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(cogs + shippingCost + adSpend, curr.symbol)}</span>
                   </div>
                 </div>
 
@@ -711,20 +711,20 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
                     setPriceStr(recommendedPrice.toFixed(2));
                     setCalcMode("standard");
                   }}
-                  className="w-full py-2 px-3 min-h-10 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
+                  className="w-full py-2.5 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {curr.symbol}{recommendedPrice.toFixed(2)} to Standard View</span>
+                  <span>Apply {formatMoney(recommendedPrice, curr.symbol)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
             )}
 
-            {/* Pixel Button Action for Copy Summary */}
+            {/* Pixel Button Action for Copy Summary (min 44px ergonomics) */}
             <div className="mt-4 pt-3 border-t border-zinc-200/70">
               <PixelButton
                 type="button"
                 onClick={handleCopySummary}
-                className="w-full h-10 px-4 text-xs font-semibold font-sans justify-center"
+                className="w-full min-h-11 h-11 px-4 text-xs font-semibold font-sans justify-center"
               >
                 {copiedSummary ? (
                   <span className="flex items-center gap-1.5 text-emerald-200">
@@ -752,6 +752,16 @@ Calculated via CalcDial (https://calcdial.pages.dev/tools/shopify-profit-calcula
           subValue={calcMode === "standard" ? result.netMarginPct : undefined}
           productCost={cogs + shippingCost + adSpend}
           totalFees={calcMode === "standard" ? result.totalPlatformFees : reverseAnalysis.totalPlatformFees}
+          payout={calcMode === "standard" ? result.netPayout : reverseAnalysis.netPayout}
+          breakEven={calcMode === "standard" ? result.breakEvenPrice : recommendedPrice}
+          currencySymbol={curr.symbol}
+          itemizedFees={[
+            { label: "Payment Fee", amount: result.paymentFee },
+            ...(result.thirdPartyTransactionFee > 0 ? [{ label: "3rd-Party Gateway Surcharge", amount: result.thirdPartyTransactionFee }] : []),
+            { label: "Product Landed Cost (COGS)", amount: cogs },
+            { label: "Carrier Shipping", amount: shippingCost },
+            ...(adSpend > 0 ? [{ label: "Ad Acquisition (CAC)", amount: adSpend }] : []),
+          ]}
         />
       )}
     </div>

@@ -9,7 +9,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 
 interface CurrencyConfig {
   value: string;
@@ -453,7 +453,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                 <div className="flex items-center justify-between">
                   <span className="text-zinc-600 font-medium">Total Fees</span>
                   <span className="font-mono font-bold text-zinc-950 tabular-nums">
-                    {curr.symbol}{plat.data.totalFees.toFixed(2)}
+                    {formatMoney(plat.data.totalFees, curr.symbol)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -464,7 +464,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                       isLoss ? "text-rose-600" : "text-emerald-600"
                     )}
                   >
-                    {isLoss ? `-${curr.symbol}${Math.abs(plat.data.netProfit).toFixed(2)}` : `${curr.symbol}${plat.data.netProfit.toFixed(2)}`}
+                    {formatMoney(plat.data.netProfit, curr.symbol)}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
@@ -509,7 +509,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                     <span>Product Cost</span>
                   </div>
                   <span className="font-mono font-medium text-zinc-900 tabular-nums">
-                    {curr.symbol}{cost.toFixed(2)} ({plat.data.pcts.costPct.toFixed(1)}%)
+                    {formatMoney(cost, curr.symbol)} ({plat.data.pcts.costPct.toFixed(1)}%)
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-zinc-700">
@@ -518,7 +518,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                     <span>Platform Fees</span>
                   </div>
                   <span className="font-mono font-medium text-zinc-900 tabular-nums">
-                    {curr.symbol}{plat.data.totalFees.toFixed(2)} ({plat.data.pcts.feePct.toFixed(1)}%)
+                    {formatMoney(plat.data.totalFees, curr.symbol)} ({plat.data.pcts.feePct.toFixed(1)}%)
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-zinc-700 font-semibold">
@@ -537,7 +537,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                       isLoss ? "text-rose-600" : "text-emerald-700"
                     )}
                   >
-                    {isLoss ? `-${curr.symbol}${Math.abs(plat.data.netProfit).toFixed(2)}` : `${curr.symbol}${plat.data.netProfit.toFixed(2)}`} ({plat.data.margin.toFixed(1)}%)
+                    {formatMoney(plat.data.netProfit, curr.symbol)} ({plat.data.margin.toFixed(1)}%)
                   </span>
                 </div>
 
@@ -550,7 +550,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                       isLoss ? "text-rose-600" : "text-zinc-950"
                     )}
                   >
-                    {isLoss ? "-" : ""}{curr.symbol}{Math.abs(plat.data.annualProfit).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {formatMoney(plat.data.annualProfit, curr.symbol)}
                   </span>
                 </div>
               </div>
@@ -582,33 +582,33 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
               <tbody className="divide-y divide-zinc-100 text-zinc-800 font-mono">
                 <tr className="hover:bg-zinc-50/50">
                   <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Listing / Plan Fee</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.etsy.listingFee.toFixed(2)}</td>
-                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{curr.symbol}{comparison.shopify.listingFee.toFixed(2)}</td>
-                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{curr.symbol}{comparison.tiktok.listingFee.toFixed(2)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.etsy.listingFee, curr.symbol)}</td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{formatMoney(comparison.shopify.listingFee, curr.symbol)}</td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{formatMoney(comparison.tiktok.listingFee, curr.symbol)}</td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50">
                   <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Transaction / Referral</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.etsy.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(6.5%)</span></td>
-                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{curr.symbol}{comparison.shopify.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(0%)</span></td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.tiktok.txFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(6.0%)</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.etsy.txFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(6.5%)</span></td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{formatMoney(comparison.shopify.txFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(0%)</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.tiktok.txFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(6.0%)</span></td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50">
                   <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Payment Processing</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.etsy.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(3% + $0.25)</span></td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.shopify.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(2.9% + $0.30)</span></td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.tiktok.procFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">(1.8% + $0.30)</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.etsy.procFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(3% + $0.25)</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.shopify.procFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(2.9% + $0.30)</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.tiktok.procFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">(1.8% + $0.30)</span></td>
                 </tr>
                 <tr className="hover:bg-zinc-50/50">
                   <td className="py-2.5 px-3 font-sans font-medium text-zinc-950">Offsite / Marketing</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.etsy.marketingFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">{includeOffsiteAds ? "(15%)" : "(Off)"}</span></td>
-                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{curr.symbol}{comparison.shopify.marketingFee.toFixed(2)}</td>
-                  <td className="py-2.5 px-3 text-right tabular-nums">{curr.symbol}{comparison.tiktok.marketingFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-sans">{includeTikTokAffiliate ? "(10%)" : "(Off)"}</span></td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.etsy.marketingFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">{includeOffsiteAds ? "(15%)" : "(Off)"}</span></td>
+                  <td className="py-2.5 px-3 text-right text-emerald-700 font-medium tabular-nums">{formatMoney(comparison.shopify.marketingFee, curr.symbol)}</td>
+                  <td className="py-2.5 px-3 text-right tabular-nums">{formatMoney(comparison.tiktok.marketingFee, curr.symbol)} <span className="text-[11px] text-zinc-400 font-sans">{includeTikTokAffiliate ? "(10%)" : "(Off)"}</span></td>
                 </tr>
                 <tr className="border-t-2 border-zinc-200 bg-zinc-50/80 font-bold">
                   <td className="py-3 px-3 font-sans font-extrabold text-zinc-950 rounded-l-lg">Total Fees</td>
-                  <td className="py-3 px-3 text-right text-zinc-950 font-extrabold tabular-nums">{curr.symbol}{comparison.etsy.totalFees.toFixed(2)}</td>
-                  <td className="py-3 px-3 text-right text-emerald-700 font-extrabold tabular-nums">{curr.symbol}{comparison.shopify.totalFees.toFixed(2)}</td>
-                  <td className="py-3 px-3 text-right text-zinc-950 font-extrabold rounded-r-lg tabular-nums">{curr.symbol}{comparison.tiktok.totalFees.toFixed(2)}</td>
+                  <td className="py-3 px-3 text-right text-zinc-950 font-extrabold tabular-nums">{formatMoney(comparison.etsy.totalFees, curr.symbol)}</td>
+                  <td className="py-3 px-3 text-right text-emerald-700 font-extrabold tabular-nums">{formatMoney(comparison.shopify.totalFees, curr.symbol)}</td>
+                  <td className="py-3 px-3 text-right text-zinc-950 font-extrabold rounded-r-lg tabular-nums">{formatMoney(comparison.tiktok.totalFees, curr.symbol)}</td>
                 </tr>
               </tbody>
             </table>
@@ -633,7 +633,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                   {comparison.hasProfitablePlatform ? (
                     <>
                       <strong className="text-zinc-950 font-bold">{comparison.winner.name}</strong> delivers the highest net profit at{" "}
-                      <span className="font-mono font-bold text-emerald-700">{curr.symbol}{comparison.winner.netProfit.toFixed(2)}</span> ({comparison.winner.margin.toFixed(1)}% margin) per order.
+                      <span className="font-mono font-bold text-emerald-700">{formatMoney(comparison.winner.netProfit, curr.symbol)}</span> ({comparison.winner.margin.toFixed(1)}% margin) per order.
                     </>
                   ) : (
                     <>
@@ -648,7 +648,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                   Fee Efficiency
                 </span>
                 <p className="text-xs leading-relaxed text-zinc-800">
-                  Shopify keeps 100% of marketplace take-rate (0% referral fee), deducting only standard merchant processing ({curr.symbol}{comparison.shopify.totalFees.toFixed(2)} total).
+                  Shopify keeps 100% of marketplace take-rate (0% referral fee), deducting only standard merchant processing ({formatMoney(comparison.shopify.totalFees, curr.symbol)} total).
                 </p>
               </div>
 
@@ -657,7 +657,7 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
                   Volume Projection ({monthlyOrders} orders/mo)
                 </span>
                 <p className="text-xs font-mono font-bold text-zinc-950">
-                  {curr.symbol}{comparison.winner.annualProfit.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} / year
+                  {formatMoney(comparison.winner.annualProfit, curr.symbol)} / year
                   <span className="font-sans font-normal text-zinc-500 block text-[11px] mt-0.5">
                     Estimated annual net profit when prioritizing {comparison.winner.name}.
                   </span>
@@ -684,7 +684,12 @@ export function MarketplaceComparison({ isEmbed = false }: { isEmbed?: boolean }
           productCost={cost}
           totalFees={comparison.winner.totalFees}
           payout={Number((comparison.gross - comparison.winner.totalFees).toFixed(2))}
+          breakEven={cost > 0 ? Number((cost + comparison.winner.totalFees).toFixed(2)) : 0}
           currencySymbol={curr.symbol}
+          itemizedFees={[
+            { label: `${comparison.winner.name} Platform Fees`, amount: comparison.winner.totalFees },
+            { label: "Product Cost (COGS)", amount: cost },
+          ]}
         />
       )}
     </div>

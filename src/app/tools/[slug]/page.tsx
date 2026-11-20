@@ -48,7 +48,7 @@ export async function generateMetadata({
     pageTitle = `${tool.title} (${matchedPreset.toUpperCase()} Preset)`;
   }
 
-  const canonicalUrl = `https://calcdial.pages.dev/tools/${slug}`;
+  const canonicalUrl = `https://calcdial.com/tools/${slug}`;
 
   return {
     title: `${pageTitle} | CalcDial`,

@@ -25,6 +25,10 @@ export function AdSlot({ position, slotId, className }: AdSlotProps) {
     }
   }, [adsenseId, slotId]);
 
+  if (!adsenseId || !slotId) {
+    return null;
+  }
+
   return (
     <div
       ref={adRef}
@@ -39,24 +43,14 @@ export function AdSlot({ position, slotId, className }: AdSlotProps) {
       aria-label="Advertisement space"
     >
       <div className="flex h-full w-full items-center justify-center rounded-lg bg-white/70 p-3 border border-zinc-150">
-        {adsenseId && slotId ? (
-          <ins
-            className="adsbygoogle"
-            style={{ display: "block", width: "100%", height: "100%" }}
-            data-ad-client={adsenseId}
-            data-ad-slot={slotId}
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          />
-        ) : (
-          <div className="flex items-center justify-center gap-2 text-zinc-400 py-3 select-none">
-            <span className="size-1.5 rounded-full bg-zinc-300" />
-            <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-medium">
-              Sponsor Placement
-            </span>
-            <span className="size-1.5 rounded-full bg-zinc-300" />
-          </div>
-        )}
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block", width: "100%", height: "100%" }}
+          data-ad-client={adsenseId}
+          data-ad-slot={slotId}
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        />
       </div>
     </div>
   );

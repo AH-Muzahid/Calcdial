@@ -382,17 +382,23 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 text-zinc-800">
-              {TIKTOK_CATEGORY_PRESETS.map((cat) => (
-                <tr key={cat.id} className="hover:bg-zinc-50/60">
-                  <td className="py-2.5 px-3 font-semibold text-zinc-950 capitalize">
-                    {cat.id.replace("-", " & ")}
-                  </td>
-                  <td className="py-2.5 px-3 font-mono font-semibold text-zinc-950">{cat.fees.referralPct}%</td>
-                  <td className="py-2.5 px-3 font-mono text-zinc-500">Included in referral</td>
-                  <td className="py-2.5 px-3 font-mono text-zinc-700">10% – 20%</td>
-                  <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-950">16% – 26%</td>
-                </tr>
-              ))}
+              {TIKTOK_CATEGORY_PRESETS.map((cat) => {
+                const totalPctMin = (cat.fees.referralPct + 1.8 + 10).toFixed(1);
+                const totalPctMax = (cat.fees.referralPct + 1.8 + 20).toFixed(1);
+                return (
+                  <tr key={cat.id} className="hover:bg-zinc-50/60">
+                    <td className="py-2.5 px-3 font-semibold text-zinc-950 capitalize">
+                      {cat.id.replace("-", " & ")}
+                    </td>
+                    <td className="py-2.5 px-3 font-mono font-semibold text-zinc-950">{cat.fees.referralPct}%</td>
+                    <td className="py-2.5 px-3 font-mono text-zinc-700">1.8% + $0.30</td>
+                    <td className="py-2.5 px-3 font-mono text-zinc-700">10% – 20%</td>
+                    <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-950">
+                      {totalPctMin}% – {totalPctMax}% + $0.30
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

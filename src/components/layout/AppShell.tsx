@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { CommandMenu } from "./CommandMenu";
+import { CookieConsent } from "./CookieConsent";
 import { cn } from "@/lib/utils";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -29,6 +30,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Footer />
       {/* ⌘K Command Palette */}
       <CommandMenu />
+      {/* Cookie Consent Banner */}
+      <CookieConsent />
     </div>
   );
 }

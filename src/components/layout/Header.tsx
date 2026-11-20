@@ -111,7 +111,7 @@ export function Header() {
             type="button"
             onClick={triggerGlobalSearch}
             className={cn(
-              "flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              "min-h-11 min-w-11 flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
                 : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
@@ -127,7 +127,7 @@ export function Header() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={cn(
-              "md:hidden flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              "min-h-11 min-w-11 md:hidden flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
                 : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
@@ -154,7 +154,7 @@ export function Header() {
                 setMobileMenuOpen(false);
                 triggerGlobalSearch();
               }}
-              className="flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 py-2.5 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
+              className="min-h-11 flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 py-2.5 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <Search className="size-4 text-zinc-400" />
@@ -173,7 +173,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
                 pathname === "/calculators"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -188,7 +188,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
                 pathname === "/comparisons"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -203,7 +203,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
                 pathname === "/guides"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -220,7 +220,7 @@ export function Header() {
               href="/about"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-zinc-950 transition-colors"
+              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
             >
               About
             </Link>
@@ -228,7 +228,7 @@ export function Header() {
               href="/contact"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-zinc-950 transition-colors"
+              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
             >
               Contact
             </Link>
@@ -236,7 +236,7 @@ export function Header() {
               href="/privacy-policy"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="hover:text-zinc-950 transition-colors"
+              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
             >
               Privacy
             </Link>

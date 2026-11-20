@@ -38,10 +38,10 @@ export function TikTokInDepthGuide() {
 
           <div className="border-l-2 border-zinc-900 pl-4 py-0.5">
             <h4 className="text-sm font-bold text-zinc-950">
-              B. Fixed Merchant Transaction Fee: $0.30 per Order
+              B. Payment Processing Fee: 1.8% + $0.30 per Order
             </h4>
             <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed mt-0.5">
-              To cover electronic payment gateway authorization, fraud prevention protocols, and banking network settlement, TikTok Shop deducts a flat <strong>$0.30</strong> transaction fee on every completed paid order. For impulse items under $15, this fixed 30-cent fee represents 2% or more of top-line revenue.
+              To cover electronic payment gateway authorization, fraud prevention protocols, and banking network settlement, TikTok Shop deducts <strong>1.8% + $0.30</strong> per completed paid order. For lower-priced items under $15, this transaction fee represents a significant share of top-line revenue that sellers must factor into their unit economics.
             </p>
           </div>
 

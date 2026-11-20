@@ -37,7 +37,7 @@ export default function ContactPage() {
               For editorial corrections, developer inquiries, or partnership discussions, you can reach our editorial desk directly:
             </p>
             <div className="mt-3.5 inline-flex items-center gap-2 rounded-xl border border-zinc-200/90 bg-white px-3.5 py-2 font-mono text-xs font-semibold text-zinc-950 shadow-2xs">
-              support@calcdial.pages.dev
+              support@calcdial.com
             </div>
           </div>
 
