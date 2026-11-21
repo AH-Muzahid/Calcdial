@@ -63,7 +63,9 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || "GTM-TL8KG9ZG";
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || "zgp4pbvmi1";
 const AD_NETWORK = process.env.NEXT_PUBLIC_AD_NETWORK || "adsense";
 const ADSENSE_ID = process.env.NEXT_PUBLIC_ADSENSE_ID;
-const GROW_SITE_ID = process.env.NEXT_PUBLIC_GROW_SITE_ID;
+const GROW_SITE_ID =
+  process.env.NEXT_PUBLIC_GROW_SITE_ID ||
+  "U2l0ZToyYWJiNWQxYS1hMzcyLTQ3NTUtODQ3My1iN2E4NDdkNzliNzg=";
 
 export default function RootLayout({
   children,
@@ -138,10 +140,26 @@ export default function RootLayout({
           />
         )}
 
-        {(AD_NETWORK === "grow" || AD_NETWORK === "journey") && GROW_SITE_ID && (
+        {/* Grow by Mediavine (Builds domain history clock for Journey) */}
+        {GROW_SITE_ID && (
           <Script
-            src={`https://assets.grow.me/grow-me.js?site-id=${GROW_SITE_ID}`}
+            id="grow-me-initializer"
             strategy="afterInteractive"
+            data-grow-initializer=""
+            dangerouslySetInnerHTML={{
+              __html: `
+                !(function(){
+                  window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));
+                  var e=document.createElement("script");
+                  e.type="text/javascript";
+                  e.src="https://faves.grow.me/main.js";
+                  e.defer=!0;
+                  e.setAttribute("data-grow-faves-site-id","${GROW_SITE_ID}");
+                  var t=document.getElementsByTagName("script")[0];
+                  t.parentNode.insertBefore(e,t);
+                })();
+              `,
+            }}
           />
         )}
 
