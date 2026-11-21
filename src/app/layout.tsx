@@ -79,6 +79,17 @@ export default function RootLayout({
       style={{ colorScheme: "light" }}
       suppressHydrationWarning
     >
+      <head>
+        {/* Grow by Mediavine Initializer (Must be raw HTML script tag for Grow crawler verification) */}
+        {GROW_SITE_ID && (
+          <script
+            data-grow-initializer=""
+            dangerouslySetInnerHTML={{
+              __html: `!(function(){window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));var e=document.createElement("script");(e.type="text/javascript"),(e.src="https://faves.grow.me/main.js"),(e.defer=!0),e.setAttribute("data-grow-faves-site-id","${GROW_SITE_ID}");var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t);})();`,
+            }}
+          />
+        )}
+      </head>
       <body
         className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white"
         suppressHydrationWarning
@@ -140,28 +151,7 @@ export default function RootLayout({
           />
         )}
 
-        {/* Grow by Mediavine (Builds domain history clock for Journey) */}
-        {GROW_SITE_ID && (
-          <Script
-            id="grow-me-initializer"
-            strategy="afterInteractive"
-            data-grow-initializer=""
-            dangerouslySetInnerHTML={{
-              __html: `
-                !(function(){
-                  window.growMe||((window.growMe=function(e){window.growMe._.push(e);}),(window.growMe._=[]));
-                  var e=document.createElement("script");
-                  e.type="text/javascript";
-                  e.src="https://faves.grow.me/main.js";
-                  e.defer=!0;
-                  e.setAttribute("data-grow-faves-site-id","${GROW_SITE_ID}");
-                  var t=document.getElementsByTagName("script")[0];
-                  t.parentNode.insertBefore(e,t);
-                })();
-              `,
-            }}
-          />
-        )}
+
 
         <AppShell>{children}</AppShell>
       </body>
