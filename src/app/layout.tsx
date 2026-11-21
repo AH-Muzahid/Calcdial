@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | CalcDial",
   },
   description:
-    "Free, instant e-commerce fee and profit calculators for Etsy, Shopify, TikTok Shop, and Print-on-Demand sellers. 100% client-side with zero tracking lag.",
+    "Free, instant e-commerce fee and profit calculators for Etsy, Shopify, TikTok Shop, and Print-on-Demand sellers. Client-side math, with analytics that help us improve the site.",
   keywords: [
     "etsy fee calculator",
     "shopify profit calculator",
