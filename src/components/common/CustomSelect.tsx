@@ -86,7 +86,7 @@ export function CustomSelect({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg font-sans text-xs sm:text-sm no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="absolute z-50 mt-1 max-h-60 min-w-full sm:min-w-[260px] w-max max-w-[calc(100vw-2rem)] right-0 sm:right-auto overflow-y-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg font-sans text-xs sm:text-sm no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -101,13 +101,13 @@ export function CustomSelect({
                   setIsOpen(false);
                 }}
                 className={cn(
-                  "min-h-11 w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer text-xs sm:text-sm",
+                  "min-h-11 w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer text-xs sm:text-sm gap-2",
                   isSelected
                     ? "bg-blue-50 font-bold text-blue-700"
                     : "text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950"
                 )}
               >
-                <span className="truncate">{option.label}</span>
+                <span className="whitespace-normal leading-snug">{option.label}</span>
                 {isSelected && (
                   <Check className="size-3.5 shrink-0 text-blue-600 ml-2" />
                 )}

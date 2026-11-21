@@ -21,12 +21,13 @@ export function formatCurrency(
 
 export function formatMoney(amount: number, symbol: string = "$"): string {
   if (isNaN(amount) || !isFinite(amount)) return `${symbol}0.00`;
-  const isNegative = amount < 0;
   const abs = Math.abs(amount);
   const formatted = abs.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
+  if (formatted === "0.00") return `${symbol}0.00`;
+  const isNegative = amount < 0;
   return isNegative ? `-${symbol}${formatted}` : `${symbol}${formatted}`;
 }
 

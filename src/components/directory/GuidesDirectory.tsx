@@ -114,7 +114,7 @@ export function GuidesDirectory() {
                   type="button"
                   onClick={() => setSelectedCategory(cat.id)}
                   className={cn(
-                    "px-3.5 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer select-none",
+                    "px-3.5 sm:px-4 py-2 min-h-11 flex items-center justify-center rounded-lg text-xs font-bold transition-all cursor-pointer select-none",
                     isActive
                       ? "bg-[#2b5cfd] text-white shadow-sm shadow-blue-500/25 ring-1 ring-[#1b3cb5]"
                       : "bg-white text-zinc-700 border border-zinc-200/90 hover:bg-zinc-50 hover:text-zinc-950 hover:border-zinc-300"

@@ -5,14 +5,14 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { EmailCapture } from "@/components/layout/EmailCapture";
 
 export const metadata: Metadata = {
-  title: "All Seller Profit & Fee Calculators | CalcDial",
+  title: "All Seller Profit & Fee Calculators",
   description:
     "Explore our complete suite of client-side seller fee and profit margin calculators for Etsy, Shopify, TikTok Shop, Print-on-Demand, Stripe, and PayPal.",
   alternates: {
     canonical: "https://calcdial.com/calculators/",
   },
   openGraph: {
-    title: "All Seller Profit & Fee Calculators | CalcDial",
+    title: "All Seller Profit & Fee Calculators",
     description:
       "High-accuracy, client-side seller fee and profit calculators for e-commerce, handmade, POD, and payment processing.",
     url: "https://calcdial.com/calculators/",

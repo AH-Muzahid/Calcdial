@@ -5,14 +5,14 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { EmailCapture } from "@/components/layout/EmailCapture";
 
 export const metadata: Metadata = {
-  title: "Seller Guides & Platform Fee Strategies | CalcDial",
+  title: "Seller Guides & Platform Fee Strategies",
   description:
     "In-depth seller fee masterclasses, margin defense strategies, and payment gross-up tutorials verified for 2026. Avoid hidden platform deductions on Etsy, Shopify, TikTok, and Stripe.",
   alternates: {
     canonical: "https://calcdial.com/guides/",
   },
   openGraph: {
-    title: "Seller Guides & Platform Fee Strategies | CalcDial",
+    title: "Seller Guides & Platform Fee Strategies",
     description:
       "Actionable e-commerce and seller guides: Etsy fee schedules, Shopify vs. TikTok comparisons, POD margin rules, and invoice gross-up formulas.",
     url: "https://calcdial.com/guides/",

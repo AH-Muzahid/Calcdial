@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — CalcDial",
+  title: "Privacy Policy",
   description:
     "CalcDial Privacy Policy: Details on cookie usage, Google Analytics 4, advertising partners, and our 100% client-side data privacy architecture.",
 };

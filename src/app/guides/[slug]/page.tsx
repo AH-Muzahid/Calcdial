@@ -33,7 +33,7 @@ export async function generateMetadata({
   const canonicalUrl = `https://calcdial.com/guides/${slug}`;
 
   return {
-    title: `${guide.title} | CalcDial`,
+    title: guide.title,
     description: guide.metaDescription,
     alternates: { canonical: canonicalUrl },
     openGraph: {

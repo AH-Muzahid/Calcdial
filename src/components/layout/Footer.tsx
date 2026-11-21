@@ -28,7 +28,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/tools/shopify-profit-calculator" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
-                  Shopify & ROAS Engine
+                  Shopify Profit &amp; ROAS Calculator
                 </Link>
               </li>
               <li>
@@ -147,17 +147,12 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/terms" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
-                  Terms of Service
+                  Terms of Service &amp; Disclaimer
                 </Link>
               </li>
               <li>
                 <Link href="/privacy-policy" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
                   Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" prefetch={false} className="text-zinc-500 hover:text-blue-600 transition-colors">
-                  Calculation Disclaimer
                 </Link>
               </li>
               <li>
@@ -175,7 +170,7 @@ export function Footer() {
 
             {/* Accurate Brand Description */}
             <p className="mt-3.5 text-xs sm:text-sm text-zinc-500 leading-relaxed font-normal max-w-sm">
-              Independent, high-precision fee calculators & margin forecasting for online sellers. 100% private, client-side math with zero tracking.
+              Independent, high-precision fee calculators &amp; margin forecasting for online sellers. 100% private, client-side math with zero tracking.
             </p>
 
             {/* Fee Schedule Status Badge */}
@@ -186,43 +181,18 @@ export function Footer() {
 
             {/* Social Icons Row (rounded-xl) */}
             <div className="mt-5 flex items-center gap-2.5">
-              {/* LinkedIn */}
+              {/* GitHub Repository */}
               <a
-                href="https://linkedin.com"
+                href="https://github.com/AH-Muzahid/Calcdial"
                 target="_blank"
                 rel="noreferrer"
-                aria-label="LinkedIn"
-                className="flex size-8 items-center justify-center rounded-xl border border-zinc-200/70 bg-white hover:border-[#0A66C2]/30 hover:bg-[#0A66C2]/10 text-zinc-500 hover:text-[#0A66C2] transition-all hover:scale-105 shadow-2xs"
+                aria-label="GitHub Repository"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-zinc-200/90 bg-white hover:border-zinc-400 hover:bg-zinc-50 text-zinc-600 hover:text-zinc-950 transition-all shadow-2xs text-xs font-semibold font-sans"
               >
-                <svg className="size-3.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.47 1.47 0 0 0 1.47-1.47c0-.82-.66-1.48-1.47-1.48s-1.47.66-1.47 1.48c0 .81.65 1.47 1.47 1.47m1.39 9.74v-8.37H5.07v8.37h2.78Z" />
-                </svg>
-              </a>
-
-              {/* Twitter / X */}
-              <a
-                href="https://x.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Twitter"
-                className="flex size-8 items-center justify-center rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-400 hover:bg-zinc-100 text-zinc-500 hover:text-black transition-all hover:scale-105 shadow-2xs"
-              >
-                <svg className="size-3.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-                </svg>
-              </a>
-
-              {/* GitHub */}
-              <a
-                href="https://github.com"
-                target="_blank"
-                rel="noreferrer"
-                aria-label="GitHub"
-                className="flex size-8 items-center justify-center rounded-xl border border-zinc-200/70 bg-white hover:border-zinc-400 hover:bg-zinc-100 text-zinc-500 hover:text-black transition-all hover:scale-105 shadow-2xs"
-              >
-                <svg className="size-3.5" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="size-4" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
+                <span>GitHub Source</span>
               </a>
             </div>
           </div>

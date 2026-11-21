@@ -217,12 +217,12 @@ Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
             </button>
           </div>
 
-          <div className="w-36 sm:w-44">
+          <div className="w-full sm:w-52 md:w-56">
             <CustomSelect
               value={currency}
               options={Object.entries(CURRENCY_MAP).map(([id, item]) => ({
                 value: id,
-                label: item.label.split("-")[0].trim(),
+                label: item.label,
               }))}
               onChange={(val) => setCurrency(val)}
             />
@@ -524,7 +524,7 @@ Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
               <div>
                 <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                    Net Take-Home
+                    Net Profit (after costs)
                   </span>
                   <span
                     className={cn(
@@ -547,7 +547,7 @@ Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
                     {formatMoney(result.netProfit, curr.symbol)}
                   </div>
                   <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
-                    Est. bank payout after gateway: {formatMoney(result.netPayout, curr.symbol)}
+                    Est. Bank Deposit (before product/shipping costs): {formatMoney(result.netPayout, curr.symbol)}
                   </span>
                 </div>
 
@@ -583,7 +583,7 @@ Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
                     </span>
                     <span className="flex items-center gap-1 font-medium">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
-                      Direct Costs
+                      Direct Costs ({grossRev > 0 ? (((cogs + shippingCost + (includeAds ? adSpend : 0)) / grossRev) * 100).toFixed(0) : "0"}%)
                     </span>
                   </div>
                 </div>
@@ -611,12 +611,44 @@ Calculated via CalcDial (https://calcdial.com/tools/shopify-profit-calculator)`;
                   <div className="flex justify-between text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Item Cost (COGS):
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                      -{formatMoney(cogs, curr.symbol)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Carrier Postage Paid:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                      -{formatMoney(shippingCost, curr.symbol)}
+                    </span>
+                  </div>
+                  {includeAds && adSpend > 0 && (
+                    <div className="flex justify-between text-zinc-600">
+                      <span className="flex items-center gap-1.5">
+                        <span className="size-1.5 rounded-full bg-amber-500" />
+                        Marketing Ad Spend (CAC):
+                      </span>
+                      <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                        -{formatMoney(adSpend, curr.symbol)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-zinc-600 pt-1 border-t border-zinc-200/50">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-blue-500" />
                       Break-Even ROAS Target:
                     </span>
                     <span className="font-mono font-bold text-blue-700 tabular-nums">
                       {result.breakEvenRoas}x
                     </span>
                   </div>
+                  <p className="text-[10px] text-zinc-500 font-sans italic pl-3">
+                    Formula: Gross Revenue ÷ Margin Before Ad Spend ({formatMoney(result.revenue, curr.symbol)} ÷ {formatMoney(Math.max(0, result.revenue - result.totalPlatformFees - cogs - shippingCost), curr.symbol)})
+                  </p>
                   <div className="flex justify-between text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-zinc-400" />

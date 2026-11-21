@@ -172,13 +172,13 @@ export function EtsyFeeCalculator({ initialCountry = "us", isEmbed = false }: Et
     isInternational,
   ]);
 
-  // Synchronize URL parameters
+  // Synchronize URL parameters (only set when non-default to preserve clean canonical URLs)
   useEffect(() => {
     if (typeof window === "undefined" || isEmbed) return;
     const params = new URLSearchParams(window.location.search);
-    if (price > 0) params.set("price", price.toString());
+    if (price > 0 && price !== 25) params.set("price", price.toString());
     else params.delete("price");
-    if (itemCost > 0) params.set("cost", itemCost.toString());
+    if (itemCost > 0 && itemCost !== 8) params.set("cost", itemCost.toString());
     else params.delete("cost");
     if (shippingCharged > 0) params.set("shipping", shippingCharged.toString());
     else params.delete("shipping");
@@ -269,7 +269,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
             </button>
           </div>
 
-          <div className="w-40 sm:w-48">
+          <div className="w-full sm:w-56 md:w-64">
             <CustomSelect
               value={country}
               options={CURRENCY_OPTIONS}
@@ -666,7 +666,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
               <div>
                 <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                    Net Take-Home
+                    Net Profit (after costs)
                   </span>
                   <span
                     className={cn(
@@ -689,7 +689,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
                     {formatMoney(result.netProfit, curr.symbol)}
                   </div>
                   <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
-                    Est. Etsy payout after cuts: {formatMoney(result.etsyPayout, curr.symbol)}
+                    Est. Bank Deposit (before product costs): {formatMoney(result.etsyPayout, curr.symbol)}
                   </span>
                 </div>
 
@@ -725,7 +725,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
                     </span>
                     <span className="flex items-center gap-1 font-medium">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
-                      Cost
+                      Direct Costs ({result.grossRevenue > 0 ? ((result.totalProductCosts / result.grossRevenue) * 100).toFixed(0) : "0"}%)
                     </span>
                   </div>
                 </div>

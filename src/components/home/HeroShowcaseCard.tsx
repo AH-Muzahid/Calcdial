@@ -269,7 +269,7 @@ export function HeroShowcaseCard() {
               <div>
                 <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                    Net Take-Home
+                    Net Profit (after costs)
                   </span>
                   <span className="text-xs font-mono font-bold text-emerald-700">
                     {marginPct.toFixed(1)}% margin
@@ -282,7 +282,7 @@ export function HeroShowcaseCard() {
                     {formatMoney(netProfit, "$")}
                   </div>
                   <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
-                    Est. payout after cuts: {formatMoney(payout, "$")}
+                    Est. Bank Deposit (before product costs): {formatMoney(payout, "$")}
                   </span>
                 </div>
 
@@ -315,7 +315,7 @@ export function HeroShowcaseCard() {
                       <span className="size-1.5 rounded-full bg-rose-500" /> Fees ({price > 0 ? ((totalFees / price) * 100).toFixed(0) : 0}%)
                     </span>
                     <span className="flex items-center gap-1 font-medium">
-                      <span className="size-1.5 rounded-full bg-zinc-400" /> Cost
+                      <span className="size-1.5 rounded-full bg-zinc-400" /> Direct Costs ({price > 0 ? ((platform.defaultCost / price) * 100).toFixed(0) : 0}%)
                     </span>
                   </div>
                 </div>

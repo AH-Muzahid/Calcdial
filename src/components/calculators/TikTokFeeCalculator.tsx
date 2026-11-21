@@ -40,6 +40,11 @@ const categoryOptions: CustomSelectOption[] = TIKTOK_CATEGORY_PRESETS.map((p) =>
   label: `${CATEGORY_NAMES[p.id] || p.id} (${p.fees.referralPct?.toFixed(1) ?? "6.0"}%)`,
 }));
 
+const CURRENCY_OPTIONS: CustomSelectOption[] = [
+  { value: "usd", label: "USD ($) - United States" },
+  { value: "gbp", label: "GBP (£) - United Kingdom" },
+];
+
 const PRESETS = [20, 30, 45, 60, 85, 120];
 const AFFILIATE_PRESETS = [0, 10, 15, 20];
 
@@ -48,6 +53,8 @@ export function TikTokFeeCalculator({
   isEmbed = false,
 }: TikTokFeeCalculatorProps) {
   const [mode, setMode] = useState<"profit" | "target">("profit");
+  const [currency, setCurrency] = useState<string>("usd");
+  const currSymbol = currency === "gbp" ? "£" : "$";
 
   const [priceStr, setPriceStr] = useState<string>(() => {
     if (typeof window !== "undefined") {
@@ -134,29 +141,29 @@ export function TikTokFeeCalculator({
     const text = isStandard
       ? `TikTok Shop Fee & Margin Summary (2026):
 ----------------------------------------
-Sale Price:             ${formatMoney(salePrice, "$")}
-Buyer Shipping:         ${formatMoney(shippingCharged, "$")}
-Gross Revenue:          ${formatMoney(result.grossRevenue, "$")}
+Sale Price:             ${formatMoney(salePrice, currSymbol)}
+Buyer Shipping:         ${formatMoney(shippingCharged, currSymbol)}
+Gross Revenue:          ${formatMoney(result.grossRevenue, currSymbol)}
 ----------------------------------------
 Category:               ${CATEGORY_NAMES[category] || category}
-TikTok Total Fees:      ${formatMoney(result.totalFees, "$")}
-Creator Affiliate Cut:  ${formatMoney(result.affiliateCommission, "$")} (${affiliatePct}%)
-Product COGS:           ${formatMoney(cogs, "$")}
-Carrier Postage:        ${formatMoney(shippingCost, "$")}
+TikTok Total Fees:      ${formatMoney(result.totalFees, currSymbol)}
+Creator Affiliate Cut:  ${formatMoney(result.affiliateCommission, currSymbol)} (${affiliatePct}%)
+Product COGS:           ${formatMoney(cogs, currSymbol)}
+Carrier Postage:        ${formatMoney(shippingCost, currSymbol)}
 ----------------------------------------
-TikTok Bank Payout:     ${formatMoney(result.netPayout, "$")}
-REAL NET PROFIT:        ${formatMoney(result.netProfit, "$")} (${result.netMarginPct.toFixed(1)}% margin)
-Break-Even Floor Price: ${formatMoney(result.breakEvenPrice, "$")}
+TikTok Bank Payout:     ${formatMoney(result.netPayout, currSymbol)}
+REAL NET PROFIT:        ${formatMoney(result.netProfit, currSymbol)} (${result.netMarginPct.toFixed(1)}% margin)
+Break-Even Floor Price: ${formatMoney(result.breakEvenPrice, currSymbol)}
 ----------------------------------------
 Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
       : `TikTok Shop Target Price Finder (2026):
 ----------------------------------------
 Target Margin:          ${targetMargin}%
-Recommended Price:      ${formatMoney(recommendedPrice, "$")}
-Estimated Net Profit:   ${formatMoney(reverseAnalysis.netProfit, "$")} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
-TikTok Bank Payout:     ${formatMoney(reverseAnalysis.netPayout, "$")}
-Total Platform Fees:    ${formatMoney(reverseAnalysis.totalFees, "$")}
-Total Direct Costs:     ${formatMoney(cogs + shippingCost, "$")}
+Recommended Price:      ${formatMoney(recommendedPrice, currSymbol)}
+Estimated Net Profit:   ${formatMoney(reverseAnalysis.netProfit, currSymbol)} (${reverseAnalysis.netMarginPct.toFixed(1)}% margin)
+TikTok Bank Payout:     ${formatMoney(reverseAnalysis.netPayout, currSymbol)}
+Total Platform Fees:    ${formatMoney(reverseAnalysis.totalFees, currSymbol)}
+Total Direct Costs:     ${formatMoney(cogs + shippingCost, currSymbol)}
 ----------------------------------------
 Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`;
 
@@ -198,10 +205,12 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono font-bold text-zinc-500 bg-zinc-100 px-2.5 py-1 rounded-md">
-              USD ($)
-            </span>
+          <div className="w-full sm:w-52 md:w-56">
+            <CustomSelect
+              value={currency}
+              options={CURRENCY_OPTIONS}
+              onChange={(val) => setCurrency(val)}
+            />
           </div>
         </div>
 
@@ -235,8 +244,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       <label htmlFor="tiktok-sale-price" className="text-xs font-bold text-zinc-900 block mb-1">
                         Sale Price
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           id="tiktok-sale-price"
                           type="number"
@@ -260,8 +269,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       <label htmlFor="tiktok-cogs" className="text-xs font-bold text-zinc-900 block mb-1">
                         Item Cost (COGS)
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           id="tiktok-cogs"
                           type="number"
@@ -297,7 +306,7 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                               : "bg-white border border-zinc-200/90 text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
                           )}
                         >
-                          ${p}
+                          {currSymbol}{p}
                         </button>
                       ))}
                     </div>
@@ -309,8 +318,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       <label htmlFor="tiktok-shipping-charged" className="text-xs font-bold text-zinc-900 block mb-1">
                         Buyer Shipping Fee
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           id="tiktok-shipping-charged"
                           type="number"
@@ -329,8 +338,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       <label htmlFor="tiktok-shipping-cost" className="text-xs font-bold text-zinc-900 block mb-1">
                         Carrier Cost Paid
                       </label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           id="tiktok-shipping-cost"
                           type="number"
@@ -370,8 +379,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs font-bold text-zinc-900 block mb-1">Item Cost (COGS)</label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           type="number"
                           value={cogsStr}
@@ -382,8 +391,8 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                     </div>
                     <div>
                       <label className="text-xs font-bold text-zinc-900 block mb-1">Carrier Postage</label>
-                      <div className="relative flex items-center min-h-10 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
-                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">$</span>
+                      <div className="relative flex items-center min-h-11 rounded-lg border border-zinc-300 bg-white px-2.5 transition-all focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-600">
+                        <span className="text-xs font-mono font-bold text-zinc-500 select-none mr-1">{currSymbol}</span>
                         <input
                           type="number"
                           value={shippingCostStr}
@@ -470,7 +479,7 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
               <div>
                 <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-zinc-200/70">
                   <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                    Net Take-Home
+                    Net Profit (after costs)
                   </span>
                   <span
                     className={cn(
@@ -490,10 +499,10 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       result.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"
                     )}
                   >
-                    {formatMoney(result.netProfit, "$")}
+                    {formatMoney(result.netProfit, currSymbol)}
                   </div>
                   <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
-                    Est. TikTok Shop payout: {formatMoney(result.netPayout, "$")}
+                    Est. Bank Deposit (before product costs): {formatMoney(result.netPayout, currSymbol)}
                   </span>
                 </div>
 
@@ -529,7 +538,7 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                     </span>
                     <span className="flex items-center gap-1 font-medium">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
-                      Direct Costs
+                      Direct Costs ({grossRev > 0 ? ((result.totalProductCosts / grossRev) * 100).toFixed(0) : "0"}%)
                     </span>
                   </div>
                 </div>
@@ -542,16 +551,16 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                       Gross Revenue:
                     </span>
                     <span className="font-mono font-semibold text-zinc-900 tabular-nums">
-                      {formatMoney(result.grossRevenue, "$")}
+                      {formatMoney(result.grossRevenue, currSymbol)}
                     </span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-rose-500" />
-                      TikTok Total Fees:
+                      TikTok Platform Fees ({result.referralRatePct}% + 1.8% + {currSymbol}0.30):
                     </span>
                     <span className="font-mono font-semibold text-rose-600 tabular-nums">
-                      -{formatMoney(result.totalFees, "$")}
+                      -{formatMoney(result.referralFee + result.paymentProcessingFee, currSymbol)}
                     </span>
                   </div>
                   {includeAffiliate && result.affiliateCommission > 0 && (
@@ -561,17 +570,32 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                         Creator Commission ({affiliatePct}%):
                       </span>
                       <span className="font-mono font-semibold text-rose-600 tabular-nums">
-                        -{formatMoney(result.affiliateCommission, "$")}
+                        -{formatMoney(result.affiliateCommission, currSymbol)}
                       </span>
                     </div>
                   )}
+                  <div className="flex justify-between text-zinc-700 font-semibold pt-1 border-t border-zinc-200/50">
+                    <span>Total Platform &amp; Creator Fees:</span>
+                    <span className="font-mono font-bold text-rose-600 tabular-nums">
+                      -{formatMoney(result.totalFees, currSymbol)}
+                    </span>
+                  </div>
                   <div className="flex justify-between text-zinc-600">
+                    <span className="flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-zinc-400" />
+                      Direct Product &amp; Shipping Costs:
+                    </span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">
+                      -{formatMoney(result.totalProductCosts, currSymbol)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-zinc-600 pt-1 border-t border-zinc-200/50">
                     <span className="flex items-center gap-1.5">
                       <span className="size-1.5 rounded-full bg-zinc-400" />
                       Break-Even Floor Price:
                     </span>
                     <span className="font-mono font-semibold text-zinc-900 tabular-nums">
-                      {formatMoney(result.breakEvenPrice, "$")}
+                      {formatMoney(result.breakEvenPrice, currSymbol)}
                     </span>
                   </div>
                 </div>
@@ -591,19 +615,19 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                     <div className="mt-1 divide-y divide-zinc-200/50 text-xs font-mono space-y-0.5 animate-in fade-in duration-150">
                       <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Referral Fee ({result.referralRatePct}%)</span>
-                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.referralFee, "$")}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.referralFee, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between py-1.5 text-zinc-600">
-                        <span>Payment Processing (1.8% + $0.30)</span>
-                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.paymentProcessingFee, "$")}</span>
+                        <span>Payment Processing (1.8% + {currSymbol}0.30)</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(result.paymentProcessingFee, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Product Landed Cost</span>
-                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(cogs, "$")}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(cogs, currSymbol)}</span>
                       </div>
                       <div className="flex justify-between py-1.5 text-zinc-600">
                         <span>Carrier Postage</span>
-                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(shippingCost, "$")}</span>
+                        <span className="font-semibold text-zinc-900 tabular-nums">{formatMoney(shippingCost, currSymbol)}</span>
                       </div>
                     </div>
                   )}
@@ -623,25 +647,25 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
 
                 <div>
                   <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold font-mono tracking-tight text-blue-600 tabular-nums">
-                    {formatMoney(recommendedPrice, "$")}
+                    {formatMoney(recommendedPrice, currSymbol)}
                   </div>
                   <span className="text-[11px] text-zinc-500 font-sans block mt-0.5 tabular-nums">
-                    Est. net profit: {formatMoney(reverseAnalysis.netProfit, "$")}
+                    Est. net profit: {formatMoney(reverseAnalysis.netProfit, currSymbol)}
                   </span>
                 </div>
 
                 <div className="space-y-1.5 text-xs font-sans py-2.5 my-3 border-y border-zinc-200/70">
                   <div className="flex justify-between text-zinc-600">
                     <span>TikTok Platform Fees:</span>
-                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(reverseAnalysis.totalFees, "$")}</span>
+                    <span className="font-mono font-semibold text-rose-600 tabular-nums">-{formatMoney(reverseAnalysis.totalFees, currSymbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>TikTok Deposit:</span>
-                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">{formatMoney(reverseAnalysis.netPayout, "$")}</span>
+                    <span className="font-mono font-semibold text-zinc-900 tabular-nums">{formatMoney(reverseAnalysis.netPayout, currSymbol)}</span>
                   </div>
                   <div className="flex justify-between text-zinc-600">
                     <span>Total Direct Costs:</span>
-                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(cogs + shippingCost, "$")}</span>
+                    <span className="font-mono font-semibold text-zinc-700 tabular-nums">-{formatMoney(cogs + shippingCost, currSymbol)}</span>
                   </div>
                 </div>
 
@@ -653,7 +677,7 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
                   }}
                   className="w-full py-2.5 px-3 min-h-11 rounded-lg bg-blue-600 text-white hover:bg-blue-700 text-xs font-bold font-sans flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                 >
-                  <span>Apply {formatMoney(recommendedPrice, "$")} to Standard View</span>
+                  <span>Apply {formatMoney(recommendedPrice, currSymbol)} to Standard View</span>
                   <ArrowRight className="size-3.5" />
                 </button>
               </div>
@@ -694,10 +718,10 @@ Calculated via CalcDial (https://calcdial.com/tools/tiktok-shop-fee-calculator)`
           totalFees={mode === "profit" ? result.totalFees : reverseAnalysis.totalFees}
           payout={mode === "profit" ? result.netPayout : reverseAnalysis.netPayout}
           breakEven={mode === "profit" ? result.breakEvenPrice : recommendedPrice}
-          currencySymbol="$"
+          currencySymbol={currSymbol}
           itemizedFees={[
             { label: `Referral Fee (${result.referralRatePct}%)`, amount: result.referralFee },
-            { label: "Payment Processing (1.8% + $0.30)", amount: result.paymentProcessingFee },
+            { label: `Payment Processing (1.8% + ${currSymbol}0.30)`, amount: result.paymentProcessingFee },
             ...(result.affiliateCommission > 0 ? [{ label: `Creator Commission (${affiliatePct}%)`, amount: result.affiliateCommission }] : []),
             { label: "Product Landed Cost (COGS)", amount: cogs },
             { label: "Carrier Shipping", amount: shippingCost },

@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { ContactForm } from "@/components/common/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact CalcDial — Support, Feedback & Fee Inquiries",
+  title: "Contact Support & Inquiries",
   description:
     "Get in touch with the CalcDial team for calculator feedback, fee schedule corrections, partnerships, or tool suggestions.",
 };

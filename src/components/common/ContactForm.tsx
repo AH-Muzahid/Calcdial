@@ -94,7 +94,7 @@ export function ContactForm() {
           }}
           aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "name-error" : undefined}
-          placeholder="Sarah Jenkins"
+          placeholder="e.g. Alex Morgan"
           className={`mt-1 h-11 min-h-11 w-full rounded-xl border bg-white px-3.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 transition-colors ${
             errors.name
               ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"
@@ -125,7 +125,7 @@ export function ContactForm() {
           }}
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "email-error" : undefined}
-          placeholder="sarah@example.com"
+          placeholder="you@example.com"
           className={`mt-1 h-11 min-h-11 w-full rounded-xl border bg-white px-3.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 transition-colors ${
             errors.email
               ? "border-rose-400 focus:border-rose-500 focus:ring-rose-500"

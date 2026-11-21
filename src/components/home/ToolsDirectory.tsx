@@ -24,7 +24,7 @@ const POPULAR_CALCULATORS = [
     },
     {
       id: "shopify",
-      title: "Shopify Fee Calculator",
+      title: "Shopify Profit & ROAS Calculator",
       subtitle: "Calculate Shopify fees, payment processing and profit.",
       category: "ecommerce",
       categories: ["ecommerce", "payments"],
@@ -119,8 +119,8 @@ const POPULAR_CALCULATORS = [
     },
     {
       slug: "pass-payment-processing-fees-to-clients",
-      title: "Freelance Taxes: A Simple Guide (US 1099)",
-      readTime: "12 min read",
+      title: "Passing Processing Fees to Clients (Gross-Up Guide)",
+      readTime: "6 min read",
       type: "tax" as const,
     },
   ];
@@ -184,19 +184,19 @@ export function ToolsDirectory() {
           {/* Glassmorphic Pill Trust Badge (MindCloud Authentic Glow + Appearing Animation) */}
           <div className="hero-mindcloud-badge animate-hero-badge mb-6 select-none cursor-default">
             <span className="size-2 rounded-full bg-emerald-400 animate-pulse relative z-10" />
-            <span className="relative z-10 opacity-90 text-[11px] sm:text-xs text-white">Official Rates Verified</span>
+            <span className="relative z-10 font-semibold text-[11px] sm:text-xs text-white">Official Rates Verified</span>
             <span className="w-px h-3.5 bg-white/20 relative z-10" />
-            <span className="relative z-10 text-blue-200 font-semibold text-[11px] sm:text-xs">2026 Updated</span>
+            <span className="relative z-10 text-sky-200 font-bold text-[11px] sm:text-xs">2026 Updated</span>
           </div>
 
           {/* Main Headline (MindCloud Staggered Appearing Animation) */}
           <h1 className="animate-hero-title text-3xl sm:text-[44px] md:text-[48px] font-medium tracking-[-1.5px] leading-[1.15] sm:leading-[52px] max-w-3xl mx-auto font-sans">
             <span className="block text-white">Know Your Real Profit.</span>
-            <span className="block text-[#badfff]">Before You Sell.</span>
+            <span className="block text-[#d8eeff]">Before You Sell.</span>
           </h1>
 
           {/* Subtitle (MindCloud Smooth Fade-in Animation) */}
-          <p className="animate-hero-subtitle mt-3.5 sm:mt-4 text-[15px] sm:text-[16px] text-[#badfff]/90 max-w-[520px] mx-auto leading-[24px] tracking-[-0.16px] font-normal">
+          <p className="animate-hero-subtitle mt-3.5 sm:mt-4 text-[15px] sm:text-[16px] text-blue-100 max-w-[520px] mx-auto leading-[24px] tracking-[-0.16px] font-normal">
             Instant, client-side fee calculators for Etsy, Shopify, TikTok Shop &amp; Stripe with verified platform ratecards.
           </p>
 
@@ -216,7 +216,7 @@ export function ToolsDirectory() {
             >
               <Search className="size-4.5 text-zinc-400 shrink-0 group-hover:text-[#2b5cfd] transition-colors" />
               <span className="flex-1 min-w-0 py-1.5 text-sm sm:text-base text-zinc-400 font-normal font-sans truncate select-none">
-                Search 80+ seller calculators (e.g. Etsy, Shopify, TikTok, Stripe)...
+                Search seller calculators (Etsy, Shopify, TikTok)...
               </span>
               <div className="hidden sm:inline-flex items-center gap-1 mr-1 px-2 py-1 rounded-lg bg-zinc-100 border border-zinc-200/80 text-[11px] font-mono font-semibold text-zinc-500">
                 <span>⌘</span>
@@ -271,7 +271,7 @@ export function ToolsDirectory() {
                   key={cat.id}
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`rounded-lg px-3.5 sm:px-4 py-1.5 text-xs font-bold transition-all duration-150 cursor-pointer min-h-9 flex items-center justify-center ${
+                  className={`rounded-lg px-3.5 sm:px-4 py-2 text-xs font-bold transition-all duration-150 cursor-pointer min-h-11 flex items-center justify-center ${
                     isActive
                       ? "bg-[#2b5cfd] text-white shadow-[inset_0_1px_0_0_rgb(255_255_255/0.35),0_2px_8px_rgb(43_92_253/0.4)] ring-1 ring-[#1b3cb5]"
                       : "bg-white text-zinc-800 border border-zinc-200/90 hover:bg-zinc-100 hover:text-zinc-950 hover:border-zinc-300"

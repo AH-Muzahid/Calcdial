@@ -162,9 +162,9 @@ export const TOOLS: ToolConfig[] = [
     ],
     workedExamples: [
       {
-        label: "Handmade Mug ($24.99 + $5.00 Shipping, US Seller, No Ads)",
-        inputs: { "Item Price": "$24.99", "Shipping Charged": "$5.00", "Country": "United States", "Offsite Ads": "Off" },
-        result: { "Gross Revenue": "$29.99", "Etsy Fees": "$3.30", "Net Profit": "$26.69", "Effective Fee %": "11.0%" },
+        label: "Handmade Ceramic Mug ($25.00, Free Shipping, US Seller, No Ads)",
+        inputs: { "Item Price": "$25.00", "Shipping Charged": "$0.00", "Country": "United States", "Offsite Ads": "Off" },
+        result: { "Gross Revenue": "$25.00", "Etsy Fees": "$2.83", "Net Profit": "$22.17", "Effective Fee %": "11.3%" },
       },
       {
         label: "Vintage Jacket ($85.00 + Free Shipping, US Seller, 15% Offsite Ads)",
@@ -269,6 +269,7 @@ export const TOOLS: ToolConfig[] = [
         { header: "Scenario", key: "scenario", align: "left" },
         { header: "Sale Price", key: "Sale Price", align: "right" },
         { header: "Platform Fee", key: "Platform Fee", align: "right" },
+        { header: "Creator Fee", key: "Creator Fee", align: "right" },
         { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
         { header: "Net Margin", key: "Net Margin", align: "right" },
       ],
@@ -289,9 +290,19 @@ export const TOOLS: ToolConfig[] = [
     ],
     workedExamples: [
       {
-        label: "Viral Lip Gloss ($18.00, Beauty Category, 15% Creator Commission)",
+        label: "Viral Lip Oil ($18.00, Beauty Category, 15% Creator Commission)",
         inputs: { "Sale Price": "$18.00", "Category": "Beauty (6%)", "Affiliate %": "15%", "COGS": "$3.00" },
-        result: { "Platform Fee": "$1.08", "Creator Fee": "$2.70", "Net Profit": "$11.22", "Net Margin": "62.3%" },
+        result: { "Platform Fee": "$1.70", "Creator Fee": "$2.70", "Net Profit": "$10.60", "Net Margin": "58.9%" },
+      },
+      {
+        label: "Oversized Hoodie ($45.00, Apparel, 10% Creator Commission)",
+        inputs: { "Sale Price": "$45.00", "Category": "Apparel (6%)", "Affiliate %": "10%", "COGS": "$16.00" },
+        result: { "Platform Fee": "$3.81", "Creator Fee": "$4.50", "Net Profit": "$20.69", "Net Margin": "46.0%" },
+      },
+      {
+        label: "Portable Blender ($32.00, Home & Kitchen, No Creator Commission)",
+        inputs: { "Sale Price": "$32.00", "Category": "Home & Kitchen (6%)", "Affiliate %": "0%", "COGS": "$11.00" },
+        result: { "Platform Fee": "$2.80", "Creator Fee": "$0.00", "Net Profit": "$18.20", "Net Margin": "56.9%" },
       },
     ],
     faqs: [

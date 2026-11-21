@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "About CalcDial — Our Mission & Calculation Methodology",
+  title: "About Us — Mission & Methodology",
   description:
     "Learn about CalcDial, our commitment to transparent e-commerce fee calculations, and how we audit marketplace fee updates for online sellers.",
 };

@@ -5,14 +5,14 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { EmailCapture } from "@/components/layout/EmailCapture";
 
 export const metadata: Metadata = {
-  title: "Multi-Platform & Gateway Fee Comparisons | CalcDial",
+  title: "Multi-Platform & Gateway Fee Comparisons",
   description:
     "Compare seller fees side-by-side across Etsy, Shopify, and TikTok Shop, or evaluate payment processor take rates between Stripe and PayPal with invoice gross-up calculations.",
   alternates: {
     canonical: "https://calcdial.com/comparisons/",
   },
   openGraph: {
-    title: "Multi-Platform & Gateway Fee Comparisons | CalcDial",
+    title: "Multi-Platform & Gateway Fee Comparisons",
     description:
       "Interactive head-to-head comparison engines: Etsy vs. Shopify vs. TikTok Shop margins, and Stripe vs. PayPal invoice gross-up calculator.",
     url: "https://calcdial.com/comparisons/",

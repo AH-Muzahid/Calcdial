@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 
 export const metadata: Metadata = {
-  title: "Terms of Service & Calculator Disclaimer — CalcDial",
+  title: "Terms of Service & Calculator Disclaimer",
   description:
     "Terms of service, calculator accuracy disclaimer, intellectual property notices, and limitations of liability for CalcDial users.",
 };

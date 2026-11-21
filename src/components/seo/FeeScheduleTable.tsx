@@ -168,13 +168,13 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                     <th className="py-2.5 px-3">Transaction Cut</th>
                     <th className="py-2.5 px-3">Payment Processing</th>
                     <th className="py-2.5 px-3">Regulatory Surcharge</th>
-                    <th className="py-2.5 px-3 text-right rounded-r-lg">Total on $50 Sale</th>
+                    <th className="py-2.5 px-3 text-right rounded-r-lg">Est. Fee on $50.00 USD Order</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 text-zinc-800">
                   {ETSY_FEE_PRESETS.map((preset) => {
                     const samplePrice = 50.0;
-                    const sampleShipping = 5.0;
+                    const sampleShipping = 0.0;
                     const totalRev = samplePrice + sampleShipping;
                     const listingFee = preset.fees.listingFee;
                     const txFee = totalRev * (preset.fees.transactionPct / 100);
@@ -210,7 +210,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-950">
-                          {preset.currencySymbol}{totalSampleFees.toFixed(2)}{" "}
+                          ${totalSampleFees.toFixed(2)} USD{" "}
                           <span className="text-zinc-400 font-normal text-[11px]">
                             ({effectivePct.toFixed(1)}%)
                           </span>
@@ -220,6 +220,9 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                   })}
                 </tbody>
               </table>
+              <p className="mt-2.5 text-[11px] text-zinc-500 font-sans leading-relaxed">
+                * Sample fee calculated for a standard $50.00 USD order (free shipping, 1 quantity, no Offsite Ads). Listing fee ($0.20 USD) and transaction cut (6.5%) apply uniformly worldwide, with domestic payment processing and localized regulatory operating fees itemized by settlement country.
+              </p>
             </div>
           )}
 
@@ -383,8 +386,21 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
             </thead>
             <tbody className="divide-y divide-zinc-100 text-zinc-800">
               {TIKTOK_CATEGORY_PRESETS.map((cat) => {
-                const totalPctMin = (cat.fees.referralPct + 1.8 + 10).toFixed(1);
-                const totalPctMax = (cat.fees.referralPct + 1.8 + 20).toFixed(1);
+                const affiliateRanges: Record<string, { min: number; max: number; label: string }> = {
+                  beauty: { min: 15, max: 20, label: "15% – 20%" },
+                  apparel: { min: 12, max: 18, label: "12% – 18%" },
+                  electronics: { min: 8, max: 12, label: "8% – 12%" },
+                  "home-garden": { min: 10, max: 15, label: "10% – 15%" },
+                  health: { min: 15, max: 20, label: "15% – 20%" },
+                  toys: { min: 10, max: 15, label: "10% – 15%" },
+                  sports: { min: 10, max: 15, label: "10% – 15%" },
+                  food: { min: 10, max: 15, label: "10% – 15%" },
+                  pets: { min: 10, max: 15, label: "10% – 15%" },
+                  accessories: { min: 12, max: 18, label: "12% – 18%" },
+                };
+                const range = affiliateRanges[cat.id] || { min: 10, max: 15, label: "10% – 15%" };
+                const totalPctMin = (cat.fees.referralPct + 1.8 + range.min).toFixed(1);
+                const totalPctMax = (cat.fees.referralPct + 1.8 + range.max).toFixed(1);
                 return (
                   <tr key={cat.id} className="hover:bg-zinc-50/60">
                     <td className="py-2.5 px-3 font-semibold text-zinc-950 capitalize">
@@ -392,7 +408,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                     </td>
                     <td className="py-2.5 px-3 font-mono font-semibold text-zinc-950">{cat.fees.referralPct}%</td>
                     <td className="py-2.5 px-3 font-mono text-zinc-700">1.8% + $0.30</td>
-                    <td className="py-2.5 px-3 font-mono text-zinc-700">10% – 20%</td>
+                    <td className="py-2.5 px-3 font-mono text-purple-700 font-semibold">{range.label}</td>
                     <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-950">
                       {totalPctMin}% – {totalPctMax}% + $0.30
                     </td>
