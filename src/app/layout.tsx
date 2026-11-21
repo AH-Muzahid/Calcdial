@@ -56,6 +56,9 @@ export const metadata: Metadata = {
       { url: "/favicon-180x180.png", sizes: "180x180", type: "image/png" },
     ],
   },
+  other: {
+    "p:domain_verify": "ea321d2ff2fa1c3b671c40dcc36b977b",
+  },
 };
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-VHNNXPTG88";
