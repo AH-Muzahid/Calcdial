@@ -526,10 +526,10 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
                 <div className="rounded-lg border border-zinc-200/80 bg-white p-2.5 flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     <span className="text-xs font-bold text-zinc-900 block truncate">
-                      Include 15% Offsite Ads
+                      Include Offsite Ads ({adsTier === 0.15 ? "15%" : "12%"})
                     </span>
                     <span className="text-[10px] text-zinc-500 font-sans block truncate">
-                      Mandatory for shops over $10k/yr
+                      {adsTier === 0.15 ? "15% optional fee (under $10k sales)" : "12% mandatory fee (over $10k sales)"}
                     </span>
                   </div>
 
@@ -554,8 +554,8 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
 
                 {/* If Offsite Ads ON, select tier */}
                 {offsiteAds && (
-                  <div className="flex items-center justify-between text-xs px-2.5 py-1 bg-white rounded-lg border border-zinc-200/60">
-                    <span className="text-zinc-600 font-medium">Offsite Ad Fee Tier:</span>
+                  <div className="flex items-center justify-between text-xs px-2.5 py-1.5 bg-white rounded-lg border border-zinc-200/60">
+                    <span className="text-zinc-600 font-medium">Offsite Ad Rate:</span>
                     <div className="inline-flex rounded-md bg-zinc-100 p-0.5">
                       <button
                         type="button"
@@ -565,7 +565,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
                           adsTier === 0.15 ? "bg-[#2b5cfd] text-white shadow-2xs" : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
-                        15% (Under $10k)
+                        15% (Under $10k · Optional)
                       </button>
                       <button
                         type="button"
@@ -575,7 +575,7 @@ Calculated via CalcDial (https://calcdial.com/tools/etsy-fee-calculator)`;
                           adsTier === 0.12 ? "bg-[#2b5cfd] text-white shadow-2xs" : "text-zinc-600 hover:text-zinc-950"
                         )}
                       >
-                        12% (Over $10k)
+                        12% (Over $10k · Mandatory)
                       </button>
                     </div>
                   </div>

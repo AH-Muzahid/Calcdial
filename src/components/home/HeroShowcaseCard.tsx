@@ -237,7 +237,7 @@ export function HeroShowcaseCard() {
                       {activePlatform === "shopify" && "Include $14 Ad Acquisition (CAC)"}
                     </span>
                     <span className="text-[10px] text-zinc-500 font-sans block truncate">
-                      {activePlatform === "etsy" && "Mandatory for sellers over $10k/yr"}
+                      {activePlatform === "etsy" && "Optional 15% fee for shops under $10k/yr"}
                       {activePlatform === "tiktok" && "TikTok Creator Marketplace fee"}
                       {activePlatform === "shopify" && "Paid marketing customer acquisition"}
                     </span>

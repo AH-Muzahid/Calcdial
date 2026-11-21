@@ -75,7 +75,10 @@ export const DETAILED_GUIDES: Record<string, GuideDetail> = {
         title: "6. The 12% to 15% Etsy Offsite Ads Dilemma",
         content: [
           "Etsy advertises seller listings across Google, Facebook, Instagram, Pinterest, and Bing through its Offsite Ads program. When a buyer clicks an external ad and purchases from your shop within 30 days, Etsy deducts an Offsite Ads fee on that order.",
-          "For shops with under $10,000 USD in trailing 12-month sales, the fee is 15% and participation is optional. For shops exceeding $10,000 in trailing 12-month sales, participation becomes mandatory for the life of the shop, but the rate discounts to 12%.",
+          "Etsy structures this advertising fee into two distinct tiers based on your shop's gross revenue over the trailing 365-day period:",
+          "• Under $10,000 USD Annual Sales: 15.0% fee on attributed orders. Participation is optional — newer and smaller shops have the freedom to opt out anytime in shop settings if margins are tight.",
+          "• $10,000 USD or More Annual Sales: 12.0% fee on attributed orders. Etsy provides a 3% volume discount as an established seller reward, but enrollment becomes permanently mandatory for the lifetime of the shop (no opt-out permitted, even if sales subsequently drop below $10k).",
+          "Fee Cap Protection: Etsy strictly caps the maximum Offsite Ads fee at $100.00 USD per order, regardless of the total item price.",
         ],
       },
     ],

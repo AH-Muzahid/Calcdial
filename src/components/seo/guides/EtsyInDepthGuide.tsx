@@ -56,10 +56,10 @@ export function EtsyInDepthGuide() {
 
             <div className="border-l-2 border-zinc-900 pl-4 py-0.5">
               <h4 className="text-sm font-bold text-zinc-950">
-                Offsite Ads Fee: 12% to 15% (Attributed Sales Only)
+                Offsite Ads Fee: 15% (Optional &lt;$10k) or 12% (Mandatory &ge;$10k)
               </h4>
               <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed mt-0.5">
-                Only charged when a shopper clicks an Etsy-funded ad on Google, Facebook, Instagram, or Pinterest and purchases from your shop within 30 days. Capped at $100 USD per order.
+                Only charged when a shopper clicks an Etsy-funded ad on Google, Facebook, Instagram, or Pinterest and purchases from your shop within 30 days. For shops earning under $10,000/yr, the fee is 15% (optional with opt-out). For shops exceeding $10,000/yr, Etsy rewards volume with a 12% discounted fee, but enrollment becomes permanently mandatory. Capped at $100 USD per order.
               </p>
             </div>
           </div>
@@ -89,7 +89,7 @@ export function EtsyInDepthGuide() {
                 Trap B: The Lifetime $10,000 Offsite Ads Lock-In
               </div>
               <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed">
-                Once your shop achieves $10,000 USD in gross revenue over any rolling 12-month period, participation in Etsy Offsite Ads becomes mandatory at a 12% rate. Etsy terms state you can never opt out again, even if annual revenue drops below $10k in subsequent years.
+                While shops under $10,000 can freely opt out of the 15% ad fee, crossing the $10,000 threshold locks your shop into permanent participation. Even though the rate drops from 15% to 12% as a volume discount, you can never opt out again, even if annual revenue drops below $10k in future years.
               </p>
             </li>
 
