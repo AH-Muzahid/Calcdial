@@ -142,7 +142,7 @@ export const TOOLS: ToolConfig[] = [
         { header: "Scenario", key: "scenario", align: "left" },
         { header: "Retail Price", key: "Item Price", align: "right" },
         { header: "Etsy Fees", key: "Etsy Fees", align: "right" },
-        { header: "Net Profit", key: "Net Profit", align: "right", isProfit: true },
+        { header: "Est. Bank Deposit", key: "Est. Bank Deposit", align: "right", isProfit: true },
         { header: "Effective Fee %", key: "Effective Fee %", align: "right" },
       ],
     },
@@ -164,17 +164,17 @@ export const TOOLS: ToolConfig[] = [
       {
         label: "Handmade Ceramic Mug ($25.00, Free Shipping, US Seller, No Ads)",
         inputs: { "Item Price": "$25.00", "Shipping Charged": "$0.00", "Country": "United States", "Offsite Ads": "Off" },
-        result: { "Gross Revenue": "$25.00", "Etsy Fees": "$2.83", "Net Profit": "$22.17", "Effective Fee %": "11.3%" },
+        result: { "Gross Revenue": "$25.00", "Etsy Fees": "$2.83", "Est. Bank Deposit": "$22.17", "Effective Fee %": "11.3%" },
       },
       {
         label: "Vintage Jacket ($85.00 + Free Shipping, US Seller, 15% Offsite Ads)",
         inputs: { "Item Price": "$85.00", "Shipping Charged": "$0.00", "Country": "United States", "Offsite Ads": "15%" },
-        result: { "Gross Revenue": "$85.00", "Etsy Fees": "$21.33", "Net Profit": "$63.67", "Effective Fee %": "25.1%" },
+        result: { "Gross Revenue": "$85.00", "Etsy Fees": "$21.33", "Est. Bank Deposit": "$63.67", "Effective Fee %": "25.1%" },
       },
       {
         label: "Digital Art Download ($12.00, UK Seller, No Shipping)",
         inputs: { "Item Price": "£12.00", "Shipping Charged": "£0.00", "Country": "United Kingdom", "Offsite Ads": "Off" },
-        result: { "Gross Revenue": "£12.00", "Etsy Fees": "£1.66", "Net Profit": "£10.34", "Effective Fee %": "13.8%" },
+        result: { "Gross Revenue": "£12.00", "Etsy Fees": "£1.66", "Est. Bank Deposit": "£10.34", "Effective Fee %": "13.8%" },
       },
     ],
     faqs: [

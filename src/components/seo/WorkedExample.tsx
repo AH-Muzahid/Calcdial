@@ -56,6 +56,7 @@ export function WorkedExample({ examples, config }: WorkedExampleProps) {
           "$1.69"
         );
         const profit = String(
+          ex.result["Est. Bank Deposit"] ||
           ex.result["Net Profit"] ||
           ex.result["Shopify Net"] ||
           ex.result["Net Payout"] ||
