@@ -170,7 +170,7 @@ export function Footer() {
 
             {/* Accurate Brand Description */}
             <p className="mt-3.5 text-xs sm:text-sm text-zinc-500 leading-relaxed font-normal max-w-sm">
-              Independent, high-precision fee calculators &amp; margin forecasting for online sellers. 100% private, client-side math with zero tracking.
+              Independent, high-precision fee calculators &amp; margin forecasting for online sellers. Client-side math, with analytics that help us improve the site.
             </p>
 
             {/* Fee Schedule Status Badge */}
