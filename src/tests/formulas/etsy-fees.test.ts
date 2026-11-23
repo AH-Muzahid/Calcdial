@@ -140,8 +140,51 @@ describe("Etsy Fee Formula Comprehensive", () => {
       country: "uk",
     });
 
-    expect(ukResult.regulatoryFee).toBeGreaterThan(0);
+    // £55.00 order * 0.48% = £0.264 -> £0.26
+    expect(ukResult.regulatoryFee).toBe(0.26);
     expect(ukResult.breakdown.some((b) => b.label.includes("Regulatory"))).toBe(true);
+  });
+
+  it("applies the revised 22 June 2026 Regulatory Operating Fee rates accurately across all affected countries", () => {
+    // UK: 0.48% on £100
+    const uk = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "uk" });
+    expect(uk.regulatoryFee).toBe(0.48);
+
+    // France: 1.14% on €100
+    const fr = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "fr" });
+    expect(fr.regulatoryFee).toBe(1.14);
+
+    // Italy: 0.80% on €100
+    const it = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "it" });
+    expect(it.regulatoryFee).toBe(0.80);
+
+    // Spain: 0.88% on €100
+    const es = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "es" });
+    expect(es.regulatoryFee).toBe(0.88);
+
+    // Canada: 0.50% on CA$100
+    const ca = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "ca" });
+    expect(ca.regulatoryFee).toBe(0.50);
+
+    // India: 0.05% on ₹1,000
+    const inRes = calculateEtsyFees({ itemPrice: 1000, shippingCharge: 0, country: "in" });
+    expect(inRes.regulatoryFee).toBe(0.50); // 1000 * 0.0005 = 0.50
+
+    // Türkiye: 1.67% on ₺1,000
+    const tr = calculateEtsyFees({ itemPrice: 1000, shippingCharge: 0, country: "tr" });
+    expect(tr.regulatoryFee).toBe(16.70);
+
+    // Hungary: 1.97% on €100
+    const hu = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "hu" });
+    expect(hu.regulatoryFee).toBe(1.97);
+
+    // Vietnam: 1.24% on ₫1,000,000
+    const vn = calculateEtsyFees({ itemPrice: 1000000, shippingCharge: 0, country: "vn" });
+    expect(vn.regulatoryFee).toBe(12400.00);
+
+    // US sellers remain exempt (0.00%)
+    const us = calculateEtsyFees({ itemPrice: 100, shippingCharge: 0, country: "us" });
+    expect(us.regulatoryFee).toBe(0);
   });
 
   it("calculates reverse pricing accurately for target dollar profit", () => {

@@ -95,10 +95,10 @@ export function EtsyInDepthGuide() {
 
             <li className="space-y-1">
               <div className="text-sm font-bold text-zinc-950">
-                Trap C: Country Regulatory Operating Fees
+                Trap C: Country Regulatory Operating Fees (Updated June 2026)
               </div>
               <p className="text-xs sm:text-sm text-zinc-800 leading-relaxed">
-                Sellers in specific countries face an additional statutory operating surcharge deducted from the order total: United Kingdom (0.32%), France (0.47%), Italy (0.32%), Spain (0.40%), and Turkey (2.07%).
+                Sellers in specific countries face an additional statutory operating surcharge deducted from the gross order total (item price + buyer shipping + gift wrap): United Kingdom (0.48%), France (1.14%), Italy (0.80%), Spain (0.88%), Türkiye (1.67%), Canada (0.50%), Hungary (1.97%), Vietnam (1.24%), and India (0.05%). US sellers remain exempt.
               </p>
             </li>
 

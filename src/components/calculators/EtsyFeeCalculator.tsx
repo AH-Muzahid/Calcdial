@@ -17,21 +17,33 @@ interface EtsyFeeCalculatorProps {
 const CURRENCY_MAP: Record<string, { symbol: string; label: string }> = {
   us: { symbol: "$", label: "USD ($) - United States" },
   uk: { symbol: "£", label: "GBP (£) - United Kingdom" },
-  de: { symbol: "€", label: "EUR (€) - Eurozone / Germany" },
-  fr: { symbol: "€", label: "EUR (€) - France" },
-  ca: { symbol: "C$", label: "CAD (C$) - Canada" },
+  ca: { symbol: "CA$", label: "CAD (CA$) - Canada" },
   au: { symbol: "A$", label: "AUD (A$) - Australia" },
+  de: { symbol: "€", label: "EUR (€) - Germany" },
+  fr: { symbol: "€", label: "EUR (€) - France" },
+  it: { symbol: "€", label: "EUR (€) - Italy" },
+  es: { symbol: "€", label: "EUR (€) - Spain" },
+  nl: { symbol: "€", label: "EUR (€) - Netherlands" },
   in: { symbol: "₹", label: "INR (₹) - India" },
+  tr: { symbol: "₺", label: "TRY (₺) - Türkiye" },
+  hu: { symbol: "€", label: "EUR (€) - Hungary" },
+  vn: { symbol: "₫", label: "VND (₫) - Vietnam" },
 };
 
 const CURRENCY_OPTIONS = [
   { value: "us", label: "USD ($) - United States" },
   { value: "uk", label: "GBP (£) - United Kingdom" },
-  { value: "de", label: "EUR (€) - Eurozone / Germany" },
-  { value: "fr", label: "EUR (€) - France" },
-  { value: "ca", label: "CAD (C$) - Canada" },
+  { value: "ca", label: "CAD (CA$) - Canada" },
   { value: "au", label: "AUD (A$) - Australia" },
+  { value: "de", label: "EUR (€) - Germany" },
+  { value: "fr", label: "EUR (€) - France" },
+  { value: "it", label: "EUR (€) - Italy" },
+  { value: "es", label: "EUR (€) - Spain" },
+  { value: "nl", label: "EUR (€) - Netherlands" },
   { value: "in", label: "INR (₹) - India" },
+  { value: "tr", label: "TRY (₺) - Türkiye" },
+  { value: "hu", label: "EUR (€) - Hungary" },
+  { value: "vn", label: "VND (₫) - Vietnam" },
 ];
 
 const PRESETS = [15, 25, 35, 50, 75, 100];

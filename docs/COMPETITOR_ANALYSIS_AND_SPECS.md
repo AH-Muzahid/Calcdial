@@ -25,7 +25,7 @@
   - Listing Fee: $\$0.20 \times \text{listingCount}$
   - Transaction Fee: $6.5\% \times (\text{itemPrice} + \text{shippingCharge})$
   - Payment Processing Fee: $\text{processingPct}\% \times (\text{itemPrice} + \text{shippingCharge}) + \text{processingFixed}$
-  - Regulatory Operating Fee: $\text{regulatoryPct}\% \times (\text{itemPrice} + \text{shippingCharge})$
+  - Regulatory Operating Fee: $\text{regulatoryPct}\% \times (\text{itemPrice} + \text{shippingCharge} + \text{giftWrap})$ (effective June 22, 2026: UK 0.48%, France 1.14%, Italy 0.80%, Spain 0.88%, Türkiye 1.67%, Canada 0.50%, Hungary 1.97%, Vietnam 1.24%, India 0.05%; US exempt)
   - Offsite Ads Fee: $12\%\text{ or }15\% \times (\text{itemPrice} + \text{shippingCharge})$ (if attributed)
   - International Surcharge: $+1.0\%$ (if buyer is outside seller's region)
 * **Outputs:**
@@ -34,6 +34,12 @@
   - $\text{Real Net Profit} = \text{Etsy Bank Payout} - (\text{itemCost} + \text{shippingCost})$
   - $\text{Break-Even Price} = \frac{\text{itemCost} + \text{shippingCost} + \text{Fixed Fees} - \text{shippingCharge} \times (1 - \text{FeeRate})}{1 - \text{FeeRate}}$
   - $\text{Target Price for Margin } M = \frac{\text{itemCost} + \text{shippingCost} + \text{Fixed Fees} - \text{shippingCharge} \times (1 - \text{FeeRate} - M)}{1 - \text{FeeRate} - M}$
+
+#### Historical Regulatory Operating Fee Tracking & Legacy Rates Audit
+During our November 2026 rate audit, two discrepancies in third-party aggregator feeds and legacy competitor tools were analyzed:
+* **Spain (0.40% vs 0.88%):** The 0.40% rate originated from Etsy's initial July 2021 rollout of the Regulatory Operating Fee following Spain's Ley del Impuesto sobre Determinados Servicios Digitales. Etsy subsequently increased Spain's fee to 0.72% in early 2024, and then to **0.88%** effective June 22, 2026. Outdated competitor tools that have not refreshed their database since 2021 still show 0.40%.
+* **Türkiye (2.07% vs 1.67%):** The 2.07% rate was Etsy's introductory 2021 rate for Turkey. It was subsequently adjusted to 2.27% in early 2024, before being lowered to **1.67%** in the June 22, 2026 schedule update. Many SEO blogs and print-on-demand guides (such as Printful/eRank community guides) retained the stale 2.07% figure.
+* **Fee Base Confirmation:** Etsy assesses the Regulatory Operating Fee on the **gross item price plus buyer shipping and gift wrap** (+ personalization if charged). US sellers remain fully exempt (0.00%).
 
 ---
 
