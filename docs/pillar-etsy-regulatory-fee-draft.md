@@ -96,19 +96,31 @@ To see how the updated Regulatory Operating Fee changes real take-home profits, 
   - **Regulatory Operating Fee (1.14% on €55):** $€55.00 \times 1.14\% = €0.627 \to \mathbf{€0.63}$ *(under old 0.47% rate, this was only €0.26)*
 * **Total Etsy Fees:** $€0.20 + €3.58 + €2.50 + €0.63 = \mathbf{€6.91}$ *(Effective Fee: 12.6%)*
 * **Net Bank Deposit:** $€55.00 - €6.91 = \mathbf{€48.09}$  
-*(Notice: The French seller pays €0.47 more in fees on the identical basket compared to a UK seller, driven by France's 1.14% DST surcharge).*
+*(Accounting Note on 1-Cent Rounding: Etsy bills each deduction as an individual ledger entry rounded to the nearest cent: €0.20 listing + €3.58 transaction + €2.50 processing + €0.63 regulatory = €6.91. If calculated as an unrounded batch sum, 0.20 + 3.575 + 2.50 + 0.627 = €6.902 -> €6.90. Our calculation engine and Etsy Payment account statements reflect the itemized sum of €6.91).*
 
 ---
 
 ### Example D: Canadian Seller — Wooden Clock (CA$50.00 Item + CA$5.00 Shipping)
 * **Order Total:** **CA$55.00**
 * **Deductions:**
-  - Listing Fee: CA$0.20
+  - Listing Fee: **CA$0.28** *(Etsy charges $0.20 USD converted to the seller's account currency at daily market rates, currently ~CA$0.28)*
   - Transaction Fee (6.5% on CA$55): CA$3.58
   - Canadian Domestic Processing (3.0% + CA$0.25): $(CA$55.00 \times 3.0\%) + CA$0.25 = CA$1.65 + CA$0.25 = CA$1.90$
   - **Regulatory Operating Fee (0.50% on CA$55):** $CA$55.00 \times 0.50\% = CA$0.275 \to \mathbf{CA$0.28}$ *(previously CA$0.00)*
-* **Total Etsy Fees:** $CA$0.20 + CA$3.58 + CA$1.90 + CA$0.28 = \mathbf{CA$5.96}$ *(Effective Fee: 10.8%)*
-* **Net Bank Deposit:** $CA$55.00 - CA$5.96 = \mathbf{CA$49.04}$
+* **Total Etsy Fees:** $CA$0.28 + CA$3.58 + CA$1.90 + CA$0.28 = \mathbf{CA$6.04}$ *(Effective Fee: 11.0%)*
+* **Net Bank Deposit:** $CA$55.00 - CA$6.04 = \mathbf{CA$48.96}$
+
+---
+
+### Example E: Indian Seller — Handmade Brass Decor (₹2,000 Item + Free Shipping)
+* **Order Total:** **₹2,000.00**
+* **Deductions:**
+  - Listing Fee: **₹19.00** *($0.20 USD converted to INR)*
+  - Transaction Fee (6.5% on ₹2,000): $₹2,000 \times 6.5\% = \mathbf{₹130.00}$
+  - Indian Payment Processing (**5.0% + ₹25.00** via Payoneer): $(₹2,000 \times 5.0\%) + ₹25 = ₹100.00 + ₹25.00 = \mathbf{₹125.00}$
+  - **Regulatory Operating Fee (0.05% on ₹2,000):** $₹2,000 \times 0.05\% = \mathbf{₹1.00}$
+* **Total Etsy Fees:** $₹19.00 + ₹130.00 + ₹125.00 + ₹1.00 = \mathbf{₹275.00}$ *(Effective Fee: 13.8%)*
+* **Net Bank Deposit:** $₹2,000 - ₹275.00 = \mathbf{₹1,725.00}$
 
 ---
 

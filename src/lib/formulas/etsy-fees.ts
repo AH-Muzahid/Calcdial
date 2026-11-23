@@ -138,13 +138,21 @@ export function calculateEtsyFees(input: EtsyInput): EtsyResult {
     }
   }
 
+  const sym = preset.currencySymbol || "$";
+  const fixedDisplay = processingFixed >= 100
+    ? `${sym}${processingFixed.toLocaleString()}`
+    : `${sym}${processingFixed.toFixed(2)}`;
+  const listingDisplay = listingUnit >= 100
+    ? `${sym}${listingUnit.toLocaleString()}`
+    : `${sym}${listingUnit.toFixed(2)}`;
+
   const breakdown: FeeItem[] = [
-    { label: "Listing Fee", amount: listingFee, rate: `$${listingUnit.toFixed(2)} x ${qty}` },
+    { label: "Listing Fee", amount: listingFee, rate: `${listingDisplay} x ${qty}` },
     { label: "Transaction Commission (6.5%)", amount: transactionFee, rate: `${transactionPct}%` },
     {
       label: `Payment Processing (${input.isInternationalBuyer ? "Int'l" : "Domestic"})`,
       amount: paymentProcessingFee,
-      rate: `${processingPct}% + $${processingFixed.toFixed(2)}`,
+      rate: `${processingPct}% + ${fixedDisplay}`,
     },
   ];
 

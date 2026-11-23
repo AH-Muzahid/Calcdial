@@ -187,6 +187,48 @@ describe("Etsy Fee Formula Comprehensive", () => {
     expect(us.regulatoryFee).toBe(0);
   });
 
+  it("calculates India seller fees with official 5% + ₹25 processing fee and converted listing fee", () => {
+    const inRes = calculateEtsyFees({
+      itemPrice: 1000,
+      shippingCharge: 100,
+      country: "in",
+    });
+
+    // Total order = ₹1,100
+    // Listing = ₹19.00 ($0.20 USD converted)
+    // Transaction = 6.5% of 1100 = ₹71.50
+    // Processing = 5% of 1100 + ₹25 = 55 + 25 = ₹80.00
+    // Regulatory = 0.05% of 1100 = ₹0.55
+    // Total Fees = 19 + 71.50 + 80 + 0.55 = ₹171.05
+    expect(inRes.listingFee).toBe(19.00);
+    expect(inRes.transactionFee).toBe(71.50);
+    expect(inRes.paymentProcessingFee).toBe(80.00);
+    expect(inRes.regulatoryFee).toBe(0.55);
+    expect(inRes.totalFees).toBe(171.05);
+    expect(inRes.etsyPayout).toBe(928.95);
+  });
+
+  it("calculates Canada seller fees with converted CA$0.28 listing fee and 0.50% regulatory fee", () => {
+    const ca = calculateEtsyFees({
+      itemPrice: 50,
+      shippingCharge: 5,
+      country: "ca",
+    });
+
+    // Total order = CA$55.00
+    // Listing = CA$0.28
+    // Transaction = 6.5% of 55 = CA$3.58
+    // Processing = 3% of 55 + CA$0.25 = 1.65 + 0.25 = CA$1.90
+    // Regulatory = 0.50% of 55 = CA$0.28
+    // Total fees = 0.28 + 3.58 + 1.90 + 0.28 = CA$6.04
+    expect(ca.listingFee).toBe(0.28);
+    expect(ca.transactionFee).toBe(3.58);
+    expect(ca.paymentProcessingFee).toBe(1.90);
+    expect(ca.regulatoryFee).toBe(0.28);
+    expect(ca.totalFees).toBe(6.04);
+    expect(ca.etsyPayout).toBe(48.96);
+  });
+
   it("calculates reverse pricing accurately for target dollar profit", () => {
     const reverse = calculateReverseEtsyPrice({
       targetProfitType: "dollar",

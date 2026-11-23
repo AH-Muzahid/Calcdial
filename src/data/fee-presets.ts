@@ -46,7 +46,7 @@ export const ETSY_FEE_PRESETS: FeePreset[] = [
     currency: "CAD",
     currencySymbol: "CA$",
     fees: {
-      listingFee: 0.20,
+      listingFee: 0.28,
       transactionPct: 6.5,
       processingPct: 3.0,
       processingFixed: 0.25,
@@ -61,7 +61,7 @@ export const ETSY_FEE_PRESETS: FeePreset[] = [
     currency: "AUD",
     currencySymbol: "A$",
     fees: {
-      listingFee: 0.20,
+      listingFee: 0.30,
       transactionPct: 6.5,
       processingPct: 3.0,
       processingFixed: 0.25,
@@ -151,10 +151,10 @@ export const ETSY_FEE_PRESETS: FeePreset[] = [
     currency: "INR",
     currencySymbol: "₹",
     fees: {
-      listingFee: 0.20,
+      listingFee: 19.00,
       transactionPct: 6.5,
-      processingPct: 4.5,
-      processingFixed: 0.25,
+      processingPct: 5.0,
+      processingFixed: 25.0,
       regulatoryPct: 0.05,
     },
     lastUpdated: "2026-11-23",
@@ -166,7 +166,7 @@ export const ETSY_FEE_PRESETS: FeePreset[] = [
     currency: "TRY",
     currencySymbol: "₺",
     fees: {
-      listingFee: 0.20,
+      listingFee: 7.00,
       transactionPct: 6.5,
       processingPct: 6.5,
       processingFixed: 14.0,
@@ -196,7 +196,7 @@ export const ETSY_FEE_PRESETS: FeePreset[] = [
     currency: "VND",
     currencySymbol: "₫",
     fees: {
-      listingFee: 0.20,
+      listingFee: 5000,
       transactionPct: 6.5,
       processingPct: 4.5,
       processingFixed: 11500,

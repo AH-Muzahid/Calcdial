@@ -164,16 +164,16 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                 <thead>
                   <tr className="border-b border-zinc-200 bg-zinc-50/80 text-zinc-700 font-semibold">
                     <th className="py-2.5 px-3 rounded-l-lg">Country / Settlement</th>
-                    <th className="py-2.5 px-3">Listing Fee</th>
+                    <th className="py-2.5 px-3">Listing Fee ($0.20 USD)</th>
                     <th className="py-2.5 px-3">Transaction Cut</th>
                     <th className="py-2.5 px-3">Payment Processing</th>
                     <th className="py-2.5 px-3">Regulatory Surcharge</th>
-                    <th className="py-2.5 px-3 text-right rounded-r-lg">Est. Fee on $50.00 USD Order</th>
+                    <th className="py-2.5 px-3 text-right rounded-r-lg">Est. Fee on Typical Order</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100 text-zinc-800">
                   {ETSY_FEE_PRESETS.map((preset) => {
-                    const samplePrice = 50.0;
+                    const samplePrice = preset.currency === "VND" ? 1000000 : preset.currency === "INR" ? 2000 : preset.currency === "TRY" ? 1000 : 50.0;
                     const sampleShipping = 0.0;
                     const totalRev = samplePrice + sampleShipping;
                     const listingFee = preset.fees.listingFee;
@@ -182,6 +182,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                     const regFee = totalRev * (preset.fees.regulatoryPct / 100);
                     const totalSampleFees = listingFee + txFee + procFee + regFee;
                     const effectivePct = (totalSampleFees / totalRev) * 100;
+                    const isZeroDec = preset.currency === "VND" || preset.fees.listingFee >= 100;
 
                     return (
                       <tr key={preset.id} className="hover:bg-zinc-50/60 transition-colors">
@@ -192,13 +193,17 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                           </span>
                         </td>
                         <td className="py-2.5 px-3 font-mono text-zinc-700">
-                          ${preset.fees.listingFee.toFixed(2)} USD
+                          {preset.currency === "USD" ? (
+                            "$0.20 USD"
+                          ) : (
+                            <>{preset.currencySymbol}{isZeroDec ? preset.fees.listingFee.toLocaleString() : preset.fees.listingFee.toFixed(2)} <span className="text-[11px] text-zinc-400 font-normal">($0.20)</span></>
+                          )}
                         </td>
                         <td className="py-2.5 px-3 font-mono font-semibold text-zinc-900">
                           {preset.fees.transactionPct}%
                         </td>
                         <td className="py-2.5 px-3 font-mono text-zinc-700">
-                          {preset.fees.processingPct}% + {preset.currencySymbol}{preset.fees.processingFixed.toFixed(2)}
+                          {preset.fees.processingPct}% + {preset.currencySymbol}{preset.fees.processingFixed >= 100 ? preset.fees.processingFixed.toLocaleString() : preset.fees.processingFixed.toFixed(2)}
                         </td>
                         <td className="py-2.5 px-3 font-mono">
                           {preset.fees.regulatoryPct > 0 ? (
@@ -210,7 +215,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-right font-mono font-bold text-zinc-950">
-                          ${totalSampleFees.toFixed(2)} USD{" "}
+                          {preset.currencySymbol}{isZeroDec ? Math.round(totalSampleFees).toLocaleString() : totalSampleFees.toFixed(2)}{" "}
                           <span className="text-zinc-400 font-normal text-[11px]">
                             ({effectivePct.toFixed(1)}%)
                           </span>
@@ -221,7 +226,7 @@ export function FeeScheduleTable({ toolSlug }: FeeScheduleTableProps) {
                 </tbody>
               </table>
               <p className="mt-2.5 text-[11px] text-zinc-500 font-sans leading-relaxed">
-                * Sample fee calculated for a standard $50.00 USD order (free shipping, 1 quantity, no Offsite Ads). Listing fee ($0.20 USD) and transaction cut (6.5%) apply uniformly worldwide, with domestic payment processing and localized regulatory operating fees itemized by settlement country.
+                * Sample fees calculated on representative domestic order amounts (50 units in USD/GBP/EUR/CAD/AUD, ₹2,000 in India, ₺1,000 in Türkiye, ₫1,000,000 in Vietnam, free shipping, 1 quantity, no Offsite Ads). Listing fee ($0.20 USD converted to local currency) and 6.5% transaction cut apply worldwide, with localized payment processing and regulatory fees itemized.
               </p>
             </div>
           )}
