@@ -9,7 +9,7 @@
 
 ## Executive Overview: What Changed on June 22, 2026?
 
-On **22 April 2026**, Etsy formally announced a comprehensive overhaul of its **Regulatory Operating Fee** schedule, which took effect on **22 June 2026**. Etsy instituted these rate revisions because *"the cost of doing business in many countries increased with new regulations in those countries,"* specifically citing Digital Services Taxes (DST), heightened platform reporting obligations, and evolving e-commerce compliance mandates.
+On **22 April 2026**, Etsy formally announced a comprehensive overhaul of its **Regulatory Operating Fee** schedule, which took effect on **22 June 2026**. Etsy instituted these rate revisions because *"the cost of doing business in many countries increased with new regulations in those countries."* Those regulations include digital services taxes and other local compliance costs.
 
 Crucially for sellers calculating profit margins:
 1. **Rates increased significantly** in core European markets—most notably **France (+143% increase)**, **Italy (+150% increase)**, **the United Kingdom (+50% increase)**, and **Spain (+120% vs legacy rates)**.
@@ -146,6 +146,15 @@ When an international order originates from an Offsite Ad, platform deductions c
 
 ## 5. Actionable Advice for Affected Sellers
 
-1. **Re-evaluate Average Order Value (AOV):** With regulatory fees creeping up and fixed processing charges remaining static, low-ticket listings under £10 / €10 suffer high effective fee rates (>18%). Bundle complementary products into 2-packs or 3-packs to lower effective overhead.
-2. **Account for Gift Wrap in Pricing:** Since Etsy levies both the 6.5% transaction cut and the Regulatory Operating Fee on gift wrapping, ensure gift wrapping add-on charges (e.g. £4.00) leave healthy margin after ~7.5% platform deductions plus physical paper and ribbon costs.
+1. **Re-evaluate Average Order Value (AOV):** With regulatory fees creeping up and fixed processing charges remaining static, low-ticket listings around £5 / €5 or under suffer high effective fee rates (above 18%). Bundle complementary products into 2-packs or 3-packs to lower effective overhead.
+2. **Account for Gift Wrap in Pricing:** Since Etsy levies both the 6.5% transaction cut and the Regulatory Operating Fee on gift wrapping, ensure gift wrapping add-on charges (e.g. £4.00) leave healthy margin after about 11% in platform deductions (6.5% transaction + 4% processing + 0.48% regulatory on a UK order) plus physical paper and ribbon costs.
 3. **Use Accurate Calculators:** Never rely on generic fee calculators using outdated 2021 numbers. Verify your actual take-home payouts using the [CalcDial Etsy Fee Calculator](https://calcdial.com/tools/etsy-fee-calculator), which incorporates verified country-by-country fee schedules, reverse target-margin pricing, and COGS accounting.
+
+---
+
+## Sources
+
+- Etsy Help, "What is a Regulatory Operating Fee?" — https://help.etsy.com/hc/en-us/articles/1500011073202-What-is-a-Regulatory-Operating-Fee
+- Etsy Help, "What are Payment Processing Fees for Selling on Etsy?" — https://help.etsy.com/hc/en-us/articles/115015628847-What-are-Payment-Processing-Fees-for-Selling-on-Etsy
+- Etsy Help, "How Etsy's Offsite Ads Work" — https://help.etsy.com/hc/en-us/articles/360000338367-How-Etsy-s-Offsite-Ads-Work
+- Etsy Community Announcements, "Regulatory Operating Fee updates for some markets" (announced 22 April 2026, effective 22 June 2026) — https://community.etsy.com/forum/announcements-290/topic/regulatory-operating-fee-updates-for-some-markets-181930/
