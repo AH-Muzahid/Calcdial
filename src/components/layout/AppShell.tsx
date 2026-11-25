@@ -22,9 +22,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafafa] text-zinc-950 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#f4f4f5] text-zinc-950 flex flex-col font-sans">
       <Header />
-      <main className={cn("flex-1 w-full", !isHome && "pt-14 sm:pt-16")}>
+      <main className={cn("flex-1 w-full", !isHome && "pt-16")}>
         {children}
       </main>
       <Footer />

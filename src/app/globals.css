@@ -27,9 +27,9 @@
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme {
-  --font-roobert: 'Roobert', var(--font-sans), system-ui, sans-serif;
-  --font-sans: 'Roobert', var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-roobert: 'Roobert', var(--font-jakarta), system-ui, sans-serif;
+  --font-sans: 'Roobert', var(--font-jakarta), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 :root {
@@ -48,7 +48,7 @@
   --radius-button: 12px;
   --radius-control: 8px;
 
-  --background: #fcfdfd;
+  --background: #f4f4f5;
   --foreground: #09090b;
 }
 

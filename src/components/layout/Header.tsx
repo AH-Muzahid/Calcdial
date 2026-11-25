@@ -51,7 +51,7 @@ export function Header() {
         effectiveScrollState === "light" && "bg-white/95 backdrop-blur-md border-b border-zinc-200/80 text-zinc-950 shadow-xs"
       )}
     >
-      <div className="relative mx-auto flex h-14 sm:h-[60px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Brand Logo */}
         <div className="flex items-center">
           <CalcDialLogo isDark={isDarkNavbar} />
@@ -60,7 +60,7 @@ export function Header() {
         {/* Center: Desktop Navigation Links (Centrally Aligned in Navbar) */}
         <nav
           className={cn(
-            "hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center gap-8 text-[14px] font-medium transition-colors",
+            "hidden md:flex absolute inset-y-0 left-1/2 -translate-x-1/2 items-center gap-8 text-sm font-medium transition-colors",
             isDarkNavbar ? "text-white/80" : "text-zinc-600"
           )}
         >
@@ -105,13 +105,13 @@ export function Header() {
         </nav>
 
         {/* Right Actions: Minimalist Ghost Icon Buttons */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex items-center gap-2">
           {/* Minimal Search Icon Button */}
           <button
             type="button"
             onClick={triggerGlobalSearch}
             className={cn(
-              "min-h-11 min-w-11 flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              "size-9 flex items-center justify-center rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
                 : "text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100"
@@ -119,7 +119,7 @@ export function Header() {
             title="Search calculators (⌘K / Ctrl+K)"
             aria-label="Open global search modal"
           >
-            <Search className="size-5" />
+            <Search className="size-4" />
           </button>
 
           {/* Mobile Menu Hamburger Button */}
@@ -127,7 +127,7 @@ export function Header() {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={cn(
-              "min-h-11 min-w-11 md:hidden flex items-center justify-center p-2 rounded-lg transition-colors cursor-pointer",
+              "size-9 md:hidden flex items-center justify-center rounded-lg transition-colors cursor-pointer",
               isDarkNavbar
                 ? "text-white/80 hover:text-white hover:bg-white/10"
                 : "text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100"
@@ -135,9 +135,9 @@ export function Header() {
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           >
             {mobileMenuOpen ? (
-              <X className="size-5" />
+              <X className="size-4" />
             ) : (
-              <Menu className="size-5" />
+              <Menu className="size-4" />
             )}
           </button>
         </div>
@@ -154,7 +154,7 @@ export function Header() {
                 setMobileMenuOpen(false);
                 triggerGlobalSearch();
               }}
-              className="min-h-11 flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 py-2.5 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
+              className="h-10 flex w-full items-center justify-between rounded-xl border border-zinc-200/90 bg-zinc-50/80 px-3.5 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-950 transition-colors cursor-pointer"
             >
               <div className="flex items-center gap-2.5">
                 <Search className="size-4 text-zinc-400" />
@@ -173,7 +173,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "h-10 flex items-center justify-between rounded-xl px-4 text-sm font-semibold transition-colors",
                 pathname === "/calculators"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -188,7 +188,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "h-10 flex items-center justify-between rounded-xl px-4 text-sm font-semibold transition-colors",
                 pathname === "/comparisons"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -203,7 +203,7 @@ export function Header() {
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
               className={cn(
-                "min-h-11 flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-colors",
+                "h-10 flex items-center justify-between rounded-xl px-4 text-sm font-semibold transition-colors",
                 pathname === "/guides"
                   ? "bg-blue-50/70 text-[#2b5cfd]"
                   : "text-zinc-800 hover:bg-zinc-50"
@@ -215,12 +215,12 @@ export function Header() {
           </nav>
 
           {/* Secondary Footer Links in Drawer */}
-          <div className="mt-4 pt-3.5 border-t border-zinc-150 flex items-center justify-between text-xs text-zinc-500 font-medium px-2">
+          <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between text-xs text-zinc-500 font-medium px-2">
             <Link
               href="/about"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
+              className="h-9 inline-flex items-center hover:text-zinc-950 transition-colors px-1"
             >
               About
             </Link>
@@ -228,7 +228,7 @@ export function Header() {
               href="/contact"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
+              className="h-9 inline-flex items-center hover:text-zinc-950 transition-colors px-1"
             >
               Contact
             </Link>
@@ -236,7 +236,7 @@ export function Header() {
               href="/privacy-policy"
               prefetch={false}
               onClick={() => setMobileMenuOpen(false)}
-              className="min-h-11 inline-flex items-center hover:text-zinc-950 transition-colors py-2 px-1"
+              className="h-9 inline-flex items-center hover:text-zinc-950 transition-colors px-1"
             >
               Privacy
             </Link>

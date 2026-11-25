@@ -77,14 +77,14 @@ export function CookieConsent() {
           <button
             type="button"
             onClick={() => handleConsent("essential")}
-            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-xl border border-zinc-200 bg-white px-4 min-h-11 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors shadow-2xs"
+            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-xl border border-zinc-200 bg-white px-4 h-9 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 hover:text-zinc-950 transition-colors shadow-2xs"
           >
             Essential Only
           </button>
           <button
             type="button"
             onClick={() => handleConsent("accepted")}
-            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-xl bg-[#010918] px-4 min-h-11 text-xs font-semibold text-white hover:bg-zinc-800 transition-colors shadow-sm"
+            className="w-full sm:w-auto flex-1 inline-flex items-center justify-center rounded-xl bg-[#010918] px-4 h-9 text-xs font-semibold text-white hover:bg-zinc-800 transition-colors shadow-sm"
           >
             Accept All
           </button>

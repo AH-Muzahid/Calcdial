@@ -6,13 +6,13 @@ import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-jakarta",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -94,7 +94,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className="min-h-screen bg-[#fafafa] text-zinc-950 font-sans antialiased selection:bg-black selection:text-white"
+        className="min-h-screen bg-[#f4f4f5] text-zinc-950 font-sans antialiased selection:bg-[#2b5cfd] selection:text-white"
         suppressHydrationWarning
       >
         {/* Google Analytics 4 (gtag.js) */}
